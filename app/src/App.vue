@@ -1,6 +1,7 @@
 <template>
   <div id="app">
-    <router-view/>
+    <Toast></Toast>
+    <router-view />
   </div>
 </template>
 
@@ -26,3 +27,10 @@ nav a.router-link-exact-active {
   color: #42b983;
 }
 </style>
+
+<script>
+import ToastVue from "./components/toast/Toast.vue";
+export default {
+  components: { Toast: ToastVue },
+};
+</script>

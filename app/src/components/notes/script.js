@@ -1,12 +1,18 @@
 import HeaderComponent from "../header/Header.vue";
 import NavbarComponent from "../nav/Navbar.vue";
+import WriteNote from "../write-note/WriteNote.vue";
+import Note from "../note/Note.vue";
+import { mapGetters } from "vuex";
 export default {
-  components: { NavbarComponent, HeaderComponent },
+  components: { NavbarComponent, HeaderComponent, WriteNote, Note },
   name: "NoteComponent",
-  props: {
-    msg: String,
+  async created() {
+    this.$store.dispatch("note/setCurrentNote");
+    await this.$store.dispatch("note/getLatestNotes");
   },
-  mounted() {
-    console.log(this.$store);
+  computed: {
+    ...mapGetters({
+      notes: "note/notesGetter",
+    }),
   },
 };
