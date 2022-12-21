@@ -7,24 +7,47 @@ export default {
       fixed: false,
     },
   }),
+  props: {
+    onEdit: {
+      type: Boolean,
+      default: false,
+    },
+    currentNote: {
+      type: Object,
+      required: false,
+    },
+  },
   components: { Ok },
   created() {
-    const currentNote = this.$store.getters["note/noteGetter"];
-    this.note = { ...currentNote };
+    if (!this.onEdit) {
+      const currentNote = this.$store.getters["note/noteGetter"];
+      this.note = { ...currentNote };
+
+      return;
+    }
+
+    this.note = { ...this.currentNote };
   },
   methods: {
     async saveNote() {
       await this.$store.dispatch("note/saveNote", this.note);
       await this.$store.dispatch("note/getLatestNotes");
-      const currentNote = this.$store.getters["note/noteGetter"];
-      this.note = { ...currentNote };
+
+      if (!this.onEdit) {
+        const currentNote = this.$store.getters["note/noteGetter"];
+        this.note = { ...currentNote };
+        return;
+      }
+      this.$emit("saved");
     },
   },
   watch: {
     note: {
       deep: true,
       handler: throttle(function (value) {
-        this.$store.dispatch("note/setCurrentNote", value);
+        if (!this.onEdit) {
+          this.$store.dispatch("note/setCurrentNote", value);
+        }
       }, 500),
     },
   },

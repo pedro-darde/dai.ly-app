@@ -24,7 +24,7 @@ const actions = {
     try {
       await noteService.save({ description, fixed });
     } catch (err) {
-      message = err.response.data?.name;
+      message = err.response.data?.message;
       icon = "error";
     } finally {
       commit("NOTE_SAVED", { icon, message });
