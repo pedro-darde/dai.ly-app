@@ -3,7 +3,7 @@ import App from "./App.vue";
 import router from './router'
 import store from "./store";
 import './assets/tailwind.css'
-import toDateBR from "./assets/filters/toDateBR";
+import toDateBR from "./filters/toDateBR";
 
 Vue.config.productionTip = false;
 Vue.filter("toDateBR", toDateBR)

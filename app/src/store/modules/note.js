@@ -1,12 +1,10 @@
+import { Toast } from "@/lib/sweetalert";
 import { noteService } from "@/services/NoteService";
 import { storageService } from "@/services/StorageService";
 
 const state = {
   notes: [],
   currentNote: {},
-  showToast: false,
-  toastMessage: "",
-  toastMessageType: "success",
 };
 
 const actions = {
@@ -18,25 +16,33 @@ const actions = {
   },
   async getLatestNotes({ commit }) {
     const notes = await noteService.latests();
-    console.log(notes);
     commit("SET_ALL_NOTES", notes);
   },
   async saveNote({ commit }, { description, fixed }) {
     let message = "Nota salva com sucesso";
-    let success = true;
+    let icon = "success";
     try {
       await noteService.save({ description, fixed });
     } catch (err) {
       message = err.response.data?.name;
-      success = false;
+      icon = "error";
     } finally {
-      commit("NOTE_SAVED", { message, success });
-      if (success) {
+      commit("NOTE_SAVED", { icon, message });
+      if (icon === "success") {
         commit("SET_CURRENT_NOTE", storageService.DEFAULT_NOTE_VALUE);
       }
-      setTimeout(() => {
-        commit("CLEAR_TOAST_OPTIONS");
-      }, 2500);
+    }
+  },
+  async removeNote({ commit }, id) {
+    let icon = "success";
+    let message = "Nota removida com sucesso";
+    try {
+      await noteService.delete(id);
+    } catch (err) {
+      message = err.response.data?.name;
+      icon = "error";
+    } finally {
+      commit("REMOVE_NOTE", { icon, message });
     }
   },
 };
@@ -51,9 +57,6 @@ const getters = {
   toastMessageGetter(state) {
     return state.toastMessage;
   },
-  showToastGetter(state) {
-    return state.showToast;
-  },
   toastMessageTypeGetter(state) {
     return state.toastMessageType;
   },
@@ -67,15 +70,21 @@ const mutations = {
   SET_ALL_NOTES(state, value) {
     state.notes = value;
   },
-  NOTE_SAVED(state, { success, message }) {
-    if (!success) state.toastMessageType = "error";
-    state.showToast = true;
-    state.toastMessage = message;
+  NOTE_SAVED(state, { icon, message }) {
+    Toast.fire({
+      icon,
+      text: message,
+    });
   },
   CLEAR_TOAST_OPTIONS(state) {
-    state.showToast = false;
     state.toastMessage = "";
     state.toastMessageType = "success";
+  },
+  REMOVE_NOTE(state, { icon, message }) {
+    Toast.fire({
+      icon,
+      text: message,
+    });
   },
 };
 

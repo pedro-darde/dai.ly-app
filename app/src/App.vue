@@ -1,6 +1,5 @@
 <template>
   <div id="app">
-    <Toast></Toast>
     <router-view />
   </div>
 </template>
@@ -29,8 +28,6 @@ nav a.router-link-exact-active {
 </style>
 
 <script>
-import ToastVue from "./components/toast/Toast.vue";
 export default {
-  components: { Toast: ToastVue },
 };
 </script>

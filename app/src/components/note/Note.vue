@@ -12,6 +12,7 @@
       class="inline-flex items-center text-base font-semibold text-gray-900 dark:text-white p-2"
     >
       <a
+        @click="removeNote"
         href="#"
         class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-red-400"
       >
