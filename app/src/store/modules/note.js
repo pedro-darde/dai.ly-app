@@ -33,6 +33,18 @@ const actions = {
       }
     }
   },
+  async editNote({ commit }, { description, fixed, id }) {
+    let message = "Nota salva com sucesso";
+    let icon = "success";
+    try {
+      await noteService.edit(id, { description, fixed });
+    } catch (err) {
+      message = err.response.data?.message;
+      icon = "error";
+    } finally {
+      commit("NOTE_SAVED", { icon, message });
+    }
+  },
   async removeNote({ commit }, id) {
     let icon = "success";
     let message = "Nota removida com sucesso";
@@ -54,12 +66,6 @@ const getters = {
   notesGetter(state) {
     return state.notes;
   },
-  toastMessageGetter(state) {
-    return state.toastMessage;
-  },
-  toastMessageTypeGetter(state) {
-    return state.toastMessageType;
-  },
 };
 
 const mutations = {
@@ -75,10 +81,6 @@ const mutations = {
       icon,
       text: message,
     });
-  },
-  CLEAR_TOAST_OPTIONS(state) {
-    state.toastMessage = "";
-    state.toastMessageType = "success";
   },
   REMOVE_NOTE(state, { icon, message }) {
     Toast.fire({

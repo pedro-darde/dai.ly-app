@@ -30,9 +30,9 @@ export default {
   },
   methods: {
     async saveNote() {
-      await this.$store.dispatch("note/saveNote", this.note);
+      const action = this.onEdit ? "note/editNote" : "note/saveNote";
+      await this.$store.dispatch(action, this.note);
       await this.$store.dispatch("note/getLatestNotes");
-
       if (!this.onEdit) {
         const currentNote = this.$store.getters["note/noteGetter"];
         this.note = { ...currentNote };

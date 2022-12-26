@@ -10,6 +10,9 @@ export class NoteService extends Cached {
   async save({ description, fixed }) {
     await axiosPlugin.post("/note", { description, fixed });
   }
+  async edit(id, { description, fixed }) {
+    await axiosPlugin.post(`/note/${id}`, { description, fixed });
+  }
   async delete(id) {
     await axiosPlugin.delete(`/note/${id}`);
   }

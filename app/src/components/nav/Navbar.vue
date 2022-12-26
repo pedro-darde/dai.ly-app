@@ -4,19 +4,21 @@
       <div class="flex h-16 items-center justify-between">
         <div class="flex items-center">
           <div class="flex-shrink-0">
-            <img
-              class="h-8 w-8"
-              src="favicon.ico"
-              alt="Your Company"
-            />
+            <img class="h-8 w-8" src="favicon.ico" alt="Your Company" />
           </div>
           <div class="hidden md:block">
             <div class="ml-10 flex items-baseline space-x-4">
               <a
-                href="#"
+                href="/"
                 class="bg-yellow-600 text-white px-3 py-2 rounded-md text-sm font-medium"
                 aria-current="page"
                 >Notes</a
+              >
+              <a
+                href="/tasks"
+                class="bg-yellow-600 text-white px-3 py-2 rounded-md text-sm font-medium"
+                aria-current="page"
+                >Tasks</a
               >
             </div>
           </div>

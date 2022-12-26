@@ -1,22 +1,16 @@
 import WriteNote from "../write-note/WriteNote.vue";
+import { popupVisibility } from "@/mixins/popup";
+import RawPopup from "../popup/RawPopup.vue";
 export default {
+  mixins: [popupVisibility],
   components: {
     WriteNote,
+    RawPopup,
   },
   props: {
-    open: {
-      type: Boolean,
-      default: false,
-      required: true,
-    },
     note: {
       type: Object,
       required: true,
-    },
-  },
-  methods: {
-    handleClose() {
-      this.$emit("close");
     },
   },
 };

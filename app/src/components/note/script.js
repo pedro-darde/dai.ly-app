@@ -1,9 +1,11 @@
 import SwalMixin from "@/mixins/SwalMixin";
 import Remove from "../icons/remove.vue";
 import EditNote from "../edit-note/EditNote.vue";
+import { usePopup } from "@/mixins/popup";
+import Pencil from "../icons/pencil.vue";
 export default {
-  mixins: [SwalMixin],
-  components: { Remove, EditNote },
+  mixins: [SwalMixin, usePopup("editNote")],
+  components: { Remove, EditNote, Pencil },
   data: () => ({
     showEdit: false,
   }),
@@ -21,9 +23,17 @@ export default {
         await this.$store.dispatch("note/getLatestNotes");
       }
     },
-    handleShowEdit() {
-      console.log("aqui")
-      this.showEdit = !this.showEdit
-    }
+    editNote() {
+      this.toggleEditNote(!this.popupEditNoteVisible);
+    },
+    closeModal() {
+      this.showEdit = false;
+    },
+    openModal() {
+      this.showEdit = true;
+    },
+    handlePopup(value) {
+      this.toggleEditNote(value);
+    },
   },
 };
