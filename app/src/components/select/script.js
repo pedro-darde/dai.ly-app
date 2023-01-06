@@ -12,10 +12,6 @@ export default {
       type: Boolean,
       default: false,
     },
-    type: {
-      type: String,
-      default: "text",
-    },
     required: {
       type: Boolean,
       default: true,
@@ -28,16 +24,33 @@ export default {
       type: String,
       default: "",
     },
-    extraProps: {
-      type: Object,
+    options: {
+      required: true,
+      type: [Array, Object],
+    },
+    optionText: {
       required: false,
-      default: () => ({}),
+      type: String,
+    },
+    optionValue: {
+      required: false,
+      type: String,
     },
   },
   data() {
     return {
       text: this.value,
     };
+  },
+  methods: {
+    getOptionValue(item, key) {
+      if (this.optionValue) return item[this.optionValue];
+      return key;
+    },
+    getOptionText(item) {
+      if (this.optionText) return item[this.optionText];
+      return item;
+    },
   },
   watch: {
     text(value) {

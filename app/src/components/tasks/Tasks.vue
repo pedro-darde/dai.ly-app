@@ -25,7 +25,20 @@
                   View all
                 </a>
               </div>
-              <div class="flow-root max-h-64 overflow-auto"></div>
+              <div class="flow-root max-h-64 overflow-auto">
+                <ul
+                  role="list"
+                  class="divide-y divide-gray-200 dark:divide-gray-700"
+                >
+                  <li
+                    class="py-3 sm:py-4 bg-yellow-100 border rounded-lg shadow-md mb-2"
+                    v-for="task in tasks"
+                    :key="task.id"
+                  >
+                    <Task :task="task"></Task>
+                  </li>
+                </ul>
+              </div>
             </div>
           </div>
         </div>

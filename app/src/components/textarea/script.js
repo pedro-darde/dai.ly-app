@@ -8,6 +8,10 @@ export default {
       type: String,
       required: true,
     },
+    rows: {
+      type: Number,
+      default: 5,
+    },
     disabled: {
       type: Boolean,
       default: false,
@@ -27,11 +31,6 @@ export default {
     placeholder: {
       type: String,
       default: "",
-    },
-    extraProps: {
-      type: Object,
-      required: false,
-      default: () => ({}),
     },
   },
   data() {
