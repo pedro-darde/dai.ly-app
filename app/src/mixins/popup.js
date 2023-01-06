@@ -12,7 +12,6 @@ export const popupVisibility = {
   },
   methods: {
     disband() {
-      console.log("vou fechar")
       this.visible = false;
     },
   },
