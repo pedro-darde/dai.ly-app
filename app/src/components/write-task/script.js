@@ -22,6 +22,7 @@ export default {
   methods: {
     async saveTask() {
       await this.$store.dispatch("task/saveTask", this.task);
+      await this.$store.dispatch("task/getTasks")
       this.setTask();
     },
     setTask() {
