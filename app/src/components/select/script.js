@@ -3,6 +3,7 @@ export default {
   props: {
     value: {
       required: true,
+      type: [Array, Object, Number, String]
     },
     label: {
       type: String,
@@ -36,6 +37,10 @@ export default {
       required: false,
       type: String,
     },
+    multiple: {
+      required: false,
+      default: false
+    }
   },
   data() {
     return {

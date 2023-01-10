@@ -4,6 +4,8 @@ import Textarea from "../textarea/TextArea.vue";
 import Select from "../select/Select.vue";
 import { throttle } from "lodash";
 import { format } from "date-fns";
+import {DATE_TIME_INPUT_FORMAT} from "@/constants/Formats";
+import {toHtmlDateTimeFormat} from "@/helpers/DateFormatter";
 export default {
   components: { Input, Textarea, Select },
   data() {
@@ -12,7 +14,7 @@ export default {
         title: "",
         about: "",
         expectedTime: null,
-        startAt: format(new Date(), "yyyy-MM-dd"),
+        startAt: toHtmlDateTimeFormat(new Date()),
         expectedDate: null,
         status: "0",
       },
@@ -22,7 +24,7 @@ export default {
   methods: {
     async saveTask() {
       await this.$store.dispatch("task/saveTask", this.task);
-      await this.$store.dispatch("task/getTasks")
+      await this.$store.dispatch("task/getActiveTasks")
       this.setTask();
     },
     setTask() {

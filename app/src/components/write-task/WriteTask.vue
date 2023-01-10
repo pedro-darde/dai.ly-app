@@ -4,16 +4,16 @@
     <form @submit.prevent="saveTask">
       <div class="grid md:grid-cols-2 md:gap-6 mb-6">
         <Input v-model="task.title" type="text" label="Title" />
-        <Input v-model="task.startAt" type="date" label="Start(ed) at" />
+        <Input v-model="task.startAt" type="datetime-local" label="Start(ed) at" />
       </div>
       <div class="grid md:grid-cols-3 md:gap-3 mb-6">
         <Input
           v-model="task.expectedTime"
           type="number"
           :extraProps="{ step: 0.1 }"
-          label="Expected Time"
+          label="Expected Time (days)"
         />
-        <Input v-model="task.expectedDate" type="date" label="Expected Date" :required="false"/>
+        <Input v-model="task.expectedDate" type="datetime-local" label="Expected Date" :required="false"/>
         <Select v-model="task.status" :options="status" label="Status"></Select>
       </div>
       <div class="mb-6">

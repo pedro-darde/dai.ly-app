@@ -17,7 +17,11 @@ export default {
   },
   methods: {
     async removeNote() {
-      const res = await this.showConfirm();
+      let html = " ";
+      if (this.note.tasks?.length) {
+        html += "O mesmo possuí vínculo com tasks e ao excluir esse vínculo será removido!"
+      }
+      const res = await this.showConfirm(html, "Você tem certeza que deseja remover o registro ?");
       if (res.isConfirmed) {
         await this.$store.dispatch("note/removeNote", this.note.id);
         await this.$store.dispatch("note/getLatestNotes");

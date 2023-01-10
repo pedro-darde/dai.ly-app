@@ -1,4 +1,6 @@
 import { format } from "date-fns";
+import {DATE_TIME_INPUT_FORMAT} from "@/constants/Formats";
+import {toHtmlDateTimeFormat} from "@/helpers/DateFormatter";
 class StorageService {
   CURRENT_NOTE_KEY = "current_note";
   CURRENT_TASK_KEY = "current_task";
@@ -6,13 +8,14 @@ class StorageService {
   DEFAULT_NOTE_VALUE = {
     description: "",
     fixed: false,
+    tasks: []
   };
 
   DEFAULT_TASK_VALUE = {
     title: "",
     about: "",
     expectedTime: null,
-    startAt: format(new Date(), 'yyyy-MM-dd'),
+    startAt: toHtmlDateTimeFormat(new Date()),
     expectedDate: null,
     status: "0",
   };

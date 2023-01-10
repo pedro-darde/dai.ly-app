@@ -12,5 +12,8 @@ export default {
   components: {
     Notes,
   },
+  created() {
+    console.log("app criado")
+  }
 };
 </script>

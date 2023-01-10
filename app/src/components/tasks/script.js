@@ -6,12 +6,15 @@ import Task from "../task/Task.vue";
 export default {
   components: { Header, NavbarComponent, WriteTask, Task },
   async created() {
-    this.$store.dispatch("task/setCurrentTask");
-    await this.$store.dispatch("task/getTasks");
+    await Promise.all([
+      this.$store.dispatch("task/setCurrentTask"),
+      this.$store.dispatch("task/getActiveTasks"),
+      this.$store.dispatch("note/allNotes")
+    ])
   },
   computed: {
     ...mapGetters({
-      tasks: "task/tasksGetter",
+      tasks: "task/activeTasksGetter",
     }),
   },
 };
