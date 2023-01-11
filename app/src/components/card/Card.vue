@@ -7,7 +7,6 @@
     </slot>
     <p class="text-gray-700 text-base mb-4">
       <slot name="content">
-        <p>Here should have te content of your card</p>
       </slot>
     </p>
     <div class="time-info mt-auto">

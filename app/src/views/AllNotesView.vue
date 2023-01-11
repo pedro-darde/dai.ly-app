@@ -9,7 +9,7 @@ import AllNotes from "../components/all-notes/AllNotes.vue";
 export default {
   components: { AllNotes },
   async created() {
-    await this.$store.dispatch("note/allNotes");
+    await Promise.all([this.$store.dispatch("note/allNotes"), this.$store.dispatch("task/getAllTasks")])
   },
 };
 </script>
