@@ -26,8 +26,8 @@
               </span>
             </div>
             <div>
-              <a class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-blue-600" v-if="notes?.length"
-                 @click="showNotesInfo(notes)" title="Visualizar notas">
+              <a class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-blue-600" v-if="task.notes?.length"
+                 @click="showNotesInfo(getNotesTask(task.notes))" title="Visualizar notas">
                   Notas
               </a>
             </div>

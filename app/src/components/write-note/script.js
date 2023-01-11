@@ -45,8 +45,8 @@ export default {
     },
     tasksToInsertAndToRemove() {
       if(!this.onEdit) return null
-      const toInsert = this.note.tasks.filter((task) => !this.currentNote.tasks.includes(task));
-      const toRemove = this.currentNote.tasks.filter((task) => !this.note.tasks.includes(task));
+      const toInsert = this.note.tasks?.filter((task) => !this.currentNote?.tasks?.includes(task));
+      const toRemove = this.currentNote?.tasks?.filter((task) => !this.note.tasks?.includes(task));
       return {
         tasksToInsert: toInsert,
         tasksToRemove: toRemove

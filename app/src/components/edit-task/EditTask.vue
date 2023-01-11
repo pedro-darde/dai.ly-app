@@ -7,7 +7,7 @@
           <Input v-model="editTask.title" type="text" label="Title"/>
           <Input v-model="editTask.startAt" type="datetime-local" label="Start(ed) at"/>
         </div>
-        <div class="grid md:grid-cols-4 md:gap-4 mb-6">
+        <div class="grid md:grid-cols-3 md:gap-3 mb-6">
           <Input
               v-model="editTask.expectedTime"
               type="number"

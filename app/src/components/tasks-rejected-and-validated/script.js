@@ -23,8 +23,9 @@ export default {
             if (task.timeSpent > task.expectedTime) return "Warning! This task take more days than expected!"
             return "Task done in time!"
         },
-        getNotesTask() {
-
+        getNotesTask(notes) {
+            const allNotes = this.$store.getters['note/allNotesGetter']
+            return allNotes.filter(({id}) => notes.includes(id))
         }
     },
     computed: {

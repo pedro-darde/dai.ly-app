@@ -15,7 +15,6 @@ export default {
         about: "",
         expectedTime: null,
         startAt: toHtmlDateTimeFormat(new Date()),
-        expectedDate: null,
         status: "0",
       },
       status: TaskStatusNew,

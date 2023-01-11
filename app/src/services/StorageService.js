@@ -16,7 +16,6 @@ class StorageService {
     about: "",
     expectedTime: null,
     startAt: toHtmlDateTimeFormat(new Date()),
-    expectedDate: null,
     status: "0",
   };
 
