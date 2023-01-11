@@ -2,11 +2,9 @@
   <div
     :class="['ml-1.5 flex flex-col p-6 rounded-lg shadow-lg max-w-sm', classes]"
   >
-    <h5 class="text-gray-900 text-xl leading-tight font-medium mb-2">
-      <slot name="title">
-        <p>Card Title Here</p>
-      </slot>
-    </h5>
+    <slot name="title">
+      <p>Card Title Here</p>
+    </slot>
     <p class="text-gray-700 text-base mb-4">
       <slot name="content">
         <p>Here should have te content of your card</p>

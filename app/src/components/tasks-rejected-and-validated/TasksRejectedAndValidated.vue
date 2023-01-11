@@ -5,7 +5,11 @@
     <main>
       <div class="flex justify-center align-center flex-wrap mt-2">
         <Card v-for="task in tasks" :key="task.id" :classes="getBgColor(task)">
-          <template v-slot:title> {{ task.title }} </template>
+          <template v-slot:title>
+            <h5 class="text-gray-900 text-xl leading-tight font-medium mb-2">
+              {{ task.title }}
+            </h5>
+          </template>
           <template v-slot:info> {{ task.about }}</template>
           <template v-slot:extra-info>
             <div v-if="isTaskValidated(task)">

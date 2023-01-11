@@ -1,9 +1,10 @@
-import NavbarComponent from "../nav/Navbar.vue";
-import Header from "../header/Header.vue";
+
 import { mapGetters } from "vuex";
 import { REJECTED, VALIDATED } from "@/constants/TaskStatus";
 import notesInfo from "@/mixins/notes-info";
 import Card from "../card/Card.vue";
+import NavbarComponent from "../nav/Navbar.vue";
+import Header from "../header/Header.vue";
 
 export default {
   mixins: [notesInfo],

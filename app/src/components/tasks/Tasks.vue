@@ -22,7 +22,7 @@
                   href="/tasks/reject-and-validated"
                   class="text-sm font-medium text-blue-600 hover:underline"
                 >
-                  View all
+                  Rejected and Validated
                 </a>
               </div>
               <div class="flow-root max-h-64 overflow-auto">

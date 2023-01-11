@@ -12,7 +12,13 @@
                 href="/"
                 class="bg-yellow-600 text-white px-3 py-2 rounded-md text-sm font-medium"
                 aria-current="page"
-                >Notes</a
+                >Home</a
+              >
+              <a
+                href="/notes"
+                class="bg-yellow-600 text-white px-3 py-2 rounded-md text-sm font-medium"
+                aria-current="page"
+                >All Notes</a
               >
               <a
                 href="/tasks"

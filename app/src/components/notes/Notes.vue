@@ -21,7 +21,7 @@
                   Latest Notes
                 </h5>
                 <a
-                  href="#"
+                  href="/notes"
                   class="text-sm font-medium text-blue-600 hover:underline"
                 >
                   View all

@@ -3,6 +3,7 @@ import VueRouter from "vue-router";
 import HomeView from "../views/HomeView.vue";
 import TaskView from "../views/TasksView.vue";
 import RejectedAndValidatedTasksView from "@/views/RejectedAndValidatedTasksView.vue";
+import AllNotesView from '../views/AllNotesView.vue'
 
 Vue.use(VueRouter);
 
@@ -21,6 +22,11 @@ const routes = [
     path: "/tasks/reject-and-validated",
     name: "rejectedAndValidated",
     component: RejectedAndValidatedTasksView
+  },
+  {
+    path: "/notes",
+    name: "allNotes",
+    component: AllNotesView
   }
 ];
 
