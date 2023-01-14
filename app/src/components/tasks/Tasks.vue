@@ -16,7 +16,7 @@
             >
               <div class="flex items-center justify-between mb-4">
                 <h5 class="text-xl font-bold leading-none text-gray-900">
-                  Latest Tasks
+                  Active Tasks
                 </h5>
                 <a
                   href="/tasks/reject-and-validated"
