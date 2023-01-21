@@ -28,3 +28,11 @@ const mutations = {
         state.planning = planning
     }
 }
+
+
+export default {
+    namespaced: true,
+    state,
+    actions,
+    mutations,
+}

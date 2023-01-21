@@ -1,6 +1,3 @@
-
-import Select from '../select/Select.vue';
-
 <template>
     <div class="main">
         <NavbarComponent></NavbarComponent>
@@ -14,6 +11,10 @@ import Select from '../select/Select.vue';
                             class="block mb-1 text-md font-bold text-gray-90 text-center mt-2">Year</label> 
                     </template>
                 </Select>
+            </div>
+
+            <div class="flex flex-row justify-start m-2.5">
+                    <Planning :year="year"/>
             </div>
         </main>
     </div>
