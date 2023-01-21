@@ -1,11 +1,13 @@
 <template>
   <div>
-    <label
+    <slot name="label">
+      <label
       :for="id"
       class="block mb-2 text-md font-bold text-gray-90 text-start"
     >
       {{ label }}</label
     >
+    </slot>
     <select
       v-model="text"
       :id="id"

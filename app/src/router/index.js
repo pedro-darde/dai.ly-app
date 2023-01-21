@@ -4,7 +4,7 @@ import HomeView from "../views/HomeView.vue";
 import TaskView from "../views/TasksView.vue";
 import RejectedAndValidatedTasksView from "@/views/RejectedAndValidatedTasksView.vue";
 import AllNotesView from '../views/AllNotesView.vue'
-
+import PlanningsView from "../views/PlanningsView.vue"
 Vue.use(VueRouter);
 
 const routes = [
@@ -27,6 +27,11 @@ const routes = [
     path: "/notes",
     name: "allNotes",
     component: AllNotesView
+  },
+  {
+    path: "/finances",
+    name: "finances",
+    component: PlanningsView
   }
 ];
 

@@ -1,9 +1,10 @@
 import axiosPlugin from "@/lib/axios";
+import Cached from "./Cached";
 
-export class BaseService {
+export class BaseService extends Cached {
     serviceName;
-
     constructor(serviceName) {
+        super()
         this.serviceName = `/${serviceName}`
     }
 

@@ -40,6 +40,11 @@ export default {
     multiple: {
       required: false,
       default: false
+    },
+    useItemAsValue: {
+      required: false,
+      type: Boolean,
+      default: false
     }
   },
   data() {
@@ -49,6 +54,7 @@ export default {
   },
   methods: {
     getOptionValue(item, key) {
+      if (this.useItemAsValue) return item
       if (this.optionValue) return item[this.optionValue];
       return key;
     },
