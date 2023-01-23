@@ -3,6 +3,7 @@ import NavbarComponent from "../nav/Navbar.vue";
 import Select from  "../select/Select.vue"
 import Planning from '../Planning/Planning.vue'
 import { range } from 'lodash'
+import { mapGetters, mapState } from "vuex";
 
 export default {
     components: { NavbarComponent, HeaderComponent, Select, Planning },
@@ -20,5 +21,11 @@ export default {
             console.log("aqui")
            this.$store.dispatch("planning/changePlanningYear", value)
         }
+    },
+    computed: {
+        ...mapGetters({
+            "planning": "planning/planningGetter" 
+        })
     }
+
 }

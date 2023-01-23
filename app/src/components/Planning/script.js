@@ -8,30 +8,8 @@ import plus from "../icons/plus.vue";
 import Select from "../select/Select.vue";
 import char from "../icons/char.vue";
 import remove from "../icons/remove.vue";
-const DEFAULT_PLANNING = {
-  year: new Date().getFullYear(),
-  title: "",
-  expectedAmount: 0,
-  planningStart: toHtmlDateTimeFormat(new Date()),
-  planningEnd: null,
-  months: [
-    {
-      id: quickid(),
-      expectedAmount: 0,
-      idMonth: new Date().getMonth(),
-      items: [
-        {
-          id: quickid(),
-          value: 0,
-          operation: "out",
-          date: toHtmlDateTimeFormat(new Date()),
-          paymentMethod: "debit",
-        },
-      ],
-    },
-  ],
-};
-
+import PlanningPreview from '../PlanningPreview/PlanningPreview.vue'
+import planningCalculator from "@/mixins/planningCalculator";
 export default {
   components: {
     money,
@@ -42,18 +20,43 @@ export default {
     Select,
     char,
     remove,
+    PlanningPreview
   },
   props: {
     year: Number,
     currentPlanning: {
       type: Object,
       required: false,
+      default: () => ({
+        year: new Date().getFullYear(),
+        planningTitle: "",
+        expectedAmount: 0,
+        planningStart: toHtmlDateTimeFormat(new Date()),
+        planningEnd: null,
+        planningMonths: [
+          {
+            id: quickid(),
+            expectedAmount: 0,
+            idMonth: new Date().getMonth(),
+            items: [
+              {
+                id: quickid(),
+                value: 0,
+                operation: "out",
+                date: toHtmlDateTimeFormat(new Date()),
+                paymentMethod: "debit",
+                description: ""
+              },
+            ],
+          },
+        ],
+      })
     },
   },
+  mixins: [planningCalculator],
   data() {
-    const planning = this.planning ?? DEFAULT_PLANNING;
     return {
-      planning,
+      planning: this.currentPlanning,
       operations: [
         {
           name: "In (+)",
@@ -72,7 +75,7 @@ export default {
   },
   methods: {
     addMonth() {
-      this.planning.months.push({
+      this.planning.planningMonths.push({
         id: quickid(),
         expectedAmount: 0,
         idMonth: (new Date()).getMonth(),
@@ -87,7 +90,7 @@ export default {
       });
     },
     removeMonth(id) {
-      this.planning.months = this.planning.months.filter(
+      this.planning.planningMonths = this.planning.planningMonths.filter(
         (item) => item.id !== id
       );
     },
@@ -98,47 +101,47 @@ export default {
         operation: "out",
         date: toHtmlDateTimeFormat(new Date()),
         paymentMethod: "debit",
+        description: ""
       });
     },
     removeItem(month, idItem) {
       month.items = month.items.filter((item) => item.id !== idItem);
     },
     isLastMonth(id) {
-      const index = this.planning.months.findIndex((item) => item.id === id);
-      return index === this.planning.months.length - 1;
+      const index = this.planning.planningMonths.findIndex((item) => item.id === id);
+      return index === this.planning.planningMonths.length - 1;
     },
     isLastItem(month, id) {
       const index = month.items.findIndex((item) => item.id === id);
       return index === month.items.length - 1;
     },
-    monthBalance(month) {
-      return month.items.reduce((accPlanning, item) => {
-        if (item.operation === "in") {
-          accPlanning += item.value;
-        } else {
-          accPlanning -= item.value;
-        }
-        return accPlanning;
-      }, 0);
+    getMonthOptions(month) {
+      const idsMonth = this.planning.planningMonths.filter(item => item.id !== month.id).map(month => month.idMonth)
+      return this.planning.planningMonths.filter(item => !idsMonth.includes(item.id))
     },
+    async save() {
+      const payload = {
+        planningTitle: this.planning.planningTitle,
+        planningStart: this.planning.planningStart,
+        planningEnd: this.planning.planningEnd,
+        year: this.year,
+        expectedAmount: this.planning.expectedAmount,
+        months: this.planning.planningMonths.map(month => ({
+          ...month,
+          totalIn: this.in(month),
+          totalOut: this.out(month),
+          spentOnDebit: this.spentOnDebitMonth(month),
+          spentOnCredit: this.spentOnCreditMonth(month)
+        }))
+      }
+
+      await this.$store.dispatch("planning/createPlanning", payload)
+
+    }
   },
   computed: {
     months() {
       return this.$store.getters["planning/monthGetter"];
-    },
-    planningBalance() {
-      const value = this.planning.months.reduce((acc, planning) => {
-        acc += planning.items.reduce((accPlanning, item) => {
-          if (item.operation === "in") {
-            accPlanning += item.value;
-          } else {
-            accPlanning -= item.value;
-          }
-          return accPlanning;
-        }, 0);
-        return acc;
-      }, 0);
-      return value;
     },
   },
 };

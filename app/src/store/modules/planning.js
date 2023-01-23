@@ -6,7 +6,14 @@ const state = {
 };
 
 const actions = {
-  createPlanning({ commit }, payload) {},
+ async createPlanning({ commit }, payload) {
+    try {
+      await planningService.save(payload)
+      commit("PLANNING_CREATED")
+    } catch (e) {
+      console.log(e)
+    }
+  },
   async changePlanningYear({ commit }, year) {
     try {
       const planning = await planningService.get(year);
@@ -38,6 +45,9 @@ const mutations = {
 const getters = {
     monthGetter(state) {
         return state.months
+    },
+    planningGetter(state) {
+      return state.planning
     }
 }
 

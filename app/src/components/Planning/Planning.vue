@@ -2,58 +2,52 @@
   <div
     class="bg-gray-100 container w-full p-5 rounded border-l-8 flex flex-col items-start"
   >
-    <div class="flex flex-row items-center mb-2 text-center justify-center">
-      <a class="text-green-700 mr-1 text">
+  <form class="m-2 w-full max-h-[650px] overflow-auto" @submit.prevent="save">
+    <div class="flex flex-row items-center mb-2 text-center justify-between w-full">
+      <div class="flex flex-row items-center">
+        <a class="text-green-700 mr-1 text">
         <money />
       </a>
       <h2 class="text-3xl font-bold">Create planning of {{ year }}</h2>
-    </div>
-    <div class="flex flex-row justify-between">
-      <div class="bg-white p-5 rounded border-l-8">
-        <div class="flex flex-col">
-          <h3 class="text-xl font-bold">Balance</h3>
-          <p
-            :class="[
-              'text-xl font-bold',
-              planningBalance >= 0 ? 'text-green-300' : 'text-red-400',
-            ]"
-          >
-            {{ planningBalance | toMonetary }}
-          </p>
-        </div>
       </div>
-      <div class="bg-white p-5 rounded border-l-8">aqui</div>
-      <div class="bg-white p-5 rounded border-l-8">aqui</div>
+      <button
+      type="submit"
+          class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-green-400 rounded-lg hover:bg-green-700 focus:ring-4 focus:outline-none focus:ring-green-300"
+      >
+        Save
+      </button>
     </div>
-
-    <form class="m-2">
+    <div class="bg-neutral-300 rounded border-l-8 border-white  p-3 mb-5 text-left">
+      <PlanningPreview :planning="planning" />
+    </div>
       <div class="grid md:grid-cols-4 md:gap-3 mb-2">
-        <Input label="Planning Title" type="text" v-model="planning.title" />
-        <MoneyInput label="Expected Amount" v-model="planning.expectedAmount" />
-        <Input label="Start At" type="date" v-model="planning.planningStart" />
+        <Input label="Planning Title" type="text" v-model="planning.planningTitle" :required="true"/>
+        <MoneyInput label="Expected Amount" v-model="planning.expectedAmount" :required="true"/>
+        <Input label="Start At" type="date" v-model="planning.planningStart" :required="true"/>
         <Input label="End At" type="date" v-model="planning.planningEnd" />
       </div>
-      <div class="flex flex-row items-center ml-4">
+      <div class="flex flex-row items-center ml-4 mb-2">
         <a class="text-black-700 mr-1">
           <calendar />
         </a>
-        <h3 class="text-lg font-bold">Months</h3>
+        <h3 class="text-2xl font-bold">Months</h3>
       </div>
       <div
-        class="flex flex-col"
-        v-for="(month, key) in planning.months"
+        class="flex flex-col bg-gray-300 rounded border-l-8 border-gray-500  p-5 mb-5 max-h-96 overflow-auto"
+        v-for="(month, key) in planning.planningMonths"
         :key="key"
       >
-        <div class="grid md:grid-cols-3 md:gap-3 mb-2 items-end ml-4">
+        <div class="grid md:grid-cols-3 md:gap-3 mb-2 items-end ml-4 ">
           <Select
             label="Month"
             type="text"
-            v-model="planning.idMonth"
+            v-model="month.idMonth"
             optionValue="id"
             optionText="monthName"
-            :options="months"
+            :options="getMonthOptions(month)"
+            :required="true"
           />
-          <MoneyInput label="Expected Amount" v-model="month.expectedAmount" />
+          <MoneyInput label="Expected Amount" v-model="month.expectedAmount" :required="true"/>
           <div class="flex flex-row">
             <button
               type="button"
@@ -75,23 +69,6 @@
             </button>
           </div>
         </div>
-        <div class="flex flex-row justify-start">
-          <div class="bg-white p-5 rounded border-l-8">
-            <div class="flex flex-col">
-              <h3 class="text-xl font-bold">Month Balance</h3>
-              <p
-                :class="[
-                  'text-xl font-bold',
-                  monthBalance(month) >= 0 ? 'text-green-300' : 'text-red-400',
-                ]"
-              >
-                {{ monthBalance(month) | toMonetary }}
-              </p>
-            </div>
-          </div>
-          <div class="bg-white p-5 rounded border-l-8">aqui</div>
-          <div class="bg-white p-5 rounded border-l-8">aqui</div>
-        </div>
         <div class="flex flex-row items-center ml-8">
           <a class="text-black-700 mr-1">
             <char />
@@ -99,17 +76,18 @@
           <h3 class="text-lg font-bold">Moviments</h3>
         </div>
         <div
-          class="flex flex-col"
+          class="flex flex-col bg-gray-700 rounded border-l-8 border-white  p-5 mb-5 text-white  ml-8"
           v-for="(item, key) in month.items"
           :key="key"
         >
           <div
             :class="[
-              'grid  md:gap-3 mb-2 items-end ml-8',
-              item.operation == 'out' ? 'md:grid-cols-5' : 'md:grid-cols-4',
+              'grid  md:gap-3 mb-2 items-end',
+              item.operation == 'out' ? 'md:grid-cols-6' : 'md:grid-cols-5',
             ]"
           >
-            <MoneyInput label="Value" v-model="item.value" />
+            <MoneyInput label="Value" v-model="item.value" :required="true"/>
+            <Input label="Description" type="text" v-model="item.description"  :required="true"/>
             <Select
               label="Operation"
               type="text"
@@ -117,8 +95,9 @@
               optionValue="value"
               optionText="name"
               :options="operations"
+              :required="true"
             />
-            <Input label="Date" type="date" v-model="item.date" />
+            <Input label="Date" type="date" v-model="item.date"  :required="true"/>
             <Select
               v-model="item.paymentMethod"
               label="Payment Method"
@@ -126,6 +105,7 @@
               optionValue="value"
               :options="paymentMethods"
               v-if="item.operation == 'out'"
+              :required="item.operation == 'out'"
             />
             <div class="flex flex-row">
               <button
