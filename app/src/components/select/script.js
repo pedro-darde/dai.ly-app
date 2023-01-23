@@ -2,8 +2,7 @@ import quickid from "@/helpers/quickid";
 export default {
   props: {
     value: {
-      required: true,
-      type: [Array, Object, Number, String]
+      required: true
     },
     label: {
       type: String,
