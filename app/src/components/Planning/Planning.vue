@@ -21,7 +21,7 @@
       <PlanningPreview :planning="planning" />
     </div>
       <div class="grid md:grid-cols-4 md:gap-3 mb-2">
-        <Input label="Planning Title" type="text" v-model="planning.planningTitle" :required="true"/>
+        <Input label="Planning Title" type="text" v-model="planning.title" :required="true"/>
         <MoneyInput label="Expected Amount" v-model="planning.expectedAmount" :required="true"/>
         <Input label="Start At" type="date" v-model="planning.planningStart" :required="true"/>
         <Input label="End At" type="date" v-model="planning.planningEnd" />
@@ -59,7 +59,7 @@
               <plus />
             </button>
             <button
-              v-if="key != 0"
+              v-if="canRemove()"
               type="button"
               @click="removeMonth(month.id)"
               title="Remove Mês"
@@ -118,7 +118,7 @@
                 <plus />
               </button>
               <button
-                v-if="key != 0"
+                v-if="canRemove()"
                 type="button"
                 @click="removeItem(month, item.id)"
                 title="Remove Item"

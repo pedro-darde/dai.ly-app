@@ -1,7 +1,32 @@
+import { toHtmlDateTimeFormat } from "@/helpers/DateFormatter";
+import quickid from "@/helpers/quickid";
 import { planningService } from "@/services/PlanningService";
 
 const state = {
-  planning: null,
+  planning: {
+    year: new Date().getFullYear(),
+    title: "",
+    expectedAmount: 0,
+    planningStart: toHtmlDateTimeFormat(new Date()),
+    planningEnd: null,
+    planningMonths: [
+      {
+        id: quickid(),
+        expectedAmount: 0,
+        idMonth: new Date().getMonth(),
+        items: [
+          {
+            id: quickid(),
+            value: 0,
+            operation: "out",
+            date: toHtmlDateTimeFormat(new Date()),
+            paymentMethod: "debit",
+            description: ""
+          },
+        ],
+      },
+    ],
+  },
   months: [],
 };
 

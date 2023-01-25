@@ -26,31 +26,7 @@ export default {
     year: Number,
     currentPlanning: {
       type: Object,
-      required: false,
-      default: () => ({
-        year: new Date().getFullYear(),
-        planningTitle: "",
-        expectedAmount: 0,
-        planningStart: toHtmlDateTimeFormat(new Date()),
-        planningEnd: null,
-        planningMonths: [
-          {
-            id: quickid(),
-            expectedAmount: 0,
-            idMonth: new Date().getMonth(),
-            items: [
-              {
-                id: quickid(),
-                value: 0,
-                operation: "out",
-                date: toHtmlDateTimeFormat(new Date()),
-                paymentMethod: "debit",
-                description: ""
-              },
-            ],
-          },
-        ],
-      })
+      required: true,
     },
   },
   mixins: [planningCalculator],
@@ -71,6 +47,8 @@ export default {
         { name: "Debit", value: "debit" },
         { name: "Credit", value: "credit" },
       ],
+      monthsToRemove: [],
+      itemsToRemove: []
     };
   },
   methods: {
@@ -81,6 +59,7 @@ export default {
         idMonth: (new Date()).getMonth(),
         items: [
           {
+            id: quickid(),
             value: 0,
             operation: "out",
             date: toHtmlDateTimeFormat(new Date()),
@@ -90,6 +69,11 @@ export default {
       });
     },
     removeMonth(id) {
+      if (this.onEdit) {
+        const month = this.planning.planningMonths.find(item => item.id === id)
+        this.monthsToRemove.push(id)
+        this.itemsToRemove.push([...month.items.map(({id}) => id)])
+      }
       this.planning.planningMonths = this.planning.planningMonths.filter(
         (item) => item.id !== id
       );
@@ -105,6 +89,7 @@ export default {
       });
     },
     removeItem(month, idItem) {
+      if (this.onEdit) this.itemsToRemove.push(id)
       month.items = month.items.filter((item) => item.id !== idItem);
     },
     isLastMonth(id) {
@@ -116,12 +101,13 @@ export default {
       return index === month.items.length - 1;
     },
     getMonthOptions(month) {
-      const idsMonth = this.planning.planningMonths.filter(item => item.id !== month.id).map(month => month.idMonth)
-      return this.planning.planningMonths.filter(item => !idsMonth.includes(item.id))
+      const idsMonth = this.months.filter(item => item.id !== month.id).map(month => month.idMonth)
+      return this.months.filter(item => !idsMonth.includes(item.id))
     },
     async save() {
-      const payload = {
-        planningTitle: this.planning.planningTitle,
+      console.log(this.planning)
+      let payload = {
+        title: this.planning.title,
         planningStart: this.planning.planningStart,
         planningEnd: this.planning.planningEnd,
         year: this.year,
@@ -135,13 +121,51 @@ export default {
         }))
       }
 
-      await this.$store.dispatch("planning/createPlanning", payload)
+      let action = "createPlanning"
+      console.log(this.onEdit)
+      if (this.onEdit) {
+        action = "editPlanning"
+        payload.months = {... this.makeToUpAdd(this.planning.planningMonths)}
+      }
 
+      console.log(payload)
+
+      await this.$store.dispatch(`planning/${action}`, { ...payload, monthsToRemove: this.monthsToRemove, itemsToRemove: this.itemsToRemove })
+
+    },
+    isIdFromDB({ id }) {
+      return !isNaN(+id)
+    },
+    canRemove(key) {
+      if (this.onEdit) return true;
+      return key != 0
+    },
+    makeToUpAdd(array, onMonth = true) {
+      return array.reduce((acc, current) => {
+        const isOnDb = !isNaN(+current.id)
+        if (onMonth) {
+          console.log(current)
+          current.totalIn =  this.in(current)
+          current.totalOut = this.out(current)
+          current.spentOnDebit = this.spentOnDebitMonth(current)
+          current.spentOnCredit = this.spentOnCreditMonth(current)
+          current.items =  this.makeToUpAdd(current.items,  false)
+        }
+        if (isOnDb) {
+          acc['toUpdate'].push(current)
+        } else {
+          acc['toAdd'].push(current)
+        }
+        return acc
+      }, { toAdd: [], toUpdate: [] })
     }
   },
   computed: {
     months() {
       return this.$store.getters["planning/monthGetter"];
     },
+    onEdit() {
+      return this.planning.hasOwnProperty('id')
+    }
   },
 };

@@ -10,15 +10,17 @@ export default {
     data() {
         return {
             year: (new Date()).getFullYear(),
-            years: range((new Date()).getFullYear() - 10, (new Date()).getFullYear() + 20)
+            years: range((new Date()).getFullYear() - 10, (new Date()).getFullYear() + 20),
+            loading: false
         }
     },
     async created() {
+        this.loading = true
         await this.$store.dispatch("planning/changePlanningYear", this.year)
+        this.loading = false
     },
     watch: {
         year(value) {
-            console.log("aqui")
            this.$store.dispatch("planning/changePlanningYear", value)
         }
     },
