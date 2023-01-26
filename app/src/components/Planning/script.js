@@ -72,7 +72,7 @@ export default {
       if (this.onEdit) {
         const month = this.planning.planningMonths.find(item => item.id === id)
         this.monthsToRemove.push(id)
-        this.itemsToRemove.push([...month.items.map(({id}) => id)])
+        this.itemsToRemove.push([...month.items.map(({ id }) => id)])
       }
       this.planning.planningMonths = this.planning.planningMonths.filter(
         (item) => item.id !== id
@@ -105,7 +105,6 @@ export default {
       return this.months.filter(item => !idsMonth.includes(item.id))
     },
     async save() {
-      console.log(this.planning)
       let payload = {
         title: this.planning.title,
         planningStart: this.planning.planningStart,
@@ -122,14 +121,11 @@ export default {
       }
 
       let action = "createPlanning"
-      console.log(this.onEdit)
       if (this.onEdit) {
         action = "editPlanning"
-        payload.months = {... this.makeToUpAdd(this.planning.planningMonths)}
+        payload.months = this.makeToUpAdd(this.planning.planningMonths)
       }
-
       console.log(payload)
-
       await this.$store.dispatch(`planning/${action}`, { ...payload, monthsToRemove: this.monthsToRemove, itemsToRemove: this.itemsToRemove })
 
     },
@@ -143,19 +139,18 @@ export default {
     makeToUpAdd(array, onMonth = true) {
       return array.reduce((acc, current) => {
         const isOnDb = !isNaN(+current.id)
+        let copy= { ...current }
         if (onMonth) {
-          console.log(current)
-          current.totalIn =  this.in(current)
-          current.totalOut = this.out(current)
-          current.spentOnDebit = this.spentOnDebitMonth(current)
-          current.spentOnCredit = this.spentOnCreditMonth(current)
-          current.items =  this.makeToUpAdd(current.items,  false)
+          Object.assign(copy, {
+            totalIn: this.in(copy),
+            totalOut: this.out(copy),
+            spentOnDebit: this.spentOnDebitMonth(copy),
+            spentOnCredit: this.spentOnCreditMonth(copy),
+            items: this.makeToUpAdd(copy.items, false)
+          })
         }
-        if (isOnDb) {
-          acc['toUpdate'].push(current)
-        } else {
-          acc['toAdd'].push(current)
-        }
+        const key = isOnDb ? "toUpdate" : "toAdd"
+        acc[key].push(copy)
         return acc
       }, { toAdd: [], toUpdate: [] })
     }

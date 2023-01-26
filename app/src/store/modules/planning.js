@@ -1,5 +1,6 @@
 import { toHtmlDateTimeFormat } from "@/helpers/DateFormatter";
 import quickid from "@/helpers/quickid";
+import { Toast } from "@/lib/sweetalert";
 import { planningService } from "@/services/PlanningService";
 
 const state = {
@@ -31,23 +32,28 @@ const state = {
 };
 
 const actions = {
- async createPlanning({ commit }, payload) {
+  async createPlanning({ commit }, payload) {
+    let message = 'Planning Started'
+    let icon = 'success'
     try {
       await planningService.save(payload)
-      commit("PLANNING_CREATED")
     } catch (e) {
       console.log(e)
+      icon = "error"
+      message = e.response?.data?.message ?? "Internal Server Error"
+    } finally {
+      commit("PLANNING_CREATED", { message, icon })
     }
   },
   async changePlanningYear({ commit }, year) {
     try {
       const planning = await planningService.get(year);
-      commit("SET_PLANNING", planning);
+      if (planning) commit("SET_PLANNING", planning);
     } catch (e) {
       console.log(e);
     }
   },
-  saveMonths({ commit }, months) {},
+  saveMonths({ commit }, months) { },
   async getMonths({ commit }) {
     try {
       const months = await planningService.getMonths();
@@ -65,15 +71,21 @@ const mutations = {
   SET_MONTHS(state, months) {
     state.months = months;
   },
+  PLANNING_CREATED(_, { icon, message }) {
+    Toast.fire({
+      icon,
+      text: message,
+    });
+  }
 };
 
 const getters = {
-    monthGetter(state) {
-        return state.months
-    },
-    planningGetter(state) {
-      return state.planning
-    }
+  monthGetter(state) {
+    return state.months
+  },
+  planningGetter(state) {
+    return state.planning
+  }
 }
 
 export default {
