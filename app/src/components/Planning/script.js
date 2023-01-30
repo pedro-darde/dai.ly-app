@@ -125,7 +125,6 @@ export default {
         action = "editPlanning"
         payload.months = this.makeToUpAdd(this.planning.planningMonths)
       }
-      console.log(payload)
       await this.$store.dispatch(`planning/${action}`, { ...payload, monthsToRemove: this.monthsToRemove, itemsToRemove: this.itemsToRemove })
 
     },
@@ -156,6 +155,9 @@ export default {
     }
   },
   computed: {
+    itemTypes() {
+      return this.$store.getters['planning/itemTypesGetter']
+    },
     months() {
       return this.$store.getters["planning/monthGetter"];
     },

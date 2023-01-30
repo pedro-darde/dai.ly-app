@@ -1,6 +1,7 @@
 import { toHtmlDateTimeFormat } from "@/helpers/DateFormatter";
 import quickid from "@/helpers/quickid";
 import { Toast } from "@/lib/sweetalert";
+import { itemTypeService } from "@/services/ItemTypeService";
 import { planningService } from "@/services/PlanningService";
 
 const state = {
@@ -22,13 +23,15 @@ const state = {
             operation: "out",
             date: toHtmlDateTimeFormat(new Date()),
             paymentMethod: "debit",
-            description: ""
+            description: "",
+            idType: null
           },
         ],
       },
     ],
   },
   months: [],
+  itemTypes: []
 };
 
 const actions = {
@@ -62,6 +65,14 @@ const actions = {
       console.error(e);
     }
   },
+  async getItemTypes({ commit }) {
+    try {
+      const types = await itemTypeService.getTypes()
+      commit("SET_TYPES", types)
+    } catch (e) {
+      console.error(e)
+    }
+  }
 };
 
 const mutations = {
@@ -76,6 +87,9 @@ const mutations = {
       icon,
       text: message,
     });
+  },
+  SET_TYPES(state, value) {
+    state.itemTypes = value
   }
 };
 
@@ -85,6 +99,9 @@ const getters = {
   },
   planningGetter(state) {
     return state.planning
+  },
+  itemTypesGetter(state) {
+    return state.itemTypes
   }
 }
 

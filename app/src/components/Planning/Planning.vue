@@ -83,11 +83,12 @@
           <div
             :class="[
               'grid  md:gap-3 mb-2 items-end',
-              item.operation == 'out' ? 'md:grid-cols-6' : 'md:grid-cols-5',
+              item.operation == 'out' ? 'md:grid-cols-7' : 'md:grid-cols-6',
             ]"
           >
             <MoneyInput label="Value" v-model="item.value" :required="true"/>
             <Input label="Description" type="text" v-model="item.description"  :required="true"/>
+            <Select label="Type" v-model="item.idType" :required="true" optionValue="id"  optionText="description" :options="itemTypes"/>
             <Select
               label="Operation"
               type="text"

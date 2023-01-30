@@ -2,9 +2,10 @@ import planningCalculator from "@/mixins/planningCalculator";
 import {popupVisibility} from "@/mixins/popup";
 import { mapGetters } from "vuex";
 import RawPopup from '../popup/RawPopup.vue'
+import Details from '../ItemType/Details/Details.vue'
 export default {
     mixins: [popupVisibility, planningCalculator],
-    components: {RawPopup},
+    components: {RawPopup, Details},
     props: {
         planningMonths: {
             required: true,
