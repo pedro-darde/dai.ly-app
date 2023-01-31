@@ -23,8 +23,8 @@
       <div class="grid md:grid-cols-4 md:gap-3 mb-2">
         <Input label="Planning Title" type="text" v-model="planning.title" :required="true"/>
         <MoneyInput label="Expected Amount" v-model="planning.expectedAmount" :required="true"/>
-        <Input label="Start At" type="date" v-model="planning.planningStart" :required="true"/>
-        <Input label="End At" type="date" v-model="planning.planningEnd" />
+        <Input label="Start At" type="date" v-model="planning.startAt" :required="true"/>
+        <Input label="End At" type="date" v-model="planning.endAt" :required="false" />
       </div>
       <div class="flex flex-row items-center ml-4 mb-2">
         <a class="text-black-700 mr-1">
@@ -98,7 +98,6 @@
               :options="operations"
               :required="true"
             />
-            <Input label="Date" type="date" v-model="item.date"  :required="true"/>
             <Select
               v-model="item.paymentMethod"
               label="Payment Method"
@@ -108,6 +107,8 @@
               v-if="item.operation == 'out'"
               :required="item.operation == 'out'"
             />
+            <Input label="Date" type="date" v-model="item.date"  :required="true"/>
+     
             <div class="flex flex-row">
               <button
                 v-if="isLastItem(month, item.id)"

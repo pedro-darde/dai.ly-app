@@ -107,8 +107,8 @@ export default {
     async save() {
       let payload = {
         title: this.planning.title,
-        planningStart: this.planning.planningStart,
-        planningEnd: this.planning.planningEnd,
+        startAt: this.planning.startAt,
+        endAt: this.planning.endAt,
         year: this.year,
         expectedAmount: this.planning.expectedAmount,
         months: this.planning.planningMonths.map(month => ({

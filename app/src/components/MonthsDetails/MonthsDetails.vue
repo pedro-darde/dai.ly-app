@@ -1,4 +1,5 @@
 <template>
+<Transition name="fade">
   <RawPopup v-if="visible" @disband="disband">
     <div class="mb-5 p-2" v-for="month in monthsGroupped">
       <div class="d-flex flex-col">
@@ -19,18 +20,7 @@
               </p>
             </div>
           </div>
-          <div class="bg-white p-5 rounded border-l-8">
-            <h3 class="text-xl font-bold">In</h3>
-            <p class="text-xl font-bold text-green-300">
-              {{ month.In | toMonetary }}
-            </p>
-          </div>
-          <div class="bg-white p-5 rounded border-l-8">
-            <h3 class="text-xl font-bold">Out</h3>
-            <p class="text-xl font-bold text-red-400">
-              {{ month.Out | toMonetary }}
-            </p>
-          </div>
+          
           <div class="bg-white p-5 rounded border-l-8">
             <h3 class="text-xl font-bold">Spent On Credit</h3>
             <p class="text-xl font-bold text-red-400">
@@ -56,15 +46,18 @@
               {{ (month.balance - month.expectedAmount) | toMonetary }}
             </p>
           </div>
+          <button type="button" @click="showItemDetails = !showItemDetails" class="rounded-2xl p-5 text-blue-900 ml-1 text-2xl" title="See Details"> + </button>
         </div>
-
-          <Details
-            v-if="month.typesSpent && month.typesSpent.length"
-            :details="month.typesSpent"
-          />
+          <Transition name="fade">
+            <Details
+              v-if="showItemDetails"
+              :details="month.typesSpent"
+            />
+        </Transition>
       </div>
     </div>
   </RawPopup>
+</Transition>
 </template>
 
 <script src="./script.js"></script>
@@ -73,5 +66,11 @@
 <style scoped lang="scss">
   .MonthDetails {
     text-align: center !important;
+  }
+  .fade-enter-active, .fade-leave-active {
+  transition: opacity .3s;
+  }
+  .fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
+    opacity: 0;
   }
   </style>

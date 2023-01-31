@@ -1,3 +1,4 @@
+import { DATE_INPUT_FORMAT } from "@/constants/Formats";
 import { toHtmlDateTimeFormat } from "@/helpers/DateFormatter";
 import quickid from "@/helpers/quickid";
 import { Toast } from "@/lib/sweetalert";
@@ -9,7 +10,7 @@ const state = {
     year: new Date().getFullYear(),
     title: "",
     expectedAmount: 0,
-    planningStart: toHtmlDateTimeFormat(new Date()),
+    startAt: toHtmlDateTimeFormat(new Date()),
     planningEnd: null,
     planningMonths: [
       {
@@ -50,10 +51,32 @@ const actions = {
   },
   async changePlanningYear({ commit }, year) {
     try {
-      const planning = await planningService.get(year);
+      let planning = await planningService.get(year);
+
+      planning.startAt = toHtmlDateTimeFormat(planning.startAt, DATE_INPUT_FORMAT)
+      
+      console.log(planning)
+      for (const month of planning.planningMonths) {
+          for (const item of month.items) {
+            item.date = toHtmlDateTimeFormat(item.date, DATE_INPUT_FORMAT)
+          }
+      }
+
       if (planning) commit("SET_PLANNING", planning);
     } catch (e) {
       console.log(e);
+    }
+  },
+  async editPlanning({ commit }, payload) {
+    let message = 'Planning Edited Succesfully'
+    let icon = 'success'
+    try {
+      await planningService.edit(payload.year, payload)
+    } catch (e) {
+      message = e.response?.data?.message ?? "Internal Server Error"
+      icon = 'error'
+    } finally {
+      commit('PLANNING_CREATED', { icon, message })
     }
   },
   saveMonths({ commit }, months) { },
@@ -63,7 +86,7 @@ const actions = {
       commit("SET_MONTHS", months);
     } catch (e) {
       console.error(e);
-    }
+    } 
   },
   async getItemTypes({ commit }) {
     try {

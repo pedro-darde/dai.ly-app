@@ -12,6 +12,11 @@ export default {
             type: Array
         }
     },
+    data() {
+        return {
+            showItemDetails: false
+        }
+    },
     computed: {
         ...mapGetters({
             monthsDB: "planning/monthGetter"

@@ -5,12 +5,16 @@ export default {
             type: Array
         }
     },
+
     computed: {
-        inDetails() {
-            return this.details.filter(item => item.operation === 'in')
+        totalIn() {
+            return this.details.filter(item => item.operation === 'in').reduce((acc, item) => acc += item.value, 0)
         },
-        outDetails() {
-            return this.details.filter(item => item.operation === 'out')
+        totalOut() {
+            return this.details.filter(item => item.operation === 'out').reduce((acc, item) => acc += item.value, 0)
         },
+        balance() {
+            return this.totalIn - this.totalOut
+        }
     }
 }
