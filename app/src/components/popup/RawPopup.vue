@@ -90,7 +90,7 @@ export default {
   top: 0;
   width: 100vw;
   min-height: 100vh;
-  z-index: 9999;
+  z-index: 10;
   overflow: auto;
 
   background: transparent;

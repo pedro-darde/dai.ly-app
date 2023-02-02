@@ -37,6 +37,7 @@ export default {
         flag: "",
         validateDate: "",
         creditLimit: 0,
+        type: "debit&credit"
       },
     };
   },
@@ -53,6 +54,7 @@ export default {
       return getMatchedByCardNumber(this.card.number?.replace(/\s/g, ''))
     },
     save() {
+      this.card.flag = getMatchedByCardNumber(this.card.number?.replace(/\s/g, ''))
       this.$emit("save", this.card)
     }
   },

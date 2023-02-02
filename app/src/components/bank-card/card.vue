@@ -1,7 +1,7 @@
 <template>
   <RawPopup v-if="visible" @disband="disband">
     <div class="flex-1 flex gap-8 mb:flex-col-reverse bg-gray-400 p-5">
-      <form class="flex-1 max-w-[500px] flex flex-col gap-5 p-5">
+      <form class="flex-1 max-w-[500px] flex flex-col gap-5 p-5" @submit.prevent="save">
         <Input
           label="Number"
           v-model="card.number"

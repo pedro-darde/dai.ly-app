@@ -7,6 +7,8 @@ import { mapGetters } from "vuex";
 import { usePopup } from "@/mixins/popup";
 import BankCard from '../bank-card/card.vue'
 import CC from '../icons/cc.vue'
+import { ccService } from "@/services/CCService";
+import { Toast } from "@/lib/sweetalert";
 export default {
     mixins: [usePopup("bankCard")],
     components: { NavbarComponent, HeaderComponent, Select, Planning, BankCard, CC },
@@ -29,6 +31,25 @@ export default {
         handleCC(value) {
             this.createCC(value);
         },
+        async saveCC(payload) {
+            let close = true
+            let message = 'Card created successfully'
+            let icon = 'success'
+            try {
+                await ccService.save(payload)
+            } catch (e) {
+                console.log("nao deu certo")
+                close = false;
+                icon = 'error'
+                message = e.response?.data?.message ?? "Internal Server Error"
+            } finally {
+                Toast.fire({
+                    icon,
+                    text: message,
+                });
+                if(close) this.handleCC(close)
+            }
+        }
     },
     watch: {
         year(value) {
