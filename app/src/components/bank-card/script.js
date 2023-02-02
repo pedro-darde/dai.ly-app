@@ -43,12 +43,10 @@ export default {
   computed: {
     ccIcon() {
       const match = getMatchedByCardNumber(this.card.number?.replace(/\s/g, ''));
-      console.log(CC_BRAND_ICONS[match])
       return CC_BRAND_ICONS[match];
     },
     ccColor() {
       const match = getMatchedByCardNumber(this.card.number?.replace(/\s/g, ''));
-      console.log(match)
       return CC_COLORS[match]
     },
     ccBrand() {

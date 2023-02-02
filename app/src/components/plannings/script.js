@@ -1,14 +1,15 @@
 import HeaderComponent from "../header/Header.vue";
 import NavbarComponent from "../nav/Navbar.vue";
-import Select from  "../select/Select.vue"
+import Select from "../select/Select.vue"
 import Planning from '../Planning/Planning.vue'
 import { range } from 'lodash'
 import { mapGetters } from "vuex";
 import { usePopup } from "@/mixins/popup";
 import BankCard from '../bank-card/card.vue'
+import CC from '../icons/cc.vue'
 export default {
     mixins: [usePopup("bankCard")],
-    components: { NavbarComponent, HeaderComponent, Select, Planning, BankCard},
+    components: { NavbarComponent, HeaderComponent, Select, Planning, BankCard, CC },
     data() {
         return {
             year: (new Date()).getFullYear(),
@@ -31,12 +32,12 @@ export default {
     },
     watch: {
         year(value) {
-           this.$store.dispatch("planning/changePlanningYear", value)
+            this.$store.dispatch("planning/changePlanningYear", value)
         }
     },
     computed: {
         ...mapGetters({
-            "planning": "planning/planningGetter" 
+            "planning": "planning/planningGetter"
         })
     }
 
