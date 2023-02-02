@@ -3,10 +3,12 @@ import NavbarComponent from "../nav/Navbar.vue";
 import Select from  "../select/Select.vue"
 import Planning from '../Planning/Planning.vue'
 import { range } from 'lodash'
-import { mapGetters, mapState } from "vuex";
-
+import { mapGetters } from "vuex";
+import { usePopup } from "@/mixins/popup";
+import BankCard from '../bank-card/card.vue'
 export default {
-    components: { NavbarComponent, HeaderComponent, Select, Planning },
+    mixins: [usePopup("bankCard")],
+    components: { NavbarComponent, HeaderComponent, Select, Planning, BankCard},
     data() {
         return {
             year: (new Date()).getFullYear(),
@@ -18,6 +20,14 @@ export default {
         this.loading = true
         await this.$store.dispatch("planning/changePlanningYear", this.year)
         this.loading = false
+    },
+    methods: {
+        createCC() {
+            this.toggleBankCard(!this.popupBankCardVisible);
+        },
+        handleCC(value) {
+            this.createCC(value);
+        },
     },
     watch: {
         year(value) {

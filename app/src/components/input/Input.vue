@@ -14,6 +14,7 @@
       :placeholder="placeholder"
       :required="required"
       v-bind="extraProps"
+      v-mask="mask"
     />
   </div>
 </template>

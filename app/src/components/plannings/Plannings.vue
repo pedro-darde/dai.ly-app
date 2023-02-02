@@ -19,11 +19,12 @@
             >
           </template>
         </Select>
+        <button @click="createCC" class="rounded bg-blue-700 text-white p-2 text-xl"> + Add Card </button>
       </div>
-
       <div class="flex flex-row justify-center m-2.5">
         <Planning  v-if="!loading" :year="year" :currentPlanning="planning"/>
       </div>
+      <BankCard v-model="popupBankCardVisible" @isVisible="handleCC()"/>
     </main>
   </div>
 </template>

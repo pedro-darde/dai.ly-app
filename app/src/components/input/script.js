@@ -33,6 +33,10 @@ export default {
       required: false,
       default: () => ({}),
     },
+    mask: {
+      type: String,
+      required: false
+    }
   },
   data() {
     return {
