@@ -37,7 +37,8 @@ export default {
         flag: "",
         validateDate: "",
         creditLimit: 0,
-        type: "debit&credit"
+        type: "debit&credit",
+        cvv: ""
       },
     };
   },

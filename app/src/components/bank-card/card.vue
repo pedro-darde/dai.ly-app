@@ -3,12 +3,16 @@
     <div class="flex-1 flex gap-8 mb:flex-col-reverse bg-gray-400 p-5">
       <form class="flex-1 max-w-[500px] flex flex-col gap-5 p-5" @submit.prevent="save">
         <Input
+          label="Card name"
+          v-model="card.cardName"
+          name="cardName"
+        />
+        <Input
           label="Number"
           v-model="card.number"
           mask="#### #### #### ####"
           name="cardNumber"
         />
-
         <Input
           v-model="card.ownerName"
           label="OWNER NAME"
@@ -18,6 +22,13 @@
           mask="##/##"
           name="expiration"
           label="EXPIRATION"
+        />
+
+        <Input
+          v-model="card.cvv"
+          mask="###"
+          name="cvv"
+          label="CVV"
         />
 
         <button

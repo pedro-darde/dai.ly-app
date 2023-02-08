@@ -21,7 +21,7 @@
         </div>
       </div>
       <div class="flex flex-row justify-center m-2.5">
-        <Planning v-if="!loading" :year="year" :currentPlanning="planning" />
+        <Planning v-if="!loading" :year="year"  />
       </div>
       <BankCard v-model="popupBankCardVisible" @isVisible="handleCC()"  @save="saveCC"/>
     </main>

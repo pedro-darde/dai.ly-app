@@ -2,7 +2,8 @@
   <div
     class="bg-gray-100 container w-full p-5 rounded border-l-8 flex flex-col items-start"
   >
-  <form class="m-2 w-full max-h-[650px] overflow-auto" @submit.prevent="save">
+ 
+  <form class="m-2 w-full " @submit.prevent="save">
     <div class="flex flex-row items-center mb-2 text-center justify-between w-full">
       <div class="flex flex-row items-center">
         <a class="text-green-700 mr-1 text">
@@ -12,11 +13,12 @@
       </div>
       <button
       type="submit"
-          class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-green-400 rounded-lg hover:bg-green-700 focus:ring-4 focus:outline-none focus:ring-green-300"
+          class="px-3 py-2 text-sm font-medium text-center text-white bg-green-400 rounded-lg hover:bg-green-700 focus:ring-4 focus:outline-none focus:ring-green-300"
       >
         Save
       </button>
     </div>
+    <div class="max-h-[650px] overflow-auto">
     <div class="bg-neutral-300 rounded border-l-8 border-white  p-3 mb-5 text-left">
       <PlanningPreview :planning="planning" />
     </div>
@@ -83,7 +85,7 @@
           <div
             :class="[
               'grid  md:gap-3 mb-2 items-end',
-              item.operation == 'out' ? 'md:grid-cols-7' : 'md:grid-cols-6',
+              item.operation == 'out' ? 'md:grid-cols-8' : 'md:grid-cols-7',
             ]"
           >
             <MoneyInput label="Value" v-model="item.value" :required="true"/>
@@ -106,6 +108,14 @@
               :options="paymentMethods"
               v-if="item.operation == 'out'"
               :required="item.operation == 'out'"
+            />
+            <Select
+              v-model="item.idCard"
+              label="Card"
+              optionText="cardName"
+              optionValue="id"
+              :options="cards"
+              :required="false"
             />
             <Input label="Date" type="date" v-model="item.date"  :required="true"/>
      
@@ -131,6 +141,7 @@
             </div>
           </div>
         </div>
+      </div>
       </div>
     </form>
   </div>

@@ -1,3 +1,3 @@
 import { BaseService } from "./BaseService";
 export class CCService extends BaseService { }
-export const ccService = new CCService('cc')
+export const ccService = new CCService('card')

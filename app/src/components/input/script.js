@@ -48,7 +48,7 @@ export default {
       this.$emit("input", value);
     },
     value(value) {
-      if (!value) this.text = value;
+     this.text = value;
     },
   },
 };

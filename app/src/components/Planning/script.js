@@ -10,6 +10,7 @@ import char from "../icons/char.vue";
 import remove from "../icons/remove.vue";
 import PlanningPreview from '../PlanningPreview/PlanningPreview.vue'
 import planningCalculator from "@/mixins/planningCalculator";
+import SwalMixin from "@/mixins/SwalMixin";
 export default {
   components: {
     money,
@@ -24,15 +25,10 @@ export default {
   },
   props: {
     year: Number,
-    currentPlanning: {
-      type: Object,
-      required: true,
-    },
   },
-  mixins: [planningCalculator],
+  mixins: [planningCalculator, SwalMixin],
   data() {
     return {
-      planning: this.currentPlanning,
       operations: [
         {
           name: "In (+)",
@@ -69,10 +65,18 @@ export default {
       });
     },
     removeMonth(id) {
+
+      if (this.planning.planningMonths?.length === 1) {
+        this.toastError("Keep at least one month to the planning")
+        return
+      }
+
       if (this.onEdit) {
         const month = this.planning.planningMonths.find(item => item.id === id)
-        this.monthsToRemove.push(id)
-        this.itemsToRemove.push([...month.items.map(({ id }) => id)])
+        if (isIdFromDB(month.id)) {
+          this.monthsToRemove.push(id)
+          this.itemsToRemove.push([...month.items.filter(isIdFromDB).map(({ id }) => id)])
+        }
       }
       this.planning.planningMonths = this.planning.planningMonths.filter(
         (item) => item.id !== id
@@ -89,7 +93,15 @@ export default {
       });
     },
     removeItem(month, idItem) {
-      if (this.onEdit) this.itemsToRemove.push(id)
+      if (month.items?.length === 1) {
+        this.toastError("Keep at least one item to your month.")
+        return
+      }
+
+      const item = month.items.find(item => item.id === idItem)
+      if (this.onEdit && this.isIdFromDB(item.id)) {
+        this.itemsToRemove.push(id)
+      }
       month.items = month.items.filter((item) => item.id !== idItem);
     },
     isLastMonth(id) {
@@ -161,8 +173,27 @@ export default {
     months() {
       return this.$store.getters["planning/monthGetter"];
     },
+    cards() {
+      return this.$store.getters['planning/cardsGetter']
+    },
     onEdit() {
       return this.planning.hasOwnProperty('id')
+    },
+    planning: {
+      set(value) {
+        this.$store.dispatch("planning/applyCurrentPlanning", value)
+      },
+      get() {
+        return this.$store.getters["planning/planningGetter"]
+    },
     }
   },
+  watch: {
+    "planning":{
+      deep: true,
+      handler(current) {
+       this.planning = current
+      }
+    }
+  }
 };

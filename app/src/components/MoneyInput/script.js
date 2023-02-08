@@ -1,5 +1,6 @@
 import { useCurrencyInput } from 'vue-currency-input'
 import quickid from '@/helpers/quickid'
+import { watch } from 'vue'
 export default {
     name: 'CurrencyInput',
     props: {
@@ -36,7 +37,7 @@ export default {
         },
     },
     setup(props) {
-        const { inputRef } = useCurrencyInput({
+        const { inputRef, setValue, formattedValue } = useCurrencyInput({
             "locale": "pt-BR",
             "currency": "BRL",
             "currencyDisplay": "hidden",
@@ -49,6 +50,13 @@ export default {
             "accountingSign": false
         })
 
-        return { inputRef }
+        watch(
+            () => +props.value, 
+            (value) => {
+              setValue(value)
+            }
+          )
+
+        return { inputRef, formattedValue }
     }
 }

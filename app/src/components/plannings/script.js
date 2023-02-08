@@ -38,7 +38,6 @@ export default {
             try {
                 await ccService.save(payload)
             } catch (e) {
-                console.log("nao deu certo")
                 close = false;
                 icon = 'error'
                 message = e.response?.data?.message ?? "Internal Server Error"
@@ -47,7 +46,7 @@ export default {
                     icon,
                     text: message,
                 });
-                if(close) this.handleCC(close)
+                if (close) this.handleCC(close)
             }
         }
     },

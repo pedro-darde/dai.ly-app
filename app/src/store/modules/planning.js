@@ -4,35 +4,38 @@ import quickid from "@/helpers/quickid";
 import { Toast } from "@/lib/sweetalert";
 import { itemTypeService } from "@/services/ItemTypeService";
 import { planningService } from "@/services/PlanningService";
-
+import { ccService } from '@/services/CCService'
+const DEFAULT_PLANNING = {
+  year: new Date().getFullYear(),
+  title: "",
+  expectedAmount: 0,
+  startAt: new Date(),
+  planningEnd: null,
+  planningMonths: [
+    {
+      id: quickid(),
+      expectedAmount: 0,
+      idMonth: new Date().getMonth(),
+      items: [
+        {
+          id: quickid(),
+          value: 0,
+          operation: "out",
+          date: new Date(),
+          paymentMethod: "debit",
+          description: "",
+          idType: null,
+          idCard: null
+        },
+      ],
+    },
+  ],
+}
 const state = {
-  planning: {
-    year: new Date().getFullYear(),
-    title: "",
-    expectedAmount: 0,
-    startAt: toHtmlDateTimeFormat(new Date()),
-    planningEnd: null,
-    planningMonths: [
-      {
-        id: quickid(),
-        expectedAmount: 0,
-        idMonth: new Date().getMonth(),
-        items: [
-          {
-            id: quickid(),
-            value: 0,
-            operation: "out",
-            date: toHtmlDateTimeFormat(new Date()),
-            paymentMethod: "debit",
-            description: "",
-            idType: null
-          },
-        ],
-      },
-    ],
-  },
+  planning: DEFAULT_PLANNING,
   months: [],
-  itemTypes: []
+  itemTypes: [],
+  cards: []
 };
 
 const actions = {
@@ -49,23 +52,28 @@ const actions = {
       commit("PLANNING_CREATED", { message, icon })
     }
   },
-  async changePlanningYear({ commit }, year) {
+  async changePlanningYear({ commit, state }, year) {
     try {
-      let planning = await planningService.get(year);
-
+      let planning = await planningService.get(year) || DEFAULT_PLANNING;
       planning.startAt = toHtmlDateTimeFormat(planning.startAt, DATE_INPUT_FORMAT)
       
-      console.log(planning)
       for (const month of planning.planningMonths) {
           for (const item of month.items) {
             item.date = toHtmlDateTimeFormat(item.date, DATE_INPUT_FORMAT)
           }
       }
 
-      if (planning) commit("SET_PLANNING", planning);
+      if (!planning.planningMonths?.length) {
+        planning.planningMonths = state.planning.planningMonths
+      }
+
+      commit("SET_PLANNING", planning);
     } catch (e) {
       console.log(e);
     }
+  },
+  applyCurrentPlanning({ commit }, planning) {
+    commit("SET_PLANNING", planning)
   },
   async editPlanning({ commit }, payload) {
     let message = 'Planning Edited Succesfully'
@@ -95,6 +103,14 @@ const actions = {
     } catch (e) {
       console.error(e)
     }
+  },
+  async getCards({ commit }) {
+    try {
+      const cards = await ccService.list()
+      commit("SET_CARDS", cards)
+    } catch (e) {
+      console.error(e)
+    }
   }
 };
 
@@ -113,6 +129,9 @@ const mutations = {
   },
   SET_TYPES(state, value) {
     state.itemTypes = value
+  },
+  SET_CARDS(state, value) {
+    state.cards = value
   }
 };
 
@@ -125,6 +144,9 @@ const getters = {
   },
   itemTypesGetter(state) {
     return state.itemTypes
+  },
+  cardsGetter(state) {
+    return state.cards
   }
 }
 

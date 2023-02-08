@@ -15,6 +15,7 @@
       :required="required"
       v-bind="extraProps"
       v-mask="mask"
+      :value="value"
     />
   </div>
 </template>
