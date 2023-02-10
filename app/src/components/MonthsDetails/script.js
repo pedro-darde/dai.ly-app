@@ -3,6 +3,7 @@ import {popupVisibility} from "@/mixins/popup";
 import { mapGetters } from "vuex";
 import RawPopup from '../popup/RawPopup.vue'
 import Details from '../ItemType/Details/Details.vue'
+import { groupBy } from "lodash";
 export default {
     mixins: [popupVisibility, planningCalculator],
     components: {RawPopup, Details},
@@ -16,6 +17,14 @@ export default {
         return {
             showItemDetails: false
         }
+    },
+    methods: {
+        handleMonthDetails(month) {
+            if (!month.typesSpent) {
+                return;
+            }
+            this.showItemDetails = !this.showItemDetails
+        },
     },
     computed: {
         ...mapGetters({

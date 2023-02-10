@@ -46,7 +46,7 @@
               {{ (month.balance - month.expectedAmount) | toMonetary }}
             </p>
           </div>
-          <button type="button" @click="showItemDetails = !showItemDetails" class="rounded-2xl p-5 text-blue-900 ml-1 text-2xl" title="See Details"> + </button>
+          <button v-if="!!month.typesSpent" type="button" @click="handleMonthDetails(month)" class="rounded-2xl p-5 text-blue-900 ml-1 text-2xl" title="See Details"> + </button>
         </div>
           <Transition name="fade">
             <Details

@@ -6,6 +6,7 @@ import { itemTypeService } from "@/services/ItemTypeService";
 import { planningService } from "@/services/PlanningService";
 import { ccService } from '@/services/CCService'
 const DEFAULT_PLANNING = {
+  id: null,
   year: new Date().getFullYear(),
   title: "",
   expectedAmount: 0,
@@ -25,7 +26,8 @@ const DEFAULT_PLANNING = {
           paymentMethod: "debit",
           description: "",
           idType: null,
-          idCard: null
+          idCard: null,
+          idPlanningMonth: null
         },
       ],
     },
@@ -111,11 +113,14 @@ const actions = {
     } catch (e) {
       console.error(e)
     }
+  },
+  applyDefaultPlanning({ commit }) {
+      commit("SET_PLANNING")
   }
 };
 
 const mutations = {
-  SET_PLANNING(state, planning) {
+  SET_PLANNING(state, planning = DEFAULT_PLANNING) {
     state.planning = planning;
   },
   SET_MONTHS(state, months) {

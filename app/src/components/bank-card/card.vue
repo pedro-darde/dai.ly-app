@@ -1,6 +1,13 @@
 <template>
   <RawPopup v-if="visible" @disband="disband">
-    <div class="flex-1 flex gap-8 mb:flex-col-reverse bg-gray-400 p-5">
+    <ul class="flex flex-wrap text-sm font-medium text-center text-gray-500 border-b border-gray-200 dark:border-gray-700 dark:text-gray-400 p-2">
+    <li class="mr-2" v-for="tab in tabs" :key="tab.value">
+        <a @click="handleChangeTab(tab)" href="#" aria-current="page" :class='["inline-block p-4 text-blue-600 rounded-t-lg", activeTab == tab.value ? "bg-gray-300 group-active": "bg-gray-50"]'>
+          {{  tab.name }}
+        </a>
+    </li>
+    </ul>
+    <div class="flex-1 flex gap-8 mb:flex-col-reverse bg-gray-400 p-5" v-if="activeTab == 0">
       <form class="flex-1 max-w-[500px] flex flex-col gap-5 p-5" @submit.prevent="save">
         <Input
           label="Card name"
@@ -147,6 +154,9 @@
         </div>
       </div>
     </div>
+    <div v-if="activeTab == 1">
+     a b c d e f h
+    </div> 
   </RawPopup>
 </template>
 <script src="./script.js"></script>

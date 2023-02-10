@@ -40,7 +40,23 @@ export default {
         type: "debit&credit",
         cvv: ""
       },
+      tabs: [
+        {
+          name: "Create Card",
+          value: 0
+        },
+        {
+          name: "My Cards",
+          value: 1
+        }
+      ],
+      activeTab: 0
     };
+  },
+  methods: {
+    handleChangeTab({ value }) {
+        this.activeTab = value
+    }
   },
   computed: {
     ccIcon() {

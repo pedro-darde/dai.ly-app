@@ -11,6 +11,8 @@ import remove from "../icons/remove.vue";
 import PlanningPreview from '../PlanningPreview/PlanningPreview.vue'
 import planningCalculator from "@/mixins/planningCalculator";
 import SwalMixin from "@/mixins/SwalMixin";
+import { mapState } from "vuex";
+import { cloneDeep, debounce } from "lodash";
 export default {
   components: {
     money,
@@ -44,7 +46,7 @@ export default {
         { name: "Credit", value: "credit" },
       ],
       monthsToRemove: [],
-      itemsToRemove: []
+      itemsToRemove: [],
     };
   },
   methods: {
@@ -73,7 +75,7 @@ export default {
 
       if (this.onEdit) {
         const month = this.planning.planningMonths.find(item => item.id === id)
-        if (isIdFromDB(month.id)) {
+        if (this.isIdFromDB(month)) {
           this.monthsToRemove.push(id)
           this.itemsToRemove.push([...month.items.filter(isIdFromDB).map(({ id }) => id)])
         }
@@ -84,12 +86,16 @@ export default {
     },
     addItem(month) {
       month.items.push({
+        idPlanningMonth: month.id,
         id: quickid(),
         value: 0,
         operation: "out",
         date: toHtmlDateTimeFormat(new Date()),
         paymentMethod: "debit",
-        description: ""
+        description: "",
+        idPlanningMonth: month.id,
+        idType: null,
+        idCard: null,
       });
     },
     removeItem(month, idItem) {
@@ -99,8 +105,9 @@ export default {
       }
 
       const item = month.items.find(item => item.id === idItem)
-      if (this.onEdit && this.isIdFromDB(item.id)) {
-        this.itemsToRemove.push(id)
+      
+      if (this.onEdit && this.isIdFromDB(item)) {
+        this.itemsToRemove.push(item.id)
       }
       month.items = month.items.filter((item) => item.id !== idItem);
     },
@@ -118,6 +125,7 @@ export default {
     },
     async save() {
       let payload = {
+        id: this.planning.id,
         title: this.planning.title,
         startAt: this.planning.startAt,
         endAt: this.planning.endAt,
@@ -148,9 +156,9 @@ export default {
       return key != 0
     },
     makeToUpAdd(array, onMonth = true) {
-      return array.reduce((acc, current) => {
+      return array.reduce((acc, current, index) => {
         const isOnDb = !isNaN(+current.id)
-        let copy= { ...current }
+        let copy = { ...current }
         if (onMonth) {
           Object.assign(copy, {
             totalIn: this.in(copy),
@@ -181,19 +189,22 @@ export default {
     },
     planning: {
       set(value) {
-        this.$store.dispatch("planning/applyCurrentPlanning", value)
+        this.$store.dispatch('planning/applyCurrentPlanning',  value);
       },
       get() {
-        return this.$store.getters["planning/planningGetter"]
-    },
-    }
-  },
-  watch: {
-    "planning":{
-      deep: true,
-      handler(current) {
-       this.planning = current
+        return this.$store.state.planning.planning
       }
+    },
+  },
+  unmounted() {
+    this.$store.dispatch("planning/applyDefaultPlanning")
+  },
+  watch:{
+    planning: {
+      handler(value) {
+        this.planning = value
+      },
+      deep: true
     }
   }
 };
