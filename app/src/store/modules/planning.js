@@ -109,6 +109,7 @@ const actions = {
   async getCards({ commit }) {
     try {
       const cards = await ccService.list()
+      cards.forEach(card => card.showTransactions = false)
       commit("SET_CARDS", cards)
     } catch (e) {
       console.error(e)

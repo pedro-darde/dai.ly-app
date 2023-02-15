@@ -7,4 +7,10 @@ export default {
   computed: {
     ...mapState("planning", ["cards"]),
   },
+  methods: {
+    toggleTransactions(card) {
+
+    }
+  },
 };
+``
