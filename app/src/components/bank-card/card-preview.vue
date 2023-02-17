@@ -87,7 +87,7 @@
 
     <div class="z-20 flex flex-col gap-5">
       <strong class="text-2xl">
-        {{ card.number ?? "----------------------------" }}
+        {{ card.number ?? "----------------------------" | VMask('#### #### #### ####') }}
       </strong>
 
       <p class="text-sm leading-normal">

@@ -52,6 +52,7 @@
             <Details
               v-if="showItemDetails"
               :details="month.typesSpent"
+              :items="month.items"
             />
         </Transition>
       </div>

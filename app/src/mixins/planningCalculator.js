@@ -34,16 +34,5 @@ export default {
                 return accPlanning;
               }, 0)
         },
-        makeTypesSpent(month) {
-            return month.items.reduce((acc, current) => {
-                let copy = { ...current }
-                if(acc[item.idType]) {
-                    acc[item.idType].push(copy)
-                } else {
-                    acc[item.idType] = [...copy]
-                }
-                return acc
-            }, {}) 
-        }
     }
 }

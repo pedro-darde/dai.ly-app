@@ -1,5 +1,6 @@
 import { mapState } from "vuex";
 import Preview from "./card-preview.vue";
+
 export default {
   components: {
       Preview
@@ -9,7 +10,7 @@ export default {
   },
   methods: {
     toggleTransactions(card) {
-
+        card.showTransactions = !card.showTransactions
     }
   },
 };
