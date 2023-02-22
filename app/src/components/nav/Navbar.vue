@@ -32,6 +32,12 @@
                 aria-current="page"
                 >Finances</a
               >
+              <a
+                href="/dashboard"
+                class="bg-yellow-600 text-white px-3 py-2 rounded-md text-sm font-medium"
+                aria-current="page"
+                >Dashboard</a
+              >
             </div>
           </div>
         </div>

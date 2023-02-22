@@ -5,6 +5,7 @@ import TaskView from "../views/TasksView.vue";
 import RejectedAndValidatedTasksView from "@/views/RejectedAndValidatedTasksView.vue";
 import AllNotesView from '../views/AllNotesView.vue'
 import PlanningsView from "../views/PlanningsView.vue"
+import DashboardView from '../views/DashboardView.vue'
 Vue.use(VueRouter);
 
 const routes = [
@@ -32,6 +33,11 @@ const routes = [
     path: "/finances",
     name: "finances",
     component: PlanningsView
+  },
+  {
+    path: "/dashboard",
+    name: "dashboard",
+    component: DashboardView
   }
 ];
 

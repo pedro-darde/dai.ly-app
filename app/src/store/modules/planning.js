@@ -64,7 +64,7 @@ const actions = {
             item.date = toHtmlDateTimeFormat(item.date, DATE_INPUT_FORMAT)
           }
 
-          month.typesSpent.forEach(spent => {
+          month.typesSpent?.forEach(spent => {
             spent.items = month.items.filter(item => item.idType === spent.type && item.operation === spent.operation)
             spent.toggledItems = false
           })

@@ -6,11 +6,13 @@
       >
         {{ headerTitle }}
       </h1>
-      <p
-        class="mb-6 text-lg font-normal text-gray-500 lg:text-xl sm:px-16 xl:px-48 dark:text-gray-400"
-      >
-        {{ about }}
-      </p>
+      <slot name="header">
+        <p
+          class="mb-6 text-lg font-normal text-gray-500 lg:text-xl sm:px-16 xl:px-48 dark:text-gray-400"
+        >
+          {{ about }}
+        </p>
+      </slot>
     </div>
   </header>
 </template>
