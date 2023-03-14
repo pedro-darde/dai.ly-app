@@ -3,11 +3,10 @@ import Input from "../input/Input.vue";
 import Textarea from "../textarea/TextArea.vue";
 import Select from "../select/Select.vue";
 import { throttle } from "lodash";
-import { format } from "date-fns";
-import {DATE_TIME_INPUT_FORMAT} from "@/constants/Formats";
-import {toHtmlDateTimeFormat} from "@/helpers/DateFormatter";
+import { toHtmlDateTimeFormat } from "@/helpers/DateFormatter";
+import Wsiwyg from "../wsiwyg/Wsiwyg.vue";
 export default {
-  components: { Input, Textarea, Select },
+  components: { Input, Textarea, Select, Wsiwyg },
   data() {
     return {
       task: {
@@ -23,7 +22,7 @@ export default {
   methods: {
     async saveTask() {
       await this.$store.dispatch("task/saveTask", this.task);
-      await this.$store.dispatch("task/getActiveTasks")
+      await this.$store.dispatch("task/getActiveTasks");
       this.setTask();
     },
     setTask() {

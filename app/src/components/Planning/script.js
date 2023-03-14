@@ -79,7 +79,7 @@ export default {
         if (this.isIdFromDB(month)) {
           this.monthsToRemove.push(id);
           this.itemsToRemove.push([
-            ...month.items.filter(isIdFromDB).map(({ id }) => id),
+            ...month.items.filter(this.isIdFromDB).map(({ id }) => id),
           ]);
         }
       }

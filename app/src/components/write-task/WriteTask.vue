@@ -4,7 +4,11 @@
     <form @submit.prevent="saveTask">
       <div class="grid md:grid-cols-2 md:gap-6 mb-6">
         <Input v-model="task.title" type="text" label="Title" />
-        <Input v-model="task.startAt" type="datetime-local" label="Start(ed) at" />
+        <Input
+          v-model="task.startAt"
+          type="datetime-local"
+          label="Start(ed) at"
+        />
       </div>
       <div class="grid md:grid-cols-2 md:gap-2 mb-6">
         <Input
@@ -16,7 +20,7 @@
         <Select v-model="task.status" :options="status" label="Status"></Select>
       </div>
       <div class="mb-6">
-        <Textarea v-model="task.about" type="text" label="About" />
+        <Wsiwyg v-model="task.about"></Wsiwyg>
       </div>
       <div class="flex justify-end">
         <button
