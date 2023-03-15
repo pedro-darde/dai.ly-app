@@ -1,6 +1,11 @@
 import { VueEditor } from "vue2-editor";
 
 export default {
+  props: {
+    value: {
+      required: true,
+    },
+  },
   components: {
     VueEditor,
   },

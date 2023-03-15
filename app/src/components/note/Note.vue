@@ -4,9 +4,8 @@
       <p class="text-xl font-bold truncate">
         {{ note.created_at | toDateBR }}
       </p>
-      <p class="text-lg text-gray-500 truncate">
-        {{ note.description }}
-      </p>
+      <!-- <Wsiwyg v-model="note.description"/> -->
+      <p class="text-lg text-gray-500 truncate" v-html="note.description"></p>
     </div>
     <div
       class="inline-flex items-center text-base font-semibold text-gray-900 p-2"

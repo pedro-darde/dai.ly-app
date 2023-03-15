@@ -9,6 +9,8 @@ import Card from "../card/Card.vue";
 import Spinner from "../spinner/Spinner.vue";
 import { mapState } from "vuex";
 import ColumnChart from "../charts/ColumnChart.vue";
+import BarChart from "../charts/BarChart.vue";
+import toMonetary from "@/filters/toMonetary";
 export default {
   components: {
     HeaderComponent,
@@ -20,6 +22,7 @@ export default {
     Spinner,
     StackedColumn,
     ColumnChart,
+    BarChart,
   },
   computed: {
     ...mapState("dashboard", [
@@ -27,6 +30,7 @@ export default {
       "reducedMonthValues",
       "stackedMonthWithItems",
       "outWithItems",
+      "cardInfos",
     ]),
   },
   data() {
@@ -46,6 +50,10 @@ export default {
       stackedMonthSeries: [],
       outWithItemsLegends: [],
       outWithItemsSeries: [],
+      cardInfoDebitLegends: [],
+      cardInfoDebitSeries: [],
+      cardInfoCreditLegends: [],
+      cardInfoCreditSeries: [],
     };
   },
   methods: {
@@ -87,12 +95,17 @@ export default {
       this.stackedMonthSeries = [];
       this.outWithItemsLegends = [];
       this.outWithItemsSeries = [];
+      this.cardInfoDebitLegends = [];
+      this.cardInfoDebitSeries = [];
+      this.cardInfoCreditLegends = [];
+      this.cardInfoCreditSeries = [];
     },
     setChartValues() {
       this.setTotalChartsOptions();
       this.setMonthChartOptions();
       this.setStackedMonthData();
       this.setOutWithItemsData();
+      this.setCardInfosData();
       this.loading = false;
     },
     setStackedMonthData() {
@@ -135,7 +148,6 @@ export default {
       const categories = this.outWithItems.map((item) => item.description);
 
       this.outWithItemsLegends = categories;
-      console.log(categories.length);
 
       this.outWithItems.forEach(({ description, values }) => {
         const dataIndex = categories.findIndex((item) => item === description);
@@ -157,8 +169,55 @@ export default {
           }
         });
       });
-      console.log(series);
       this.outWithItemsSeries = series;
+    },
+    setCardInfosData() {
+      const { spentOnCredit, spentOnDebit } = this.cardInfos;
+
+      if (spentOnCredit) {
+        this.cardInfoCreditLegends = spentOnCredit.map((item) => item.name);
+        this.cardInfoCreditSeries = [
+          {
+            name:
+              spentOnCredit
+                .map((item) =>
+                  item.items_descs
+                    .map((item) => {
+                      const [description, value] = item.split(": ");
+                      return `${toMonetary(
+                        value.trim()
+                      )}: <b>${description}</b>`;
+                    })
+                    .join("<br />")
+                )
+                .join("") + "<br /> Total",
+            data: spentOnCredit.map((item) => item.sum),
+          },
+        ];
+      }
+
+      if (spentOnDebit) {
+        console.log();
+        this.cardInfoDebitLegends = spentOnDebit.map((item) => item.name);
+        this.cardInfoDebitSeries = [
+          {
+            name:
+              spentOnDebit
+                .map((item) =>
+                  item.items_descs
+                    .map((item) => {
+                      const [description, value] = item.split(": ");
+                      return `${toMonetary(
+                        value.trim()
+                      )}: <b>${description}</b>`;
+                    })
+                    .join("<br />")
+                )
+                .join("") + "<br /> Total",
+            data: spentOnDebit.map((item) => item.sum),
+          },
+        ];
+      }
     },
   },
   watch: {

@@ -1,10 +1,10 @@
 import HeaderComponent from "../header/Header.vue";
 import NavbarComponent from "../nav/Navbar.vue";
 import Select from "../select/Select.vue";
-import Planning from "../Planning/Planning.vue";
+import Planning from "../planning/Planning.vue";
 import { range } from "lodash";
 import { mapGetters } from "vuex";
-import { usePopup } from "@/mixins/popup";
+import { usePopup } from "@/mixins/Popup";
 import BankCard from "../bank-card/card.vue";
 import CC from "../icons/cc.vue";
 import { ccService } from "@/services/CCService";

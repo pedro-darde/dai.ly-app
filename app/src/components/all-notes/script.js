@@ -2,7 +2,7 @@ import { mapGetters } from "vuex";
 import Card from "../card/Card.vue";
 import NavbarComponent from "../nav/Navbar.vue";
 import Header from "../header/Header.vue";
-import taskInfo from "@/mixins/task-info";
+import taskInfo from "@/mixins/TaskInfo";
 export default {
   mixins: [taskInfo],
   components: {
@@ -13,13 +13,13 @@ export default {
   computed: {
     ...mapGetters({
       notes: "note/allNotesGetter",
-      tasks: "task/allTasksGetter"
+      tasks: "task/allTasksGetter",
     }),
   },
   methods: {
     async toggleInfoTasks(note) {
-      const tasks = this.tasks.filter(({ id }) => note.tasks.includes(id))
-      await this.showTaskInfo(tasks)
-    }
-  }
+      const tasks = this.tasks.filter(({ id }) => note.tasks.includes(id));
+      await this.showTaskInfo(tasks);
+    },
+  },
 };

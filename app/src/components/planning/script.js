@@ -1,18 +1,17 @@
 import money from "../icons/money.vue";
 import calendar from "../icons/calendar.vue";
 import Input from "../input/Input.vue";
-import MoneyInput from "../MoneyInput/MoneyInput.vue";
+import MoneyInput from "../money-input/MoneyInput.vue";
 import { toHtmlDateTimeFormat } from "@/helpers/DateFormatter";
 import quickid from "@/helpers/quickid";
 import plus from "../icons/plus.vue";
 import Select from "../select/Select.vue";
 import char from "../icons/char.vue";
 import remove from "../icons/remove.vue";
-import PlanningPreview from "../PlanningPreview/PlanningPreview.vue";
-import planningCalculator from "@/mixins/planningCalculator";
+import PlanningPreview from "../planning-preview/PlanningPreview.vue";
+import planningCalculator from "@/mixins/PlanningCalculator";
 import SwalMixin from "@/mixins/SwalMixin";
-import { mapState } from "vuex";
-import { cloneDeep, debounce } from "lodash";
+
 export default {
   components: {
     money,
@@ -31,6 +30,7 @@ export default {
   mixins: [planningCalculator, SwalMixin],
   data() {
     return {
+      searchItems: "",
       operations: [
         {
           name: "In (+)",
@@ -186,6 +186,17 @@ export default {
         },
         { toAdd: [], toUpdate: [] }
       );
+    },
+    async onInputSearch($event, month) {
+      if (!$event) {
+        month.items.forEach((item) => {
+          item.hidden = false;
+        });
+        return;
+      }
+      month.items.forEach((item) => {
+        item.hidden = !item.description.match($event);
+      });
     },
   },
   computed: {

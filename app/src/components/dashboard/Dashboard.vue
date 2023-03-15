@@ -65,6 +65,19 @@
               :title="'teste'"
             ></StackedColumn>
           </div>
+          <h3 class="text-2xl p-5">Card Charts</h3>
+          <div class="flex flex-row justify-center">
+            <BarChart
+              :legends="cardInfoCreditLegends"
+              :values="cardInfoCreditSeries"
+              :title="'Algo'"
+            ></BarChart>
+            <BarChart
+              :legends="cardInfoDebitLegends"
+              :values="cardInfoDebitSeries"
+              :title="'Algo'"
+            ></BarChart>
+          </div>
         </div>
       </div>
     </div>

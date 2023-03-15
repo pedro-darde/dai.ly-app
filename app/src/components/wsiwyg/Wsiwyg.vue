@@ -1,5 +1,5 @@
 <template>
-  <vue-editor v-model="text" />
+  <vue-editor v-model="text" :value="value" />
 </template>
 
 <script src="./script.js"></script>

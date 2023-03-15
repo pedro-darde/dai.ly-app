@@ -1,16 +1,17 @@
 <template>
   <Chart
-    :chart-options="chartOptions"
     :values="series"
-    :type="'bar'"
-    :width="500"
-  />
+    :chart-options="chartOptions"
+    type="bar"
+    :width="350"
+  ></Chart>
 </template>
 
 <script>
 import toMonetary from "@/filters/toMonetary";
 import Chart from "./Chart.vue";
 export default {
+  components: { Chart },
   props: {
     values: {
       type: Array,
@@ -25,17 +26,14 @@ export default {
       required: true,
     },
   },
-  components: {
-    Chart,
-  },
-
   data() {
     return {
       series: this.values,
+
       chartOptions: {
         theme: {
           mode: "dark",
-          palette: "palette5",
+          palette: "palette4",
           monochrome: {
             enabled: false,
             color: "#33B2DF",
@@ -49,36 +47,18 @@ export default {
         },
         plotOptions: {
           bar: {
-            horizontal: false,
-            columnWidth: "55%",
-            endingShape: "rounded",
+            borderRadius: 4,
+            horizontal: true,
           },
         },
         dataLabels: {
-          enabled: false,
-        },
-        stroke: {
-          show: true,
-          width: 2,
-          colors: ["transparent"],
+          enabled: true,
+          formatter(total) {
+            return toMonetary(total);
+          },
         },
         xaxis: {
           categories: this.legends,
-        },
-        yaxis: {
-          title: {
-            text: "$ (thousands)",
-          },
-        },
-        fill: {
-          opacity: 1,
-        },
-        tooltip: {
-          y: {
-            formatter: function (val) {
-              return toMonetary(val);
-            },
-          },
         },
       },
     };

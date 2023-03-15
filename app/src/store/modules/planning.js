@@ -4,7 +4,7 @@ import quickid from "@/helpers/quickid";
 import { Toast } from "@/lib/sweetalert";
 import { itemTypeService } from "@/services/ItemTypeService";
 import { planningService } from "@/services/PlanningService";
-import { ccService } from '@/services/CCService'
+import { ccService } from "@/services/CCService";
 const DEFAULT_PLANNING = {
   id: null,
   year: new Date().getFullYear(),
@@ -27,51 +27,59 @@ const DEFAULT_PLANNING = {
           description: "",
           idType: null,
           idCard: null,
-          idPlanningMonth: null
+          idPlanningMonth: null,
+          hidden: false,
         },
       ],
     },
   ],
-}
+};
 const state = {
   planning: DEFAULT_PLANNING,
   months: [],
   itemTypes: [],
-  cards: []
+  cards: [],
 };
 
 const actions = {
   async createPlanning({ commit }, payload) {
-    let message = 'Planning Started'
-    let icon = 'success'
+    let message = "Planning Started";
+    let icon = "success";
     try {
-      await planningService.save(payload)
+      await planningService.save(payload);
     } catch (e) {
-      console.log(e)
-      icon = "error"
-      message = e.response?.data?.message ?? "Internal Server Error"
+      console.log(e);
+      icon = "error";
+      message = e.response?.data?.message ?? "Internal Server Error";
     } finally {
-      commit("PLANNING_CREATED", { message, icon })
+      commit("PLANNING_CREATED", { message, icon });
     }
   },
   async changePlanningYear({ commit, state }, year) {
     try {
-      let planning = await planningService.get(year) || DEFAULT_PLANNING;
-      planning.startAt = toHtmlDateTimeFormat(planning.startAt, DATE_INPUT_FORMAT)
-      
-      for (const month of planning.planningMonths) {
-          for (const item of month.items) {
-            item.date = toHtmlDateTimeFormat(item.date, DATE_INPUT_FORMAT)
-          }
+      let planning = (await planningService.get(year)) || DEFAULT_PLANNING;
+      planning.startAt = toHtmlDateTimeFormat(
+        planning.startAt,
+        DATE_INPUT_FORMAT
+      );
 
-          month.typesSpent?.forEach(spent => {
-            spent.items = month.items.filter(item => item.idType === spent.type && item.operation === spent.operation)
-            spent.toggledItems = false
-          })
+      for (const month of planning.planningMonths) {
+        for (const item of month.items) {
+          item.hidden = false;
+          item.date = toHtmlDateTimeFormat(item.date, DATE_INPUT_FORMAT);
+        }
+
+        month.typesSpent?.forEach((spent) => {
+          spent.items = month.items.filter(
+            (item) =>
+              item.idType === spent.type && item.operation === spent.operation
+          );
+          spent.toggledItems = false;
+        });
       }
 
       if (!planning.planningMonths?.length) {
-        planning.planningMonths = state.planning.planningMonths
+        planning.planningMonths = state.planning.planningMonths;
       }
 
       commit("SET_PLANNING", planning);
@@ -80,49 +88,49 @@ const actions = {
     }
   },
   applyCurrentPlanning({ commit }, planning) {
-    commit("SET_PLANNING", planning)
+    commit("SET_PLANNING", planning);
   },
   async editPlanning({ commit }, payload) {
-    let message = 'Planning Edited Succesfully'
-    let icon = 'success'
+    let message = "Planning Edited Succesfully";
+    let icon = "success";
     try {
-      await planningService.edit(payload.year, payload)
+      await planningService.edit(payload.year, payload);
     } catch (e) {
-      message = e.response?.data?.message ?? "Internal Server Error"
-      icon = 'error'
+      message = e.response?.data?.message ?? "Internal Server Error";
+      icon = "error";
     } finally {
-      commit('PLANNING_CREATED', { icon, message })
+      commit("PLANNING_CREATED", { icon, message });
     }
   },
-  saveMonths({ commit }, months) { },
+  saveMonths({ commit }, months) {},
   async getMonths({ commit }) {
     try {
       const months = await planningService.getMonths();
       commit("SET_MONTHS", months);
     } catch (e) {
       console.error(e);
-    } 
+    }
   },
   async getItemTypes({ commit }) {
     try {
-      const types = await itemTypeService.getTypes()
-      commit("SET_TYPES", types)
+      const types = await itemTypeService.getTypes();
+      commit("SET_TYPES", types);
     } catch (e) {
-      console.error(e)
+      console.error(e);
     }
   },
   async getCards({ commit }) {
     try {
-      const cards = await ccService.list()
-      cards.forEach(card => card.showTransactions = false)
-      commit("SET_CARDS", cards)
+      const cards = await ccService.list();
+      cards.forEach((card) => (card.showTransactions = false));
+      commit("SET_CARDS", cards);
     } catch (e) {
-      console.error(e)
+      console.error(e);
     }
   },
   applyDefaultPlanning({ commit }) {
-      commit("SET_PLANNING")
-  }
+    commit("SET_PLANNING");
+  },
 };
 
 const mutations = {
@@ -139,27 +147,27 @@ const mutations = {
     });
   },
   SET_TYPES(state, value) {
-    state.itemTypes = value
+    state.itemTypes = value;
   },
   SET_CARDS(state, value) {
-    state.cards = value
-  }
+    state.cards = value;
+  },
 };
 
 const getters = {
   monthGetter(state) {
-    return state.months
+    return state.months;
   },
   planningGetter(state) {
-    return state.planning
+    return state.planning;
   },
   itemTypesGetter(state) {
-    return state.itemTypes
+    return state.itemTypes;
   },
   cardsGetter(state) {
-    return state.cards
-  }
-}
+    return state.cards;
+  },
+};
 
 export default {
   namespaced: true,

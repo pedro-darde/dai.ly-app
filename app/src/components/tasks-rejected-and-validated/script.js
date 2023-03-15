@@ -1,7 +1,6 @@
-
 import { mapGetters } from "vuex";
 import { REJECTED, VALIDATED } from "@/constants/TaskStatus";
-import notesInfo from "@/mixins/notes-info";
+import notesInfo from "@/mixins/NotesInfo";
 import Card from "../card/Card.vue";
 import NavbarComponent from "../nav/Navbar.vue";
 import Header from "../header/Header.vue";
