@@ -11,7 +11,9 @@ import remove from "../icons/remove.vue";
 import PlanningPreview from "../planning-preview/PlanningPreview.vue";
 import planningCalculator from "@/mixins/PlanningCalculator";
 import SwalMixin from "@/mixins/SwalMixin";
-
+import ArrowUp from "../icons/arrow-up.vue";
+import ArrowDown from "../icons/arrow-down.vue";
+import Treeselect from "../treeselect/Treeselect.vue";
 export default {
   components: {
     money,
@@ -23,6 +25,9 @@ export default {
     char,
     remove,
     PlanningPreview,
+    Treeselect,
+    ArrowDown,
+    ArrowUp,
   },
   props: {
     year: Number,
@@ -30,7 +35,6 @@ export default {
   mixins: [planningCalculator, SwalMixin],
   data() {
     return {
-      searchItems: "",
       operations: [
         {
           name: "In (+)",
@@ -52,8 +56,8 @@ export default {
   methods: {
     addMonth() {
       this.planning.planningMonths.push({
+        hidden: false,
         id: quickid(),
-        expectedAmount: 0,
         idMonth: new Date().getMonth(),
         items: [
           {
@@ -158,6 +162,7 @@ export default {
         monthsToRemove: this.monthsToRemove,
         itemsToRemove: this.itemsToRemove,
       });
+      await this.$store.dispatch("planning/changePlanningYear", this.year);
     },
     isIdFromDB({ id }) {
       return !!id && !isNaN(+id);
@@ -187,7 +192,8 @@ export default {
         { toAdd: [], toUpdate: [] }
       );
     },
-    async onInputSearch($event, month) {
+    async onInputSearch($event, month, field = "description") {
+      console.log($event);
       if (!$event) {
         month.items.forEach((item) => {
           item.hidden = false;
@@ -195,7 +201,12 @@ export default {
         return;
       }
       month.items.forEach((item) => {
-        item.hidden = !item.description.match($event);
+        console.log(typeof item[field]);
+        if (typeof item[field] === "string") {
+          item.hidden = !item[field]?.match($event);
+        } else {
+          item.hidden = item[field] !== $event;
+        }
       });
     },
   },

@@ -57,7 +57,7 @@
           <h3 class="text-2xl font-bold">Months</h3>
         </div>
         <div
-          class="flex flex-col bg-gray-300 rounded border-l-8 border-gray-500 p-5 mb-5 max-h-96 overflow-auto"
+          class="flex flex-col bg-gray-300 rounded border-l-8 border-gray-500 p-5 mb-5"
           v-for="(month, key) in planning.planningMonths"
           :key="key"
         >
@@ -71,11 +71,7 @@
               :options="getMonthOptions(month)"
               :required="true"
             />
-            <MoneyInput
-              label="Expected Amount"
-              v-model="month.expectedAmount"
-              :required="true"
-            />
+            <MoneyInput label="Credit status" v-model="month.creditStatus" />
             <div class="flex flex-row">
               <button
                 type="button"
@@ -95,105 +91,141 @@
               >
                 <remove />
               </button>
+              <button
+                type="button"
+                class="text-lg"
+                @click="month.hidden = !month.hidden"
+              >
+                <button
+                  type="button"
+                  class="transition ease-in duration-100"
+                  :class="{ '-rotate-180': !month.hidden }"
+                >
+                  <ArrowDown />
+                </button>
+              </button>
             </div>
           </div>
-          <div class="flex flex-row items-center ml-8">
+          <div class="flex flex-row items-center ml-8" v-if="!month.hidden">
             <a class="text-black-700 mr-1">
               <char />
             </a>
             <h3 class="text-lg font-bold">Moviments</h3>
           </div>
           <div class="p-5 ml-5">
-            <Input
-              label="Search in items"
-              placeholder="Enter item description here"
-              v-model="searchItems"
-              :required="false"
-              @input="onInputSearch($event, month)"
-            />
-          </div>
-          <div
-            class="flex flex-col bg-gray-700 rounded border-l-8 border-white p-5 mb-5 text-white ml-8"
-            v-for="(item, key) in month.items"
-            v-if="!item.hidden"
-            :key="key"
-          >
-            <div
-              :class="[
-                'grid  md:gap-3 mb-2 items-end',
-                item.operation == 'out' ? 'md:grid-cols-8' : 'md:grid-cols-7',
-              ]"
-            >
-              <MoneyInput label="Value" v-model="item.value" :required="true" />
+            <div class="grid md:gap-3 md:grid-cols-3">
               <Input
                 label="Description"
-                type="text"
-                v-model="item.description"
-                :required="true"
+                placeholder="Enter item description here"
+                v-model="month.searchTerm"
+                :required="false"
+                v-if="!month.hidden"
+                @input="onInputSearch($event, month)"
               />
-              <Select
-                label="Type"
-                v-model="item.idType"
-                :required="true"
-                optionValue="id"
-                optionText="description"
+              <Treeselect
+                placeholder="Type"
+                v-model="month.searchType"
                 :options="itemTypes"
+                label="Type"
+                @input="onInputSearch($event, month, 'idType')"
               />
               <Select
-                label="Operation"
-                type="text"
-                v-model="item.operation"
-                optionValue="value"
-                optionText="name"
-                :options="operations"
-                :required="true"
-              />
-              <Select
-                v-model="item.paymentMethod"
+                v-model="month.searchPaymentType"
                 label="Payment Method"
                 optionText="name"
                 optionValue="value"
                 :options="paymentMethods"
-                v-if="item.operation == 'out'"
-                :required="item.operation == 'out'"
+                @input="onInputSearch($event, month, 'paymentMethod')"
               />
-              <Select
-                v-model="item.idCard"
-                label="Card"
-                optionText="cardName"
-                optionValue="id"
-                :options="cards"
-                :required="false"
-              />
-              <Input
-                label="Date"
-                type="date"
-                v-model="item.date"
-                :required="true"
-              />
-
-              <div class="flex flex-row">
-                <button
-                  v-if="isLastItem(month, item.id)"
-                  type="button"
-                  @click="addItem(month)"
-                  title="Adicionar Mês"
-                  class="text-lg"
-                >
-                  <plus />
-                </button>
-                <button
-                  v-if="canRemove()"
-                  type="button"
-                  @click="removeItem(month, item.id)"
-                  title="Remove Item"
-                  class="text-lg text-red-500"
-                >
-                  <remove />
-                </button>
-              </div>
             </div>
           </div>
+          <TransitionGroup mode="out-in" class="max-h-96 overflow-auto">
+            <div
+              class="flex flex-col bg-gray-700 rounded border-l-8 border-white p-5 mb-5 text-white ml-8"
+              v-for="(item, key) in month.items"
+              v-if="!item.hidden && !month.hidden"
+              :key="key"
+            >
+              <div
+                :class="[
+                  'grid  md:gap-3 mb-2 items-end',
+                  item.operation == 'out' ? 'md:grid-cols-8' : 'md:grid-cols-7',
+                ]"
+              >
+                <MoneyInput
+                  label="Value"
+                  v-model="item.value"
+                  :required="true"
+                />
+                <Input
+                  label="Description"
+                  type="text"
+                  v-model="item.description"
+                  :required="true"
+                />
+                <Treeselect
+                  placeholder="Type"
+                  v-model="item.idType"
+                  :required="true"
+                  :options="itemTypes"
+                  label="Type"
+                />
+                <Select
+                  label="Operation"
+                  type="text"
+                  v-model="item.operation"
+                  optionValue="value"
+                  optionText="name"
+                  :options="operations"
+                  :required="true"
+                />
+                <Select
+                  v-model="item.paymentMethod"
+                  label="Payment Method"
+                  optionText="name"
+                  optionValue="value"
+                  :options="paymentMethods"
+                  v-if="item.operation == 'out'"
+                  :required="item.operation == 'out'"
+                />
+                <Select
+                  v-model="item.idCard"
+                  label="Card"
+                  optionText="cardName"
+                  optionValue="id"
+                  :options="cards"
+                  :required="false"
+                />
+                <Input
+                  label="Date"
+                  type="date"
+                  v-model="item.date"
+                  :required="true"
+                />
+
+                <div class="flex flex-row">
+                  <button
+                    v-if="isLastItem(month, item.id)"
+                    type="button"
+                    @click="addItem(month)"
+                    title="Adicionar Mês"
+                    class="text-lg"
+                  >
+                    <plus />
+                  </button>
+                  <button
+                    v-if="canRemove()"
+                    type="button"
+                    @click="removeItem(month, item.id)"
+                    title="Remove Item"
+                    class="text-lg text-red-500"
+                  >
+                    <remove />
+                  </button>
+                </div>
+              </div>
+            </div>
+          </TransitionGroup>
         </div>
       </div>
     </form>

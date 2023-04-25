@@ -4,6 +4,7 @@ import Input from "../input/Input.vue";
 import Select from "../select/Select.vue";
 import Textarea from "../textarea/TextArea.vue";
 import { TaskStatusEdit } from "@/constants/TaskStatus";
+import Wsiwyg from "../wsiwyg/Wsiwyg.vue";
 
 export default {
   mixins: [popupVisibility],
@@ -12,6 +13,7 @@ export default {
     Input,
     Select,
     Textarea,
+    Wsiwyg,
   },
   data() {
     return {

@@ -3,12 +3,17 @@ import Card from "../card/Card.vue";
 import NavbarComponent from "../nav/Navbar.vue";
 import Header from "../header/Header.vue";
 import taskInfo from "@/mixins/TaskInfo";
+import { usePopup } from "@/mixins/Popup";
+import ViewNote from "../view-note/ViewNote.vue";
+import Note from "../note/Note.vue";
 export default {
-  mixins: [taskInfo],
+  mixins: [taskInfo, usePopup("viewNote")],
   components: {
     NavbarComponent,
     Header,
     Card,
+    ViewNote,
+    Note,
   },
   computed: {
     ...mapGetters({
@@ -20,6 +25,14 @@ export default {
     async toggleInfoTasks(note) {
       const tasks = this.tasks.filter(({ id }) => note.tasks.includes(id));
       await this.showTaskInfo(tasks);
+    },
+    viewNote() {
+      console.log(this.popupViewNoteVisible);
+      this.toggleViewNote(!this.popupViewNoteVisible);
+    },
+    handlePopup(value) {
+      console.log("aqui");
+      this.toggleViewNote(value);
     },
   },
 };

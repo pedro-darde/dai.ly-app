@@ -21,6 +21,10 @@ export default {
       type: Object,
       required: false,
     },
+    onView: {
+      type: Boolean,
+      default: false,
+    },
   },
   created() {
     if (!this.onEdit) {

@@ -1,0 +1,11 @@
+.skeleton {
+    width: 100%;
+    height: 100%;
+    background-color: #f5f5f5; /* set the background color of the skeleton */
+    animation: pulse 1s infinite alternate; /* create a pulsing animation */
+  }
+  
+  @keyframes pulse {
+    0% { opacity: 1; }
+    100% { opacity: 0.4; }
+  }

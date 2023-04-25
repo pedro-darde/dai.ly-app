@@ -7,10 +7,12 @@ import { mapGetters } from "vuex";
 import { usePopup } from "@/mixins/Popup";
 import BankCard from "../bank-card/card.vue";
 import CC from "../icons/cc.vue";
+import CreateEditItemType from "../item-type/create_edit/CreateEdit.vue";
+
 import { ccService } from "@/services/CCService";
 import { Toast } from "@/lib/sweetalert";
 export default {
-  mixins: [usePopup("bankCard")],
+  mixins: [usePopup("bankCard"), usePopup("itemType")],
   components: {
     NavbarComponent,
     HeaderComponent,
@@ -18,6 +20,7 @@ export default {
     Planning,
     BankCard,
     CC,
+    CreateEditItemType,
   },
   data() {
     return {
@@ -29,10 +32,13 @@ export default {
       loading: false,
     };
   },
-  async created() {
+  async mounted() {
     this.loading = true;
-    await this.$store.dispatch("planning/changePlanningYear", this.year);
-    this.loading = false;
+
+    setTimeout(async () => {
+      await this.$store.dispatch("planning/changePlanningYear", this.year);
+      this.loading = false;
+    }, 1500);
   },
   methods: {
     createCC() {
@@ -40,6 +46,12 @@ export default {
     },
     handleCC(value) {
       this.createCC(value);
+    },
+    createEditItemType() {
+      this.toggleItemType(!this.popupItemTypeVisible);
+    },
+    handleItemType(value) {
+      this.createEditItemType(value);
     },
     async saveCC(payload) {
       let close = true;

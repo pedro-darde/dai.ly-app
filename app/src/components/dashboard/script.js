@@ -197,7 +197,6 @@ export default {
       }
 
       if (spentOnDebit) {
-        console.log();
         this.cardInfoDebitLegends = spentOnDebit.map((item) => item.name);
         this.cardInfoDebitSeries = [
           {

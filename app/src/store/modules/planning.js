@@ -5,6 +5,7 @@ import { Toast } from "@/lib/sweetalert";
 import { itemTypeService } from "@/services/ItemTypeService";
 import { planningService } from "@/services/PlanningService";
 import { ccService } from "@/services/CCService";
+import { organizeSpents } from "../helpers/planning";
 const DEFAULT_PLANNING = {
   id: null,
   year: new Date().getFullYear(),
@@ -15,7 +16,6 @@ const DEFAULT_PLANNING = {
   planningMonths: [
     {
       id: quickid(),
-      expectedAmount: 0,
       idMonth: new Date().getMonth(),
       items: [
         {
@@ -64,18 +64,17 @@ const actions = {
       );
 
       for (const month of planning.planningMonths) {
+        month.hidden = false;
+        month.searchTerm = "";
+        month.searchType = null;
+        month.searchPaymentType = null;
         for (const item of month.items) {
           item.hidden = false;
           item.date = toHtmlDateTimeFormat(item.date, DATE_INPUT_FORMAT);
         }
 
-        month.typesSpent?.forEach((spent) => {
-          spent.items = month.items.filter(
-            (item) =>
-              item.idType === spent.type && item.operation === spent.operation
-          );
-          spent.toggledItems = false;
-        });
+        month.typesSpent = organizeSpents(month.typesSpent);
+        month.showItemDetails = false;
       }
 
       if (!planning.planningMonths?.length) {

@@ -5,6 +5,11 @@ export default {
     value: {
       required: true,
     },
+    disabled: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   components: {
     VueEditor,

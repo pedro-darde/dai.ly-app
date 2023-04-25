@@ -38,6 +38,12 @@
                 aria-current="page"
                 >Dashboard</a
               >
+              <a
+                href="/settings"
+                class="bg-yellow-600 text-white px-3 py-2 rounded-md text-sm font-medium"
+                aria-current="page"
+                >Settings</a
+              >
             </div>
           </div>
         </div>

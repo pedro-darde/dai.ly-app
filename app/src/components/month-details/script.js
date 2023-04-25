@@ -14,7 +14,7 @@ export default {
   },
   data() {
     return {
-      showItemDetails: false,
+      monthsGroupped: [],
     };
   },
   methods: {
@@ -22,24 +22,30 @@ export default {
       if (!month.typesSpent) {
         return;
       }
-      this.showItemDetails = !this.showItemDetails;
+      month.showItemDetails = !month.showItemDetails;
     },
   },
   computed: {
     ...mapGetters({
       monthsDB: "planning/monthGetter",
     }),
-    monthsGroupped() {
-      return this.planningMonths.map((month) => ({
-        ...month,
-        monthName: this.monthsDB.find((item) => item.id === month.idMonth)
-          ?.monthName,
-        balance: this.monthBalance(month),
-        In: this.in(month),
-        Out: this.out(month),
-        spentOnDebit: this.spentOnDebitMonth(month),
-        spentOnCredit: this.spentOnCreditMonth(month),
-      }));
+  },
+  watch: {
+    visible(value) {
+      if (!value) {
+        this.monthsGroupped = [];
+      } else {
+        this.monthsGroupped = this.planningMonths.map((month) => ({
+          ...month,
+          monthName: this.monthsDB.find((item) => item.id === month.idMonth)
+            ?.monthName,
+          balance: this.monthBalance(month),
+          In: this.in(month),
+          Out: this.out(month),
+          spentOnDebit: this.spentOnDebitMonth(month),
+          spentOnCredit: this.spentOnCreditMonth(month),
+        }));
+      }
     },
   },
 };

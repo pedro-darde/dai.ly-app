@@ -3,9 +3,10 @@ import VueRouter from "vue-router";
 import HomeView from "../views/HomeView.vue";
 import TaskView from "../views/TasksView.vue";
 import RejectedAndValidatedTasksView from "@/views/RejectedAndValidatedTasksView.vue";
-import AllNotesView from '../views/AllNotesView.vue'
-import PlanningsView from "../views/PlanningsView.vue"
-import DashboardView from '../views/DashboardView.vue'
+import AllNotesView from "../views/AllNotesView.vue";
+import PlanningsView from "../views/PlanningsView.vue";
+import DashboardView from "../views/DashboardView.vue";
+import SettingsView from "../views/SettingsView.vue";
 Vue.use(VueRouter);
 
 const routes = [
@@ -22,23 +23,28 @@ const routes = [
   {
     path: "/tasks/reject-and-validated",
     name: "rejectedAndValidated",
-    component: RejectedAndValidatedTasksView
+    component: RejectedAndValidatedTasksView,
   },
   {
     path: "/notes",
     name: "allNotes",
-    component: AllNotesView
+    component: AllNotesView,
   },
   {
     path: "/finances",
     name: "finances",
-    component: PlanningsView
+    component: PlanningsView,
   },
   {
     path: "/dashboard",
     name: "dashboard",
-    component: DashboardView
-  }
+    component: DashboardView,
+  },
+  {
+    path: "/settings",
+    name: "settings",
+    component: SettingsView,
+  },
 ];
 
 const router = new VueRouter({

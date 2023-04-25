@@ -2,7 +2,7 @@ import quickid from "@/helpers/quickid";
 export default {
   props: {
     value: {
-      required: true
+      required: true,
     },
     label: {
       type: String,
@@ -38,13 +38,13 @@ export default {
     },
     multiple: {
       required: false,
-      default: false
+      default: false,
     },
     useItemAsValue: {
       required: false,
       type: Boolean,
-      default: false
-    }
+      default: false,
+    },
   },
   data() {
     return {
@@ -53,7 +53,7 @@ export default {
   },
   methods: {
     getOptionValue(item, key) {
-      if (this.useItemAsValue) return item
+      if (this.useItemAsValue) return item;
       if (this.optionValue) return item[this.optionValue];
       return key;
     },
@@ -67,7 +67,7 @@ export default {
       this.$emit("input", value);
     },
     value(value) {
-      if (!value) this.text = value;
+      this.text = value;
     },
   },
 };

@@ -11,7 +11,12 @@ export default {
     Plannings,
   },
   async created() {
-    await Promise.all([this.$store.dispatch("planning/getMonths"), this.$store.dispatch("planning/getItemTypes"), this.$store.dispatch("planning/getCards")]);
+    await Promise.all([
+      this.$store.dispatch("planning/getMonths"),
+      this.$store.dispatch("planning/getItemTypes"),
+      this.$store.dispatch("planning/getCards"),
+      this.$store.dispatch("setting/getSettings"),
+    ]);
   },
 };
 </script>

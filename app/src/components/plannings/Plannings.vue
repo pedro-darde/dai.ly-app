@@ -1,7 +1,19 @@
 <template>
   <div class="main">
     <NavbarComponent></NavbarComponent>
-    <HeaderComponent :headerTitle="'Anual Planning'"></HeaderComponent>
+    <HeaderComponent :headerTitle="'Anual Planning'">
+      <template v-slot:header>
+        <div class="flex flex-row justify-end">
+          <button
+            @click="createEditItemType"
+            class="flex items-center rounded bg-blue-700 text-white h-8 p-2 text-center self-end ml-2"
+            title="Add Item Type"
+          >
+            Add Item Type
+          </button>
+        </div>
+      </template>
+    </HeaderComponent>
     <main>
       <div class="flex mx-48">
         <div class="flex-1"></div>
@@ -32,13 +44,25 @@
           </button>
         </div>
       </div>
+
       <div class="flex flex-row justify-center m-2.5">
-        <Planning v-if="!loading" :year="year" />
+        <lottie-animation
+          v-if="loading"
+          :loop="true"
+          :autoPlay="true"
+          ref="anim"
+          :animationData="require('@/assets/loading.json')"
+        />
+        <Planning v-else :year="year" />
       </div>
       <BankCard
         v-model="popupBankCardVisible"
         @isVisible="handleCC()"
         @save="saveCC"
+      />
+      <CreateEditItemType
+        v-model="popupItemTypeVisible"
+        @isVisible="handleItemType()"
       />
     </main>
   </div>

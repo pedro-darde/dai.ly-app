@@ -11,9 +11,10 @@
           <span class="ml-3 text-sm font-bold text-black">Fixed</span>
         </label>
       </div>
-      <Wsiwyg v-model="note.description"></Wsiwyg>
+      <Wsiwyg v-model="note.description" :disabled="onView"></Wsiwyg>
 
       <Select
+        :disabled="onView"
         option-text="title"
         option-value="id"
         :options="tasks"
@@ -23,6 +24,7 @@
       ></Select>
       <div class="flex justify-end mt-2">
         <a
+          v-if="!onView"
           @click="saveNote"
           href="#"
           class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-green-400 rounded-lg hover:bg-green-700 focus:ring-4 focus:outline-none focus:ring-green-300"
