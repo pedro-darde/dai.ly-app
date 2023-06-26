@@ -8,11 +8,16 @@ import { usePopup } from "@/mixins/Popup";
 import BankCard from "../bank-card/card.vue";
 import CC from "../icons/cc.vue";
 import CreateEditItemType from "../item-type/create_edit/CreateEdit.vue";
+import CreateInstallments from "../installments/CreateInstallments.vue";
 
 import { ccService } from "@/services/CCService";
 import { Toast } from "@/lib/sweetalert";
 export default {
-  mixins: [usePopup("bankCard"), usePopup("itemType")],
+  mixins: [
+    usePopup("bankCard"),
+    usePopup("itemType"),
+    usePopup("installments"),
+  ],
   components: {
     NavbarComponent,
     HeaderComponent,
@@ -21,6 +26,7 @@ export default {
     BankCard,
     CC,
     CreateEditItemType,
+    CreateInstallments,
   },
   data() {
     return {
@@ -49,6 +55,12 @@ export default {
     },
     createEditItemType() {
       this.toggleItemType(!this.popupItemTypeVisible);
+    },
+    createInstallments() {
+      this.toggleInstallments(!this.popupInstallmentsVisible);
+    },
+    handleInstallments(value) {
+      this.createInstallments(value);
     },
     handleItemType(value) {
       this.createEditItemType(value);

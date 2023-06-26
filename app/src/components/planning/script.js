@@ -14,6 +14,9 @@ import SwalMixin from "@/mixins/SwalMixin";
 import ArrowUp from "../icons/arrow-up.vue";
 import ArrowDown from "../icons/arrow-down.vue";
 import Treeselect from "../treeselect/Treeselect.vue";
+import Filter from "../icons/filter.vue";
+import PlanningMonthGoals from "../planning/Goals/PlanningMonthGoals.vue";
+import { usePopup } from "@/mixins/Popup";
 export default {
   components: {
     money,
@@ -28,6 +31,8 @@ export default {
     Treeselect,
     ArrowDown,
     ArrowUp,
+    Filter,
+    PlanningMonthGoals,
   },
   props: {
     year: Number,
@@ -54,11 +59,14 @@ export default {
     };
   },
   methods: {
-    addMonth() {
+    collapseMonths() {
+      this.planning.planningMonths.forEach(month => month.hidden = true)
+    },
+    addMonth(month) {
       this.planning.planningMonths.push({
         hidden: false,
         id: quickid(),
-        idMonth: new Date().getMonth(),
+        idMonth: month.idMonth + 1,
         items: [
           {
             id: quickid(),
@@ -68,7 +76,24 @@ export default {
             paymentMethod: "credit",
           },
         ],
+        goals: {
+          id: quickid(),
+          idPlanningMonth: null,
+          moneyToSave: 0,
+          creditLimit: 0,
+        },
+        budgets: [
+          {
+            id: quickid(),
+            type: null,
+            planningMonth: null,
+            amount: 0,
+          },
+        ],
       });
+    },
+    handlePopup(month) {
+      month.toggledGoals = false;
     },
     removeMonth(id) {
       if (this.planning.planningMonths?.length === 1) {
@@ -100,7 +125,6 @@ export default {
         date: toHtmlDateTimeFormat(new Date()),
         paymentMethod: "debit",
         description: "",
-        idPlanningMonth: month.id,
         idType: null,
         idCard: null,
       });
@@ -176,6 +200,9 @@ export default {
         (acc, current, index) => {
           const isOnDb = !isNaN(+current.id);
           let copy = { ...current };
+          if (copy.typesSpent) {
+            delete [copy.typesSpent];
+          }
           if (onMonth) {
             Object.assign(copy, {
               totalIn: this.in(copy),

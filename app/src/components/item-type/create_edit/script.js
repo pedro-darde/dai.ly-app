@@ -3,7 +3,6 @@ import { popupVisibility } from "@/mixins/Popup";
 import Select from "../../select/Select.vue";
 import Input from "../../input/Input.vue";
 import Treeselect from "../../treeselect/Treeselect.vue";
-import NestedDraggable from "./Draggable.vue";
 import { itemTypeService } from "@/services/ItemTypeService";
 import SwalMixin from "@/mixins/SwalMixin";
 export default {
@@ -13,7 +12,6 @@ export default {
     Select,
     Input,
     Treeselect,
-    NestedDraggable,
   },
   data() {
     return {

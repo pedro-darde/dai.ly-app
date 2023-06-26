@@ -31,14 +31,30 @@ const DEFAULT_PLANNING = {
           hidden: false,
         },
       ],
+      goals: {
+        id: quickid(),
+        idPlanningMonth: null,
+        moneyToSave: 0,
+        creditLimit: 0,
+      },
+      budgets: [
+        {
+          id: quickid(),
+          type: null,
+          planningMonth: null,
+          amount: 0,
+        },
+      ],
     },
   ],
+  existingYears: [],
 };
 const state = {
   planning: DEFAULT_PLANNING,
   months: [],
   itemTypes: [],
   cards: [],
+  existingYears: [],
 };
 
 const actions = {
@@ -72,9 +88,24 @@ const actions = {
           item.hidden = false;
           item.date = toHtmlDateTimeFormat(item.date, DATE_INPUT_FORMAT);
         }
-
-        month.typesSpent = organizeSpents(month.typesSpent);
+        month.typesSpent = organizeSpents(
+          month.typesSpent,
+          month.budgets ?? []
+        );
         month.showItemDetails = false;
+        month.toggledGoals = false;
+
+        if (month.budgets?.length) {
+          month.budgets.forEach((budget) => (budget.isOnDB = true));
+        }
+
+        if (month.goals) {
+          month.goals.isOnDB = true;
+        }
+
+        if(month.monthGoals) {
+          month.monthGoals.isOnDB = true
+        }
       }
 
       if (!planning.planningMonths?.length) {
@@ -82,6 +113,7 @@ const actions = {
       }
 
       commit("SET_PLANNING", planning);
+      commit("SET_EXISTING_YEARS", planning.existingYears);
     } catch (e) {
       console.log(e);
     }
@@ -150,6 +182,9 @@ const mutations = {
   },
   SET_CARDS(state, value) {
     state.cards = value;
+  },
+  SET_EXISTING_YEARS(state, value) {
+    state.existingYears = value;
   },
 };
 

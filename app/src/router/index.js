@@ -1,5 +1,4 @@
-import Vue from "vue";
-import VueRouter from "vue-router";
+import  { createRouter, createWebHashHistory} from "vue-router";
 import HomeView from "../views/HomeView.vue";
 import TaskView from "../views/TasksView.vue";
 import RejectedAndValidatedTasksView from "@/views/RejectedAndValidatedTasksView.vue";
@@ -7,8 +6,6 @@ import AllNotesView from "../views/AllNotesView.vue";
 import PlanningsView from "../views/PlanningsView.vue";
 import DashboardView from "../views/DashboardView.vue";
 import SettingsView from "../views/SettingsView.vue";
-Vue.use(VueRouter);
-
 const routes = [
   {
     path: "/",
@@ -47,10 +44,8 @@ const routes = [
   },
 ];
 
-const router = new VueRouter({
-  mode: "history",
-  base: process.env.BASE_URL,
+export default createRouter({
+  history: createWebHashHistory(),
   routes,
+  base: process.env.BASE_URL,
 });
-
-export default router;

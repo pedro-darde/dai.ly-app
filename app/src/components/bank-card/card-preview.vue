@@ -87,7 +87,7 @@
 
     <div class="z-20 flex flex-col gap-5">
       <strong class="text-2xl">
-        {{ card.number ?? "----------------------------" | VMask('#### #### #### ####') }}
+        {{ VMask(card.number ?? "--------------------------")}}
       </strong>
 
       <p class="text-sm leading-normal">
@@ -116,6 +116,7 @@ import Visa from "../../assets/visa.svg";
 import Master from "../../assets/master.svg";
 import Elo from "../../assets/elo.svg";
 import Default from "../../assets/logo.png";
+import VMask from "v-mask"
 
 const CC_BRAND_ICONS = {
   visa: Visa,

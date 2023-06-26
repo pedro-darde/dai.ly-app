@@ -21,11 +21,11 @@ export default {
       let html = " ";
       if (this.note.tasks?.length) {
         html +=
-          "O mesmo possuí vínculo com tasks e ao excluir esse vínculo será removido!";
+          "This note has linked tasks, if you remove, this link will be removed to!";
       }
       const res = await this.showConfirm(
         html,
-        "Você tem certeza que deseja remover o registro ?"
+        "Are you shure you want to remove ?"
       );
       if (res.isConfirmed) {
         await this.$store.dispatch("note/removeNote", this.note.id);

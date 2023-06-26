@@ -50,6 +50,9 @@
             :required="false"
           />
         </div>
+        <div class="grid md:grid-cols-4 md:gap-3 mb-2">
+          <button type="button" class="px-3 py-2 text-sm font-medium text-center text-white bg-blue-400 rounded-lg hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300" @click="collapseMonths()"> Collapse all months </button>
+        </div>
         <div class="flex flex-row items-center ml-4 mb-2">
           <a class="text-black-700 mr-1">
             <calendar />
@@ -61,7 +64,7 @@
           v-for="(month, key) in planning.planningMonths"
           :key="key"
         >
-          <div class="grid md:grid-cols-3 md:gap-3 mb-2 items-end ml-4">
+          <div class="grid md:grid-cols-4 md:gap-3 mb-2 items-end ml-4">
             <Select
               label="Month"
               type="text"
@@ -72,10 +75,18 @@
               :required="true"
             />
             <MoneyInput label="Credit status" v-model="month.creditStatus" />
-            <div class="flex flex-row">
+
+            <div class="flex flex-row gap-2 items-center">
+              <a
+                class="text-blue-400 ml-2 font-mono hover:font-bold"
+                href="#"
+                @click="month.toggledGoals = !month.toggledGoals"
+              >
+                Add goals
+              </a>
               <button
                 type="button"
-                @click="addMonth"
+                @click="addMonth(month)"
                 title="Adicionar Mês"
                 class="text-lg"
                 v-if="isLastMonth(month.id)"
@@ -106,39 +117,58 @@
               </button>
             </div>
           </div>
-          <div class="flex flex-row items-center ml-8" v-if="!month.hidden">
-            <a class="text-black-700 mr-1">
-              <char />
-            </a>
-            <h3 class="text-lg font-bold">Moviments</h3>
-          </div>
-          <div class="p-5 ml-5">
-            <div class="grid md:gap-3 md:grid-cols-3">
-              <Input
-                label="Description"
-                placeholder="Enter item description here"
-                v-model="month.searchTerm"
-                :required="false"
-                v-if="!month.hidden"
-                @input="onInputSearch($event, month)"
-              />
-              <Treeselect
-                placeholder="Type"
-                v-model="month.searchType"
-                :options="itemTypes"
-                label="Type"
-                @input="onInputSearch($event, month, 'idType')"
-              />
-              <Select
-                v-model="month.searchPaymentType"
-                label="Payment Method"
-                optionText="name"
-                optionValue="value"
-                :options="paymentMethods"
-                @input="onInputSearch($event, month, 'paymentMethod')"
-              />
+          <PlanningMonthGoals
+            :idPlanningMonth="month.id"
+            :currentGoals="month.goals"
+            :currentBudgets="month.budgets"
+            v-model="month.toggledGoals"
+            @isVisible="handlePopup(month)"
+          />
+          <div class="flex flex-col items-start ml-8" v-if="!month.hidden">
+            <div class="mb-2 border rounded-sm p-2">
+              <div class="flex flex-row gap-2 items-center justify-center">
+                <h1 class="text-xl font-bold">Filters</h1>
+<!--                <font-awesome-icon icon="fa-solid fa-filter" />-->
+              </div>
+
+              <div class="grid md:gap-3 md:grid-cols-3">
+                <Input
+                  label="Description"
+                  placeholder="Enter item description here"
+                  v-model="month.searchTerm"
+                  :required="false"
+                  v-if="!month.hidden"
+                  @input="onInputSearch($event, month)"
+                />
+                <Treeselect
+                  placeholder="Type"
+                  v-model="month.searchType"
+                  :options="itemTypes"
+                  v-if="!month.hidden"
+                  label="Type"
+                  :required="false"
+                  @input="onInputSearch($event, month, 'idType')"
+                />
+                <Select
+                  v-model="month.searchPaymentType"
+                  label="Payment Method"
+                  optionText="name"
+                  optionValue="value"
+                  v-if="!month.hidden"
+                  :required="false"
+                  :options="paymentMethods"
+                  @input="onInputSearch($event, month, 'paymentMethod')"
+                />
+              </div>
+            </div>
+            <div class="flex flex-row">
+              <a class="text-black-700 mr-1">
+                <char />
+              </a>
+              <h3 class="text-lg font-bold">Moviments</h3>
             </div>
           </div>
+
           <TransitionGroup mode="out-in" class="max-h-96 overflow-auto">
             <div
               class="flex flex-col bg-gray-700 rounded border-l-8 border-white p-5 mb-5 text-white ml-8"

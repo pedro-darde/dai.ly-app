@@ -10,11 +10,11 @@
       :multiple="false"
       :placeholder="placeholder"
       v-model="text"
-      :disable-branch-nodes="true"
       noChildrenText="Dont have children"
       :options="options"
       :flat="false"
       :append-to-body="appendToBody"
+      :disabled="disabled"
     />
   </div>
 </template>

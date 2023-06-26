@@ -11,7 +11,7 @@
           <div v-if="card.showTransactions" class="bg-slate-300 mr-2 rounded">
             <h2 class="text-center ml-2 p-2 font-bold text-xl"> Transactions </h2>
             <div class="flex flex-row justify-center" v-for="transaction in card.transactions" :key="`${transaction.value}_${transaction.description}`">
-              <p :class='["p-2 font-bold text-center", transaction.operation == "in" ? "text-green-500": "text-red-400"]'> {{  transaction.value | toMonetary }} </p>
+              <p :class='["p-2 font-bold text-center", transaction.operation == "in" ? "text-green-500": "text-red-400"]'> {{  $filters.toMonetary (transaction.value) }} </p>
               <p class="p-2"> {{ transaction.description }} </p>
             </div>
           </div>

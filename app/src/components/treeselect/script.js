@@ -1,6 +1,6 @@
 import quickid from "@/helpers/quickid";
-import "@riophae/vue-treeselect/dist/vue-treeselect.css";
-import Treeselect from "@riophae/vue-treeselect";
+// import "vue3-treeselect/styles/style.less";
+import Treeselect from "vue3-treeselect";
 export default {
   components: {
     Treeselect,

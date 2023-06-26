@@ -30,7 +30,7 @@
     </div>
     <div class="flex-1 min-w-0 flex-row self-start">
       <p class="text-sm italic font-bold truncate">
-        {{ note.created_at | toDateBR }}
+        {{ $filters.toDateBR(note.created_at) }}
       </p>
       <!-- <Wsiwyg v-model="note.description"/> -->
     </div>

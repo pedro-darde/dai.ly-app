@@ -15,6 +15,14 @@ export class PlanningService extends BaseService {
       return res?.data;
     });
   }
+
+  async createInstallmens(year, installments) {
+    const res = await axiosPlugin.post(
+      `/planning/${year}/installments`,
+      installments
+    );
+    console.log(res);
+  }
 }
 
 export const planningService = new PlanningService("planning");

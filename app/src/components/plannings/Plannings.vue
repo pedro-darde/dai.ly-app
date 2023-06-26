@@ -11,6 +11,14 @@
           >
             Add Item Type
           </button>
+
+          <button
+            @click="createInstallments"
+            class="flex items-center rounded bg-blue-700 text-white h-8 p-2 text-center self-end ml-2"
+            title="Add Installments"
+          >
+            Add Installments / Recurring purchases
+          </button>
         </div>
       </template>
     </HeaderComponent>
@@ -63,6 +71,12 @@
       <CreateEditItemType
         v-model="popupItemTypeVisible"
         @isVisible="handleItemType()"
+      />
+      <CreateInstallments
+        v-if="year"
+        v-model="popupInstallmentsVisible"
+        @isVisible="handleInstallments()"
+        :planningYear="year"
       />
     </main>
   </div>

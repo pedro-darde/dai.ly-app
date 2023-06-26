@@ -2,7 +2,7 @@
   <RawPopup v-if="visible" @disband="disband" width="650px">
     <div class="p-5">
       <div class="flex flex-col">
-        <form @submit.preve="save">
+        <form @submit.prevent="save">
           <div class="flex flex-row justify-start mt-5">
             <p class="font-bold text-2xl">Create new Type</p>
           </div>

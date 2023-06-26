@@ -1,4 +1,4 @@
-import Vue from "vue";
+import { createApp } from "vue";
 import VueMask from "v-mask";
 import App from "./App.vue";
 import router from "./router";
@@ -7,37 +7,38 @@ import "./assets/tailwind.css";
 import toDateBR from "./filters/toDateBR";
 import toMonetary from "./filters/toMonetary";
 import cutText from "./filters/cutText";
-import { library } from "@fortawesome/fontawesome-svg-core";
-import {
-  faArrowAltCircleRight,
-  faBars,
-} from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import LottieAnimation from "lottie-web-vue";
-Vue.component("lottie-animation", LottieAnimation);
 
-library.add(faArrowAltCircleRight, faBars);
-Vue.use(VueMask);
-Vue.config.productionTip = false;
-Vue.filter("toDateBR", toDateBR);
-Vue.filter("toMonetary", toMonetary);
-Vue.filter("cutText", cutText);
-Vue.component("font-awesome-icon", FontAwesomeIcon);
-Vue.directive("trim", {
+
+const filters = require.context("./filters", true, /\.js$/i);
+
+
+const app = createApp({
+  ...App
+})
+app.config.globalProperties.filters = {
+
+}
+filters.keys().map((key) => {
+  const filterName = key.split("/").pop().split(".")[0]
+  app.config.globalProperties.filters[filterName] = filters(key).default
+});
+
+app.use(router)
+app.use(store)
+app.component("lottie-animation", LottieAnimation);
+app.use(VueMask);
+app.config.productionTip = false;
+app.directive("trim", {
   inserted(el, binding) {
     const maxLength = binding.value || 5;
     const str = el.innerHTML;
     const spllitedInfo = str.split(" ");
     if (spllitedInfo.length < maxLength) return spllitedInfo.join(" ");
-    const resultString = spllitedInfo
-      .slice(0, maxLength)
-      .join(" ")
-      .concat("...");
-    el.innerHTML = resultString;
+    el.innerHTML = spllitedInfo
+        .slice(0, maxLength)
+        .join(" ")
+        .concat("...");
   },
 });
-new Vue({
-  store,
-  router,
-  render: (h) => h(App),
-}).$mount("#app");
+app.mount("#app");

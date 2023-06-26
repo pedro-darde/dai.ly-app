@@ -9,14 +9,22 @@
         <span class="px-3 py-3">
           {{ parent.description }}
         </span>
-        <span
-          :class="[
-            'px-3 py-3',
-            getSpentsValue(parent) < 0 ? 'text-red-500' : 'text-emerald-500',
-          ]"
-        >
-          {{ getSpentsValue(parent) | toMonetary }}
-        </span>
+        <div class="flex flex-row justify-center items-center">
+          <span
+            :class="[
+              'px-3 py-3',
+              getSpentsValue(parent) < 0 ? 'text-red-500' : 'text-emerald-500',
+            ]"
+          >
+            {{ getSpentsValue(parent) | toMonetary }}
+          </span>
+          <BudgetIndicatorVue
+            v-if="parent.budget"
+            :budget="parent.budget"
+            :totalSpent="getSpentsValue(parent)"
+          />
+        </div>
+
         <span>
           <a
             href="#"
@@ -63,7 +71,11 @@
 </template>
 
 <script>
+import BudgetIndicatorVue from "./BudgetIndicator.vue";
 export default {
+  components: {
+    BudgetIndicatorVue,
+  },
   name: "BodyDetails",
   props: {
     details: {

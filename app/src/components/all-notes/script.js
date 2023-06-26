@@ -27,11 +27,9 @@ export default {
       await this.showTaskInfo(tasks);
     },
     viewNote() {
-      console.log(this.popupViewNoteVisible);
       this.toggleViewNote(!this.popupViewNoteVisible);
     },
     handlePopup(value) {
-      console.log("aqui");
       this.toggleViewNote(value);
     },
   },
