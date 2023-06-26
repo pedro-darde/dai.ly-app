@@ -51,7 +51,13 @@
           />
         </div>
         <div class="grid md:grid-cols-4 md:gap-3 mb-2">
-          <button type="button" class="px-3 py-2 text-sm font-medium text-center text-white bg-blue-400 rounded-lg hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300" @click="collapseMonths()"> Collapse all months </button>
+          <button
+            type="button"
+            class="px-3 py-2 text-sm font-medium text-center text-white bg-blue-400 rounded-lg hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300"
+            @click="collapseMonths()"
+          >
+            Collapse all months
+          </button>
         </div>
         <div class="flex flex-row items-center ml-4 mb-2">
           <a class="text-black-700 mr-1">
@@ -128,7 +134,7 @@
             <div class="mb-2 border rounded-sm p-2">
               <div class="flex flex-row gap-2 items-center justify-center">
                 <h1 class="text-xl font-bold">Filters</h1>
-<!--                <font-awesome-icon icon="fa-solid fa-filter" />-->
+                <!--                <font-awesome-icon icon="fa-solid fa-filter" />-->
               </div>
 
               <div class="grid md:gap-3 md:grid-cols-3">
@@ -173,10 +179,10 @@
             <div
               class="flex flex-col bg-gray-700 rounded border-l-8 border-white p-5 mb-5 text-white ml-8"
               v-for="(item, key) in month.items"
-              v-if="!item.hidden && !month.hidden"
               :key="key"
             >
               <div
+                v-if="!item.hidden && !month.hidden"
                 :class="[
                   'grid  md:gap-3 mb-2 items-end',
                   item.operation == 'out' ? 'md:grid-cols-8' : 'md:grid-cols-7',

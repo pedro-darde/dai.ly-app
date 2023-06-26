@@ -11,32 +11,32 @@
               planningBalance >= 0 ? 'text-green-300' : 'text-red-400',
             ]"
           >
-            {{ planningBalance | toMonetary }}
+            {{ $filters.toMonetary(planningBalance) }}
           </p>
         </div>
       </div>
       <div class="bg-gray-400 p-5 rounded border-l-8">
         <h3 class="text-xl font-bold">In</h3>
         <p class="text-xl font-bold text-green-300">
-          {{ planningIn | toMonetary }}
+          {{ $filters.toMonetary(planningIn) }}
         </p>
       </div>
       <div class="bg-gray-400 p-5 rounded border-l-8">
         <h3 class="text-xl font-bold">Out</h3>
         <p class="text-xl font-bold text-red-400">
-          {{ planningOut | toMonetary }}
+          {{ $filters.toMonetary(planningOut) }}
         </p>
       </div>
       <div class="bg-gray-400 p-5 rounded border-l-8">
         <h3 class="text-xl font-bold">Spent On Credit</h3>
         <p class="text-xl font-bold text-red-400">
-          {{ spentOnCredit | toMonetary }}
+          {{ $filters.toMonetary(spentOnCredit) }}
         </p>
       </div>
       <div class="bg-gray-400 p-5 rounded border-l-8">
         <h3 class="text-xl font-bold">Spent On Debit</h3>
         <p class="text-xl font-bold text-red-400">
-          {{ spentOnDebit | toMonetary }}
+          {{ $filters.toMonetary(spentOnDebit) }}
         </p>
       </div>
       <div class="bg-gray-400 p-5 rounded border-l-8">
@@ -49,7 +49,7 @@
               : 'text-red-400',
           ]"
         >
-          {{ (planningBalance - planning.expectedAmount) | toMonetary }}
+          {{ $filters.toMonetary(planningBalance - planning.expectedAmount) }}
         </p>
       </div>
       <div>

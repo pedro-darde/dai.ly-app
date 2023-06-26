@@ -1,6 +1,8 @@
 <template>
   <div class="home">
-    <Notes />
+    <router-view>
+      <Notes />
+    </router-view>
   </div>
 </template>
 
@@ -13,7 +15,7 @@ export default {
     Notes,
   },
   created() {
-    console.log("app criado")
-  }
+    console.log("app criado");
+  },
 };
 </script>

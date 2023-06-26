@@ -1,5 +1,5 @@
 import quickid from "@/helpers/quickid";
-// import "vue3-treeselect/styles/style.less";
+import "vue3-treeselect/dist/vue3-treeselect.css";
 import Treeselect from "vue3-treeselect";
 export default {
   components: {

@@ -4,11 +4,9 @@
       <p class="text-sm ml-2">{{ percentageOverBudget }}%</p>
     </div>
     <div
-      :class="[
-        'w-5 h-14 rounded-md flex flex-row-reverse border-2 items-end',
-      ]"
+      :class="['w-5 h-14 rounded-md flex flex-row-reverse border-2 items-end']"
       :style="{
-        borderColor: percentageColor
+        borderColor: percentageColor,
       }"
       :title="budget.amount"
     >
@@ -17,13 +15,12 @@
         :style="{
           height:
             percentageOverBudget > 100 ? '100%' : percentageOverBudget + '%',
-            backgroundColor: percentageColor
-
+          backgroundColor: percentageColor,
         }"
       ></div>
     </div>
     <div>
-      <p class="text-sm ml-2">{{ budget.amount | toMonetary }}</p>
+      <p class="text-sm ml-2">{{ $filters.toMonetary(budget.amount) }}</p>
     </div>
   </div>
 </template>
@@ -54,10 +51,9 @@ export default {
       // if (this.percentageOverBudget > 50 && this.percentageColor <= 75) {
       //   color = "yellow";
       // }
-      return color
-    }
+      return color;
+    },
   },
-  methods: {
-  },
+  methods: {},
 };
 </script>

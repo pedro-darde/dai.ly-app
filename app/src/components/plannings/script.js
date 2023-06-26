@@ -40,11 +40,8 @@ export default {
   },
   async mounted() {
     this.loading = true;
-
-    setTimeout(async () => {
-      await this.$store.dispatch("planning/changePlanningYear", this.year);
-      this.loading = false;
-    }, 1500);
+    await this.$store.dispatch("planning/changePlanningYear", this.year);
+    this.loading = false;
   },
   methods: {
     createCC() {

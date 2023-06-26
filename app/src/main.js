@@ -4,28 +4,16 @@ import App from "./App.vue";
 import router from "./router";
 import store from "./store";
 import "./assets/tailwind.css";
-import toDateBR from "./filters/toDateBR";
-import toMonetary from "./filters/toMonetary";
-import cutText from "./filters/cutText";
 import LottieAnimation from "lottie-web-vue";
-
-
-const filters = require.context("./filters", true, /\.js$/i);
-
+import filters from "./filters";
 
 const app = createApp({
-  ...App
-})
-app.config.globalProperties.filters = {
-
-}
-filters.keys().map((key) => {
-  const filterName = key.split("/").pop().split(".")[0]
-  app.config.globalProperties.filters[filterName] = filters(key).default
+  ...App,
 });
+app.config.globalProperties.$filters = filters;
 
-app.use(router)
-app.use(store)
+app.use(router);
+app.use(store);
 app.component("lottie-animation", LottieAnimation);
 app.use(VueMask);
 app.config.productionTip = false;
@@ -35,10 +23,9 @@ app.directive("trim", {
     const str = el.innerHTML;
     const spllitedInfo = str.split(" ");
     if (spllitedInfo.length < maxLength) return spllitedInfo.join(" ");
-    el.innerHTML = spllitedInfo
-        .slice(0, maxLength)
-        .join(" ")
-        .concat("...");
+    el.innerHTML = spllitedInfo.slice(0, maxLength).join(" ").concat("...");
   },
 });
+
+console.log(app.config.globalProperties.$filters);
 app.mount("#app");

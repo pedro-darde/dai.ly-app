@@ -74,6 +74,7 @@ const actions = {
   async changePlanningYear({ commit, state }, year) {
     try {
       let planning = (await planningService.get(year)) || DEFAULT_PLANNING;
+      console.log(planning);
       planning.startAt = toHtmlDateTimeFormat(
         planning.startAt,
         DATE_INPUT_FORMAT
@@ -103,8 +104,8 @@ const actions = {
           month.goals.isOnDB = true;
         }
 
-        if(month.monthGoals) {
-          month.monthGoals.isOnDB = true
+        if (month.monthGoals) {
+          month.monthGoals.isOnDB = true;
         }
       }
 

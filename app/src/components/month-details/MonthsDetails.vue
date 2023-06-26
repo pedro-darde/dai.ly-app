@@ -16,7 +16,7 @@
                     month.balance >= 0 ? 'text-green-300' : 'text-red-400',
                   ]"
                 >
-                  {{ month.balance | toMonetary }}
+                  {{ $filters.toMonetary(month.balance) }}
                 </p>
               </div>
             </div>
@@ -24,13 +24,13 @@
             <div class="bg-white p-5 rounded border-l-8">
               <h3 class="text-xl font-bold">Spent On Credit</h3>
               <p class="text-xl font-bold text-red-400">
-                {{ month.spentOnCredit | toMonetary }}
+                {{ $filters.toMonetary(month.spentOnCredit) }}
               </p>
             </div>
             <div class="bg-white p-5 rounded border-l-8">
               <h3 class="text-xl font-bold">Spent On Debit</h3>
               <p class="text-xl font-bold text-red-400">
-                {{ month.spentOnDebit | toMonetary }}
+                {{ $filters.toMonetary(month.spentOnDebit) }}
               </p>
             </div>
             <button

@@ -6,7 +6,7 @@
       <div class="flex flex-row items-center">
         <span class="font-bold text-right px-6 py-3 text-base"> Total In </span>
         <span class="text-center text-green-500 font-bold">
-          + {{ totalIn | toMonetary }}
+          + {{ $filters.toMonetary(totalIn) }}
         </span>
       </div>
       <div class="flex flex-row items-center">
@@ -14,12 +14,12 @@
           Total Out
         </span>
         <span class="text-center text-red-500 font-bold">
-          - {{ totalOut | toMonetary }}
+          - {{ $filters.toMonetary(totalOut) }}
         </span>
       </div>
       <div class="flex flex-row items-center">
         <span class="font-bold text-right px-6 py-3 text-base"></span>
-        <span class="font-bold">= {{ balance | toMonetary }}</span>
+        <span class="font-bold">= {{ $filters.toMonetary(balance) }}</span>
       </div>
     </div>
   </div>

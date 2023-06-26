@@ -2,10 +2,13 @@
   <div class="bg-white border-b flex flex-col w-full">
     <div
       v-for="parent in details"
-      v-if="getSpentsValue(parent) != 0"
       class="flex flex-col w-96 ml-2 bg-white p-2 rounded border-l-4 mb-2"
+      :key="parent.id"
     >
-      <div class="flex flex-row justify-between items-center">
+      <div
+        v-if="getSpentsValue(parent) != 0"
+        class="flex flex-row justify-between items-center"
+      >
         <span class="px-3 py-3">
           {{ parent.description }}
         </span>
@@ -16,7 +19,7 @@
               getSpentsValue(parent) < 0 ? 'text-red-500' : 'text-emerald-500',
             ]"
           >
-            {{ getSpentsValue(parent) | toMonetary }}
+            {{ $filters.toMonetary(getSpentsValue(parent)) }}
           </span>
           <BudgetIndicatorVue
             v-if="parent.budget"

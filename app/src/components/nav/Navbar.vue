@@ -8,41 +8,41 @@
           </div>
           <div class="hidden md:block">
             <div class="ml-10 flex items-baseline space-x-4">
-              <a
-                href="/"
+              <router-link
+                to="/"
                 class="bg-yellow-600 text-white px-3 py-2 rounded-md text-sm font-medium"
                 aria-current="page"
-                >Home</a
+                >Home</router-link
               >
-              <a
-                href="/notes"
+              <router-link
+                to="/notes"
                 class="bg-yellow-600 text-white px-3 py-2 rounded-md text-sm font-medium"
                 aria-current="page"
-                >All Notes</a
+                >All Notes</router-link
               >
-              <a
-                href="/tasks"
+              <router-link
+                to="/tasks"
                 class="bg-yellow-600 text-white px-3 py-2 rounded-md text-sm font-medium"
                 aria-current="page"
-                >Tasks</a
+                >Tasks</router-link
               >
-              <a
-                href="/finances"
+              <router-link
+                to="/finances"
                 class="bg-yellow-600 text-white px-3 py-2 rounded-md text-sm font-medium"
                 aria-current="page"
-                >Finances</a
+                >Finances</router-link
               >
-              <a
-                href="/dashboard"
+              <router-link
+                to="/dashboard"
                 class="bg-yellow-600 text-white px-3 py-2 rounded-md text-sm font-medium"
                 aria-current="page"
-                >Dashboard</a
+                >Dashboard</router-link
               >
-              <a
-                href="/settings"
+              <router-link
+                to="/settings"
                 class="bg-yellow-600 text-white px-3 py-2 rounded-md text-sm font-medium"
                 aria-current="page"
-                >Settings</a
+                >Settings</router-link
               >
             </div>
           </div>
