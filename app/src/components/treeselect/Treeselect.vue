@@ -6,16 +6,7 @@
     >
       {{ label }}</label
     >
-    <Treeselect
-      :multiple="false"
-      :placeholder="placeholder"
-      v-model="text"
-      noChildrenText="Dont have children"
-      :options="options"
-      :flat="false"
-      :append-to-body="appendToBody"
-      :disabled="disabled"
-    />
+    TODO
   </div>
 </template>
 
