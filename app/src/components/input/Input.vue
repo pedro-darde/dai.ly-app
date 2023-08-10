@@ -20,4 +20,53 @@
     />
   </div>
 </template>
-<script src="./script.js"></script>
+<script setup>
+import quickid from "@/helpers/quickid";
+import { ref, watch, defineEmits } from "vue";
+const emit = defineEmits(["input"])
+const props = defineProps({
+  value: {
+    required: true,
+  },
+  label: {
+    type: String,
+    required: true,
+  },
+  disabled: {
+    type: Boolean,
+    default: false,
+  },
+  required: {
+    type: Boolean,
+    default: true,
+  },
+  id: {
+    type: String,
+    default: quickid(),
+  },
+  placeholder: {
+    type: String,
+    default: "",
+  },
+  mask: {
+    required: false
+  },
+  extraProps: {
+    required: false
+  },
+  type: { 
+    type: String
+  }
+})
+
+const text = ref(props.value)
+
+watch(text, (value) => {
+  emit("input", value);
+})
+
+watch(props.value, (value) => {
+  text.value = value
+})
+
+</script>

@@ -30,4 +30,79 @@
     </select>
   </div>
 </template>
-<script src="./script.js"></script>
+<script setup>
+
+
+import quickid from "@/helpers/quickid";
+import { ref, watch, defineEmits, onMounted } from "vue";
+
+
+const emit = defineEmits(["input"])
+const props = defineProps({
+  value: {
+    required: true,
+  },
+  label: {
+    type: String,
+    required: true,
+  },
+  disabled: {
+    type: Boolean,
+    default: false,
+  },
+  required: {
+    type: Boolean,
+    default: true,
+  },
+  id: {
+    type: String,
+    default: quickid(),
+  },
+  placeholder: {
+    type: String,
+    default: "",
+  },
+  options: {
+    required: true,
+    type: [Array, Object],
+  },
+  optionText: {
+    required: false,
+    type: String,
+  },
+  optionValue: {
+    required: false,
+    type: String,
+  },
+  multiple: {
+    required: false,
+    default: false,
+  },
+  useItemAsValue: {
+    required: false,
+    type: Boolean,
+    default: false,
+  },
+})
+
+const text = ref(props.value)
+
+const  getOptionValue = (item, key) => {
+  if (props.useItemAsValue) return item;
+  if (props.optionValue) return item[props.optionValue];
+  return key;
+}
+const getOptionText = (item) => {
+  if (props.optionText) return item[props.optionText];
+  return item;
+}
+
+watch(text, (value) => {
+  emit("input", value);
+})
+
+watch(props.value, (value) => {
+  text.value = value
+})
+
+</script>

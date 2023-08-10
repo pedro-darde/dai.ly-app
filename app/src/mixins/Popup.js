@@ -1,39 +1,39 @@
-export const popupVisibility = {
-  props: ["value"],
-  computed: {
-    visible: {
+import { ref } from "vue";
+import { computed, defineProps } from "vue";
+
+export const popupVisibility = () => {
+  const { value } = defineProps({
+    value: {
+      required: true
+    }
+  })
+
+  const emit = defineEmits("isVisible")
+  const visible = computed(() => ({
       get() {
-        return this.value;
+        return value
       },
       set(isVisible) {
-        this.$emit("isVisible", !!isVisible);
-      },
-    },
-  },
-  methods: {
-    disband() {
-      this.visible = false;
-    },
-  },
+        emit("isVisible", !!isVisible)
+      }
+  }))
+ 
+  const disband = () => {
+    visible = false;
+  }
+  return {
+    disband,
+    visible
+  }
 };
 
+
 export function usePopup(name, defaultVisible = false) {
-  name = name.charAt(0).toUpperCase() + name.substring(1);
-  const prop = `popup${name}Visible`;
+  const toggled = ref(defaultVisible)
   return {
-    data() {
-      return {
-        [prop]: defaultVisible,
-      };
-    },
-    methods: {
-      [`toggle${name}`](to = null) {
-        if (to == null) {
-          to = !this[prop];
-          return;
-        }
-        this[prop] = to;
-      },
-    },
-  };
+  togglePopup() {
+    toggled.value = !toggled.value
+  },
+  toggled
+ }
 }

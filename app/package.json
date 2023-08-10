@@ -40,7 +40,6 @@
     "@vue/compiler-sfc": "^3.1.0",
     "node-sass": "^8.0.0",
     "sass-loader": "^13.2.0",
-    "vue-cli-plugin-quasar": "~5.0.2",
     "vue-cli-plugin-tailwind": "~3.0.0"
   },
   "browserslist": [

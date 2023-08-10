@@ -154,7 +154,7 @@
                   label="Type"
                   :required="false"
                   @input="onInputSearch($event, month, 'idType')"
-                />
+                 :value="month.searchType"/>
                 <Select
                   v-model="month.searchPaymentType"
                   label="Payment Method"
@@ -268,7 +268,271 @@
   </div>
 </template>
 
-<script src="./script.js"></script>
+
+<script setup>
+import money from "../icons/money.vue";
+import calendar from "../icons/calendar.vue";
+import Input from "../input/Input.vue";
+import MoneyInput from "../money-input/MoneyInput.vue";
+import { toHtmlDateTimeFormat } from "@/helpers/DateFormatter";
+import quickid from "@/helpers/quickid";
+import plus from "../icons/plus.vue";
+import Select from "../select/Select.vue";
+import char from "../icons/char.vue";
+import remove from "../icons/remove.vue";
+import PlanningPreview from "../planning-preview/PlanningPreview.vue";
+import planningCalculator from "@/mixins/PlanningCalculator";
+import ArrowDown from "../icons/arrow-down.vue";
+import Treeselect from "../treeselect/Treeselect.vue";
+import PlanningMonthGoals from "../planning/Goals/PlanningMonthGoals.vue";
+import { usePopup } from "@/mixins/Popup";
+import { usePlanningCalculator } from "@/mixins/PlanningCalculator"
+import { ref, computed, onUnmounted, watchEffect, watch } from "vue";
+import { useStore } from "vuex";
+const $store = useStore()
+const operations = [
+  {
+    name: "In (+)",
+    value: "in",
+  },
+  {
+    name: "Out (-)",
+    value: "out",
+  },
+];
+
+const paymentMethods = [
+  { name: "Debit", value: "debit" },
+  { name: "Credit", value: "credit" },
+];
+
+const itemTypes = computed(() => {
+  return $store.getters["planning/itemTypesGetter"];
+})
+
+const months = computed(() => {
+  return $store.getters["planning/monthGetter"];
+})
+
+console.log(months);
+
+const cards = computed(() => {
+  return $store.getters["planning/cardsGetter"];
+})
+
+
+const onEdit = computed(() => {
+    return (
+      planning.hasOwnProperty("id") &&
+      isIdFromDB(planning ?? { id: null })
+    );
+});
+
+const planning = computed({
+    set(value) {
+      $store.dispatch("planning/applyCurrentPlanning", value);
+    },
+    get() {
+      console.log("estou procurando o planning");
+      return $store.state.planning.planning;
+    },
+})
+
+onUnmounted(() => {
+  $store.dispatch("planning/applyDefaultPlanning");
+})
+
+watch(planning, (value) => {
+  planning = value;
+})
+
+// const { visible, disband } = usePopup();
+const { in: inExpent , out } = usePlanningCalculator()
+
+const currentMonthGoals = ref([]);
+const currentMonthItems = ref([]);
+
+const addMonth = (month) => {
+  planning.planningMonths.push({
+    hidden: false,
+    id: quickid(),
+    idMonth: month.idMonth + 1,
+    items: [
+      {
+        idPlanningMonth: month.id,
+        id: quickid(),
+        value: 0,
+        operation: "out",
+        date: toHtmlDateTimeFormat(new Date()),
+        paymentMethod: "credit",
+      },
+    ],
+    goals: {
+      id: quickid(),
+      idPlanningMonth: null,
+      moneyToSave: 0,
+      creditLimit: 0,
+    },
+    budgets: [
+      {
+        id: quickid(),
+        type: null,
+        planningMonth: null,
+        amount: 0,
+      },
+    ],
+  });
+};
+
+const removeMonth = (id) => {
+  if (planning.planningMonths?.length === 1) {
+    toastError("Keep at least one month to the planning");
+    return;
+  }
+
+  if (onEdit) {
+    const month = planning.planningMonths.find((item) => item.id === id);
+    if (isIdFromDB(month)) {
+      monthsToRemove.push(id);
+      itemsToRemove.push([
+        ...month.items.filter(isIdFromDB).map(({ id }) => id),
+      ]);
+    }
+  }
+  planning.planningMonths = planning.planningMonths.filter(
+    (item) => item.id !== id
+  );
+};
+
+const addItem = (month) => {
+  month.items.push({
+    idPlanningMonth: month.id,
+    id: quickid(),
+    value: 0,
+    operation: "out",
+    date: toHtmlDateTimeFormat(new Date()),
+    paymentMethod: "debit",
+    description: "",
+    idType: null,
+    idCard: null,
+  });
+};
+
+const removeItem = (month, idItem) => {
+  if (month.items?.length === 1) {
+    toastError("Keep at least one item to your month.");
+    return;
+  }
+
+  const item = month.items.find((item) => item.id === idItem);
+
+  if (onEdit && isIdFromDB(item)) {
+    itemsToRemove.push(item.id);
+  }
+  month.items = month.items.filter((item) => item.id !== idItem);
+};
+
+const isLastMonth = (id) => {
+  const index = planning.planningMonths.findIndex(
+    (item) => item.id === id
+  );
+  return index === planning.planningMonths.length - 1;
+};
+
+const isLastItem = (month, id) => {
+  const index = month.items.findIndex((item) => item.id === id);
+  return index === month.items.length - 1;
+};
+
+const getMonthOptions = (month) => {
+  const idsMonth = months
+    .filter((item) => item.id !== month.id)
+    .map((month) => month.idMonth);
+  return months.filter((item) => !idsMonth.includes(item.id));
+};
+
+const save = async () => {
+  let payload = {
+    id: planning.id,
+    title: planning.title,
+    startAt: planning.startAt,
+    endAt: planning.endAt,
+    year: year,
+    expectedAmount: planning.expectedAmount,
+    months: planning.planningMonths.map((month) => ({
+      ...month,
+      totalIn: inExpent(month),
+      totalOut: out(month),
+      spentOnDebit: spentOnDebitMonth(month),
+      spentOnCredit: spentOnCreditMonth(month),
+    })),
+  };
+
+  let action = "createPlanning";
+  if (onEdit) {
+    action = "editPlanning";
+    payload.months = makeToUpAdd(planning.planningMonths);
+  }
+  await $store.dispatch(`planning/${action}`, {
+    ...payload,
+    monthsToRemove: monthsToRemove,
+    itemsToRemove: itemsToRemove,
+  });
+  await $store.dispatch("planning/changePlanningYear", year);
+};
+
+const isIdFromDB = ({ id }) => {
+  return !!id && !isNaN(+id);
+};
+
+const canRemove = (key) => {
+  if (onEdit) return true;
+  return key != 0;
+};
+
+const toggleSelection = () => {};
+
+const makeToUpAdd = (array, onMonth = true) => {
+  return array.reduce(
+    (acc, current, index) => {
+      const isOnDb = !isNaN(+current.id);
+      let copy = { ...current };
+      if (copy.typesSpent) {
+        delete [copy.typesSpent];
+      }
+      if (onMonth) {
+        Object.assign(copy, {
+          totalIn: inExpent(copy),
+          totalOut: out(copy),
+          spentOnDebit: spentOnDebitMonth(copy),
+          spentOnCredit: spentOnCreditMonth(copy),
+          items: makeToUpAdd(copy.items, false),
+        });
+      }
+      const key = isOnDb ? "toUpdate" : "toAdd";
+      acc[key].push(copy);
+      return acc;
+    },
+    { toAdd: [], toUpdate: [] }
+  );
+};
+
+const onInputSearch = ($event, month, field = "description") => {
+  if (!$event) {
+    month.items.forEach((item) => {
+      item.hidden = false;
+    });
+    return;
+  }
+  month.items.forEach((item) => {
+    if (typeof item[field] === "string") {
+      item.hidden = !item[field]?.match($event);
+    } else {
+      item.hidden = item[field] !== $event;
+    }
+  });
+};
+</script>
 <style scoped lang="scss">
 .item-3 {
   grid-column: span-2;

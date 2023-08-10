@@ -70,4 +70,72 @@
   </div>
 </template>
 
-<script src="./script.js"></script>
+<script setup>
+import { usePopup } from "@/mixins/Popup";
+import MonthsDetails from "../month-details/MonthsDetails.vue";
+import { ref, computed } from "vue";
+
+
+const props = defineProps({
+  planning: {
+      type: Object,
+      required: true,
+    },
+})
+const { togglePopup } = usePopup("monthsDetails");
+console.log(props.planning);
+const planningBalance = computed(() => {
+  return props.planning.planningMonths.reduce((acc, month) => {
+    return acc + monthBalance(month);
+  }, 0);
+});
+
+const planningIn = computed(() => {
+  return props.planning.planningMonths.reduce((acc, planning) => {
+    return (
+      acc +
+      planning.items.reduce((accPlanning, item) => {
+        if (item.operation === "in") {
+          return accPlanning + item.value;
+        }
+        return accPlanning;
+      }, 0)
+    );
+  }, 0);
+});
+
+const planningOut = computed(() => {
+  return props.planning.planningMonths.reduce((acc, planning) => {
+    return (
+      acc +
+      planning.items.reduce((accPlanning, item) => {
+        if (item.operation === "out") {
+          return accPlanning + item.value;
+        }
+        return accPlanning;
+      }, 0)
+    );
+  }, 0);
+});
+
+const spentOnDebit = computed(() => {
+  return props.planning.planningMonths.reduce((acc, month) => {
+    return acc + spentOnDebitMonth(month);
+  }, 0);
+});
+
+const spentOnCredit = computed(() => {
+  return props.planning.planningMonths.reduce((acc, month) => {
+    return acc + spentOnCreditMonth(month);
+  }, 0);
+});
+
+const handlePopup = (value) => {
+  togglePopup(value);
+};
+
+const seeMonthsDetails = () => {
+  togglePopup(!popupMonthsDetailsVisible.value);
+};
+</script>
+

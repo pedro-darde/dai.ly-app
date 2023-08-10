@@ -54,16 +54,10 @@
       </div>
 
       <div class="flex flex-row justify-center m-2.5">
-        <lottie-animation
-          v-if="loading"
-          :loop="true"
-          :autoPlay="true"
-          ref="anim"
-          :animationData="require('@/assets/loading.json')"
-        />
-        <Planning v-else :year="year" />
+        
+        <Planning  v-if="!loading" :year="year" />
       </div>
-      <BankCard
+      <!-- <BankCard
         v-model="popupBankCardVisible"
         @isVisible="handleCC()"
         @save="saveCC"
@@ -77,9 +71,87 @@
         v-model="popupInstallmentsVisible"
         @isVisible="handleInstallments()"
         :planningYear="year"
-      />
+      /> -->
     </main>
   </div>
 </template>
 
-<script src="./script.js"></script>
+<script setup>
+import HeaderComponent from "../header/Header.vue";
+import NavbarComponent from "../nav/Navbar.vue";
+import Select from "../select/Select.vue";
+import Planning from "../planning/Planning.vue";
+import { range } from "lodash";
+import { usePopup } from "@/mixins/Popup";
+import BankCard from "../bank-card/card.vue";
+import CC from "../icons/cc.vue";
+import CreateEditItemType from "../item-type/create_edit/CreateEdit.vue";
+import CreateInstallments from "../installments/CreateInstallments.vue";
+import { ccService } from "@/services/CCService";
+import { Toast } from "@/lib/sweetalert";
+import { mapGetters, useStore } from "vuex";
+import { ref, toRefs, watch } from "vue";
+const $store = useStore()
+
+const { togglePopup: toggleBankCard, toggled: popupBankCardVisible } = usePopup("bankCard");
+const { togglePopup: toggleItemType, toggled: popupItemTypeVisible } = usePopup("itemType");
+const { togglePopup: toggleInstallments, toggled: popupInstallmentsVisible } = usePopup("installments");
+
+const year = new Date().getFullYear();
+const years = range(year - 10, year + 20);
+const loading = ref(false);
+
+const createCC = () => {
+  toggleBankCard(!popupBankCardVisible.value);
+};
+
+const handleCC = (value) => {
+  createCC(value);
+};
+
+const createEditItemType = () => {
+  toggleItemType(!popupItemTypeVisible.value);
+};
+
+const createInstallments = () => {
+  toggleInstallments(!popupInstallmentsVisible.value);
+};
+
+const handleInstallments = (value) => {
+  createInstallments(value);
+};
+
+const handleItemType = (value) => {
+  createEditItemType(value);
+};
+
+const saveCC = async (payload) => {
+  let close = true;
+  let message = "Card created successfully";
+  let icon = "success";
+  try {
+    await ccService.save(payload);
+  } catch (e) {
+    close = false;
+    icon = "error";
+    message = e.response?.data?.message ?? "Internal Server Error";
+  } finally {
+    Toast.fire({
+      icon,
+      text: message,
+    });
+    if (close) {
+      await $store.dispatch("planning/getCards");
+      handleCC(close);
+    }
+  }
+};
+
+watch(year, (value) => {
+  $store.dispatch("planning/changePlanningYear", value);
+});
+
+const { planning } = toRefs(mapGetters({
+  planning: "planning/planningGetter",
+}));
+</script>

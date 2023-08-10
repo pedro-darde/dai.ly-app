@@ -1,5 +1,6 @@
 <template>
   <div class="plannings">
+    aasdlkmasdkmaskdmaskdmaskdmaskdkasmd
     <Plannings />
   </div>
 </template>

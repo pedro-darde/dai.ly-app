@@ -27,5 +27,4 @@ app.directive("trim", {
   },
 });
 
-console.log(app.config.globalProperties.$filters);
 app.mount("#app");
