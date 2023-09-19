@@ -314,8 +314,6 @@ const months = computed(() => {
   return $store.getters["planning/monthGetter"];
 })
 
-console.log(months);
-
 const cards = computed(() => {
   return $store.getters["planning/cardsGetter"];
 })
@@ -333,7 +331,6 @@ const planning = computed({
       $store.dispatch("planning/applyCurrentPlanning", value);
     },
     get() {
-      console.log("estou procurando o planning");
       return $store.state.planning.planning;
     },
 })
@@ -343,7 +340,7 @@ onUnmounted(() => {
 })
 
 watch(planning, (value) => {
-  planning = value;
+  planning.value = value;
 })
 
 // const { visible, disband } = usePopup();
@@ -433,10 +430,10 @@ const removeItem = (month, idItem) => {
 };
 
 const isLastMonth = (id) => {
-  const index = planning.planningMonths.findIndex(
+  const index = planning.value.planningMonths.findIndex(
     (item) => item.id === id
   );
-  return index === planning.planningMonths.length - 1;
+  return index === planning.value.planningMonths.length - 1;
 };
 
 const isLastItem = (month, id) => {
@@ -445,21 +442,21 @@ const isLastItem = (month, id) => {
 };
 
 const getMonthOptions = (month) => {
-  const idsMonth = months
+  const idsMonth = months.value
     .filter((item) => item.id !== month.id)
     .map((month) => month.idMonth);
-  return months.filter((item) => !idsMonth.includes(item.id));
+  return months.value.filter((item) => !idsMonth.includes(item.id));
 };
 
 const save = async () => {
   let payload = {
-    id: planning.id,
-    title: planning.title,
-    startAt: planning.startAt,
-    endAt: planning.endAt,
+    id: planning.value.id,
+    title: planning.value.title,
+    startAt: planning.value.startAt,
+    endAt: planning.value.endAt,
     year: year,
-    expectedAmount: planning.expectedAmount,
-    months: planning.planningMonths.map((month) => ({
+    expectedAmount: planning.value.expectedAmount,
+    months: planning.value.planningMonths.map((month) => ({
       ...month,
       totalIn: inExpent(month),
       totalOut: out(month),
@@ -471,7 +468,7 @@ const save = async () => {
   let action = "createPlanning";
   if (onEdit) {
     action = "editPlanning";
-    payload.months = makeToUpAdd(planning.planningMonths);
+    payload.months = makeToUpAdd(planning.value.planningMonths);
   }
   await $store.dispatch(`planning/${action}`, {
     ...payload,

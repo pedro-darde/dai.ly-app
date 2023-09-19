@@ -74,6 +74,7 @@
 import { usePopup } from "@/mixins/Popup";
 import MonthsDetails from "../month-details/MonthsDetails.vue";
 import { ref, computed } from "vue";
+import {usePlanningCalculator} from "@/mixins/PlanningCalculator";
 
 
 const props = defineProps({
@@ -82,6 +83,13 @@ const props = defineProps({
       required: true,
     },
 })
+
+const {
+  monthBalance,
+  spentOnCreditMonth,
+  spentOnDebitMonth
+} = usePlanningCalculator()
+
 const { togglePopup } = usePopup("monthsDetails");
 console.log(props.planning);
 const planningBalance = computed(() => {
