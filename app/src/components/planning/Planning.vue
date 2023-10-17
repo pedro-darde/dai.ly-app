@@ -325,7 +325,6 @@ const months = computed(() => {
   return $store.getters["planning/monthGetter"];
 })
 
-
 const cards = computed(() => {
   return $store.getters["planning/cardsGetter"];
 })
