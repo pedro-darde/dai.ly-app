@@ -23,7 +23,7 @@
         <div
           class="bg-neutral-300 rounded border-l-8 border-white p-3 mb-5 text-left"
         >
-          <PlanningPreview :planning="planning" />
+           <PlanningPreview :planning="planning" />
         </div>
         <div class="grid md:grid-cols-4 md:gap-3 mb-2">
           <Input
@@ -36,6 +36,7 @@
             label="Expected Amount"
             v-model="planning.expectedAmount"
             :required="true"
+            :model-value="planning.expectedAmount"
           />
           <Input
             label="Start At"
@@ -54,9 +55,9 @@
           <button
             type="button"
             class="px-3 py-2 text-sm font-medium text-center text-white bg-blue-400 rounded-lg hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300"
-            @click="collapseMonths()"
+            @click="handleColapse()"
           >
-            Collapse all months
+            {{ collapseOrShowAllMonthsText }}
           </button>
         </div>
         <div class="flex flex-row items-center ml-4 mb-2">
@@ -80,16 +81,17 @@
               :options="getMonthOptions(month)"
               :required="true"
             />
-            <MoneyInput label="Credit status" v-model="month.creditStatus" />
+            <MoneyInput label="Credit status" v-model="month.creditStatus" :model-value="month.creditStatus" />
 
             <div class="flex flex-row gap-2 items-center">
-              <a
+              <button
+                type="button"
                 class="text-blue-400 ml-2 font-mono hover:font-bold"
-                href="#"
                 @click="month.toggledGoals = !month.toggledGoals"
+                v-if="!!planning.id"
               >
                 Add goals
-              </a>
+              </button>
               <button
                 type="button"
                 @click="addMonth(month)"
@@ -127,14 +129,14 @@
             :idPlanningMonth="month.id"
             :currentGoals="month.goals"
             :currentBudgets="month.budgets"
-            v-model="month.toggledGoals"
+            v-if="month.toggledGoals && !!planning.id"
             @isVisible="handlePopup(month)"
           />
           <div class="flex flex-col items-start ml-8" v-if="!month.hidden">
             <div class="mb-2 border rounded-sm p-2">
               <div class="flex flex-row gap-2 items-center justify-center">
                 <h1 class="text-xl font-bold">Filters</h1>
-                <!--                <font-awesome-icon icon="fa-solid fa-filter" />-->
+                                <font-awesome-icon icon="fa-solid fa-filter" />
               </div>
 
               <div class="grid md:gap-3 md:grid-cols-3">
@@ -153,8 +155,7 @@
                   v-if="!month.hidden"
                   label="Type"
                   :required="false"
-                  @input="onInputSearch($event, month, 'idType')"
-                 :value="month.searchType"/>
+                  @input="onInputSearch($event, month, 'idType')"/>
                 <Select
                   v-model="month.searchPaymentType"
                   label="Payment Method"
@@ -192,6 +193,7 @@
                   label="Value"
                   v-model="item.value"
                   :required="true"
+                  :model-value="item.value"
                 />
                 <Input
                   label="Description"
@@ -280,15 +282,15 @@ import plus from "../icons/plus.vue";
 import Select from "../select/Select.vue";
 import char from "../icons/char.vue";
 import remove from "../icons/remove.vue";
-import PlanningPreview from "../planning-preview/PlanningPreview.vue";
-import planningCalculator from "@/mixins/PlanningCalculator";
 import ArrowDown from "../icons/arrow-down.vue";
 import Treeselect from "../treeselect/Treeselect.vue";
 import PlanningMonthGoals from "../planning/Goals/PlanningMonthGoals.vue";
-import { usePopup } from "@/mixins/Popup";
 import { usePlanningCalculator } from "@/mixins/PlanningCalculator"
 import { ref, computed, onUnmounted, watchEffect, watch } from "vue";
 import { useStore } from "vuex";
+import tree from 'vue3-treeselect'
+import {useSwal} from "@/mixins/SwalMixin";
+import PlanningPreview from "@/components/planning-preview/PlanningPreview.vue";
 const $store = useStore()
 const operations = [
   {
@@ -301,6 +303,15 @@ const operations = [
   },
 ];
 
+const monthsToRemove = ref([])
+const itemsToRemove = ref([])
+
+
+const {  toastError } = useSwal()
+const {
+  spentOnDebitMonth,
+  spentOnCreditMonth,
+} = usePlanningCalculator()
 const paymentMethods = [
   { name: "Debit", value: "debit" },
   { name: "Credit", value: "credit" },
@@ -314,46 +325,51 @@ const months = computed(() => {
   return $store.getters["planning/monthGetter"];
 })
 
-console.log(months);
 
 const cards = computed(() => {
   return $store.getters["planning/cardsGetter"];
 })
-
-
-const onEdit = computed(() => {
-    return (
-      planning.hasOwnProperty("id") &&
-      isIdFromDB(planning ?? { id: null })
-    );
-});
 
 const planning = computed({
     set(value) {
       $store.dispatch("planning/applyCurrentPlanning", value);
     },
     get() {
-      console.log("estou procurando o planning");
       return $store.state.planning.planning;
     },
 })
+
+const onEdit = computed(() => {
+    return (
+      planning.value.hasOwnProperty("id") &&
+      isIdFromDB(planning.value ?? { id: null })
+    );
+});
+
 
 onUnmounted(() => {
   $store.dispatch("planning/applyDefaultPlanning");
 })
 
 watch(planning, (value) => {
-  planning = value;
+  planning.value = value;
 })
 
 // const { visible, disband } = usePopup();
 const { in: inExpent , out } = usePlanningCalculator()
 
+const { year } = defineProps({
+  year: {
+    required: true,
+    type: Number
+  }
+})
+
 const currentMonthGoals = ref([]);
 const currentMonthItems = ref([]);
 
 const addMonth = (month) => {
-  planning.planningMonths.push({
+  planning.value.planningMonths.push({
     hidden: false,
     id: quickid(),
     idMonth: month.idMonth + 1,
@@ -385,24 +401,32 @@ const addMonth = (month) => {
 };
 
 const removeMonth = (id) => {
-  if (planning.planningMonths?.length === 1) {
+  if (planning.value.planningMonths?.length === 1) {
     toastError("Keep at least one month to the planning");
     return;
   }
 
-  if (onEdit) {
-    const month = planning.planningMonths.find((item) => item.id === id);
+  if (onEdit.value) {
+    const month = planning.value.planningMonths.find((item) => item.id === id);
     if (isIdFromDB(month)) {
-      monthsToRemove.push(id);
-      itemsToRemove.push([
+      monthsToRemove.value.push(id);
+      itemsToRemove.value.push([
         ...month.items.filter(isIdFromDB).map(({ id }) => id),
       ]);
     }
   }
-  planning.planningMonths = planning.planningMonths.filter(
+  planning.value.planningMonths = planning.value.planningMonths.filter(
     (item) => item.id !== id
   );
 };
+
+const monthColapsed = ref(false)
+
+const collapseOrShowAllMonthsText = computed(() => {
+  return monthColapsed.value
+    ? "Show all months"
+    : "Collapse all months";
+});
 
 const addItem = (month) => {
   month.items.push({
@@ -418,6 +442,13 @@ const addItem = (month) => {
   });
 };
 
+const handleColapse = () => {
+  monthColapsed.value = !monthColapsed.value;
+  planning.value.planningMonths.forEach((month) => {
+    month.hidden = monthColapsed.value;
+  });
+}
+
 const removeItem = (month, idItem) => {
   if (month.items?.length === 1) {
     toastError("Keep at least one item to your month.");
@@ -426,17 +457,17 @@ const removeItem = (month, idItem) => {
 
   const item = month.items.find((item) => item.id === idItem);
 
-  if (onEdit && isIdFromDB(item)) {
-    itemsToRemove.push(item.id);
+  if (onEdit.value && isIdFromDB(item)) {
+    itemsToRemove.value.push(item.id);
   }
   month.items = month.items.filter((item) => item.id !== idItem);
 };
 
 const isLastMonth = (id) => {
-  const index = planning.planningMonths.findIndex(
+  const index = planning.value.planningMonths.findIndex(
     (item) => item.id === id
   );
-  return index === planning.planningMonths.length - 1;
+  return index === planning.value.planningMonths.length - 1;
 };
 
 const isLastItem = (month, id) => {
@@ -445,21 +476,21 @@ const isLastItem = (month, id) => {
 };
 
 const getMonthOptions = (month) => {
-  const idsMonth = months
+  const idsMonth = months.value
     .filter((item) => item.id !== month.id)
     .map((month) => month.idMonth);
-  return months.filter((item) => !idsMonth.includes(item.id));
+  return months.value.filter((item) => !idsMonth.includes(item.id));
 };
 
 const save = async () => {
   let payload = {
-    id: planning.id,
-    title: planning.title,
-    startAt: planning.startAt,
-    endAt: planning.endAt,
+    id: planning.value.id,
+    title: planning.value.title,
+    startAt: planning.value.startAt,
+    endAt: planning.value.endAt,
     year: year,
-    expectedAmount: planning.expectedAmount,
-    months: planning.planningMonths.map((month) => ({
+    expectedAmount: planning.value.expectedAmount,
+    months: planning.value.planningMonths.map((month) => ({
       ...month,
       totalIn: inExpent(month),
       totalOut: out(month),
@@ -469,14 +500,16 @@ const save = async () => {
   };
 
   let action = "createPlanning";
-  if (onEdit) {
+  console.log(onEdit)
+  console.log(planning.value)
+  if (onEdit.value) {
     action = "editPlanning";
-    payload.months = makeToUpAdd(planning.planningMonths);
+    payload.months = makeToUpAdd(planning.value.planningMonths);
   }
   await $store.dispatch(`planning/${action}`, {
     ...payload,
-    monthsToRemove: monthsToRemove,
-    itemsToRemove: itemsToRemove,
+    monthsToRemove: monthsToRemove.value,
+    itemsToRemove: itemsToRemove.value,
   });
   await $store.dispatch("planning/changePlanningYear", year);
 };
@@ -486,7 +519,7 @@ const isIdFromDB = ({ id }) => {
 };
 
 const canRemove = (key) => {
-  if (onEdit) return true;
+  if (onEdit.value) return true;
   return key != 0;
 };
 
@@ -532,6 +565,10 @@ const onInputSearch = ($event, month, field = "description") => {
     }
   });
 };
+
+const handlePopup = month => {
+  month.toggledGoals = false
+}
 </script>
 <style scoped lang="scss">
 .item-3 {

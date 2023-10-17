@@ -1,15 +1,19 @@
 <template>
   <div class="all-notes">
-    <AllNotes></AllNotes>
+    <AllNotes v-if="!loading"></AllNotes>
   </div>
 </template>
 
-<script>
+<script setup>
+import { onMounted, ref } from "vue";
 import AllNotes from "../components/all-notes/AllNotes.vue";
-export default {
-  components: { AllNotes },
-  async created() {
-    await Promise.all([this.$store.dispatch("note/allNotes"), this.$store.dispatch("task/getAllTasks")])
-  },
-};
+const loading = ref(true)
+import { useStore } from "vuex";
+const $store = useStore()
+  onMounted(async () => {
+    console.log("estou indo pegar todas notas")
+    await Promise.all([$store.dispatch("note/allNotes"), $store.dispatch("task/getAllTasks")])
+    loading.value = false
+
+  });  
 </script>

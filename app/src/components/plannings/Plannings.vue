@@ -90,15 +90,15 @@ import CreateInstallments from "../installments/CreateInstallments.vue";
 import { ccService } from "@/services/CCService";
 import { Toast } from "@/lib/sweetalert";
 import { mapGetters, useStore } from "vuex";
-import { ref, toRefs, watch } from "vue";
+import {onMounted, ref, toRefs, watch} from "vue";
 const $store = useStore()
 
 const { togglePopup: toggleBankCard, toggled: popupBankCardVisible } = usePopup("bankCard");
 const { togglePopup: toggleItemType, toggled: popupItemTypeVisible } = usePopup("itemType");
 const { togglePopup: toggleInstallments, toggled: popupInstallmentsVisible } = usePopup("installments");
 
-const year = new Date().getFullYear();
-const years = range(year - 10, year + 20);
+const year = ref(new Date().getFullYear());
+const years = range(year.value - 10, year.value + 20);
 const loading = ref(false);
 
 const createCC = () => {
@@ -149,6 +149,12 @@ const saveCC = async (payload) => {
 
 watch(year, (value) => {
   $store.dispatch("planning/changePlanningYear", value);
+});
+
+onMounted(async () => {
+  loading.value = true;
+  await $store.dispatch('planning/changePlanningYear', year.value);
+  loading.value = false;
 });
 
 const { planning } = toRefs(mapGetters({

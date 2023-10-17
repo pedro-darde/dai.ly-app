@@ -28,7 +28,7 @@ export  const usePlanningCalculator = () => {
       }, 0);
     }
     const monthBalance = (month) => {
-      return this.in(month) - this.out(month);
+      return inExpent(month) - outExpent(month);
     }
 
 

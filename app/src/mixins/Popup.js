@@ -1,39 +1,31 @@
+import { getCurrentInstance } from "vue";
 import { ref } from "vue";
-import { computed, defineProps } from "vue";
 
-export const popupVisibility = () => {
-  const { value } = defineProps({
-    value: {
-      required: true
-    }
-  })
-
-  const emit = defineEmits("isVisible")
-  const visible = computed(() => ({
-      get() {
-        return value
-      },
-      set(isVisible) {
-        emit("isVisible", !!isVisible)
-      }
-  }))
+export function popupVisibility ()  {
+  const visible = ref(true)
+  const { emit } = getCurrentInstance()
  
   const disband = () => {
-    visible = false;
-  }
+    visible.value = false;
+    emit('isVisible', !!visible.value)
+
+ }
   return {
     disband,
     visible
   }
-};
+}
 
 
-export function usePopup(name, defaultVisible = false) {
-  const toggled = ref(defaultVisible)
-  return {
-  togglePopup() {
+export function usePopup() {
+  const toggled = ref(false)
+
+  function togglePopup() {
+    console.log("togglePopup", toggled.value)
     toggled.value = !toggled.value
-  },
+  }
+  return {
+  togglePopup,
   toggled
  }
 }

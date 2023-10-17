@@ -46,7 +46,37 @@
   </RawPopup>
 </template>
 
-<script src="./script.js"></script>
+<script setup>
+import { popupVisibility, usePopup } from '@/mixins/Popup';
+import { ref, watch } from 'vue';
+import RawPopup from '../popup/RawPopup.vue';
+import Input from '@/components/input/Input.vue';
+import Select from '@/components/select/Select.vue';
+import Wsiwyg from '@/components/wsiwyg/Wsiwyg.vue';
+import { TaskStatusEdit } from '@/constants/TaskStatus';
+
+const { disband, visible } = popupVisibility()
+
+const emit = defineEmits(["saveTask"]);
+const status = ref(TaskStatusEdit)
+const { task } = defineProps({
+  task: {
+    type: Object,
+    required: true,
+  },
+});
+
+const editTask = ref({... task });
+
+function saveTask() {
+  emit("saveTask", editTask.value);
+}
+
+
+watch(visible, (value) => {
+  if (!value) editTask.value = { ...task };
+});
+</script>
 
 <style scoped>
 .modal-fade-enter,

@@ -56,7 +56,7 @@ const onResize = ($el) => {
 
 const click = (event) => {
   if (props.noDisband) return;
-  if (event.target.dataset.uid !== this.uid) return;
+  if (event.target.dataset.uid !== uid.value) return;
   emit("disband");
 }
 

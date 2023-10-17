@@ -24,36 +24,38 @@
     </div>
   </div>
 </template>
-<script>
-export default {
-  props: {
-    budget: {
-      type: Object,
-      required: true,
-    },
-    totalSpent: {
-      type: Number,
-      required: true,
-    },
+<script setup>
+
+import {useFilters} from "@/filters";
+import {computed} from "vue";
+const $filters = useFilters()
+const props = defineProps({
+  budget: {
+    type: Object,
+    required: true,
   },
-  computed: {
-    percentageOverBudget() {
-      const { amount } = this.budget;
-      const percentageSpent = (Math.abs(this.totalSpent) / amount) * 100;
-      return percentageSpent.toFixed(2);
-    },
-    percentageColor() {
-      let color = "red";
-      // if (this.percentageOverBudget > 0 && this.percentageOverBudget <= 50) {
-      //   color = "purple";
-      // }
-      //
-      // if (this.percentageOverBudget > 50 && this.percentageColor <= 75) {
-      //   color = "yellow";
-      // }
-      return color;
-    },
+  totalSpent: {
+    type: Number,
+    required: true,
   },
-  methods: {},
-};
+})
+
+const percentageOverBudget = computed(() => {
+  const { amount } = props.budget;
+  const percentageSpent = (Math.abs(props.totalSpent) / amount) * 100;
+  console.log(props.totalSpent, amount, percentageSpent)
+  return percentageSpent.toFixed(2);
+});
+
+const percentageColor = computed(() => {
+  let color = "purple";
+  // if (percentageOverBudget.value > 0 && percentageOverBudget.value <= 50) {
+  //   color = "purple";
+  // }
+  //
+  // if (percentageOverBudget.value > 50 && percentageColor.value <= 75) {
+  //   color = "yellow";
+  // }
+  return color;
+});
 </script>

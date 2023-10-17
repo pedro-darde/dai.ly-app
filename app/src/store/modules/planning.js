@@ -97,7 +97,7 @@ const actions = {
         month.toggledGoals = false;
 
         if (month.budgets?.length) {
-          month.budgets.forEach((budget) => (budget.isOnDB = true));
+          month.budgets.forEach((budget) => { budget.isOnDB = true; budget.id = quickid()});
         }
 
         if (month.goals) {
