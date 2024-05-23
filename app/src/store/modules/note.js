@@ -71,6 +71,7 @@ const actions = {
       commit("REMOVE_NOTE", { icon, message });
     }
   },
+  
 };
 
 const getters = {

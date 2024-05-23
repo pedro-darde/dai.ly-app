@@ -1,6 +1,6 @@
 <template>
-  <Transition name="fade">
-    <RawPopup v-if="visible" @disband="disband">
+<!--  <Transition name="fade">-->
+    <RawPopup v-if="visible" @disband="customDisband">
       <div class="mb-5 p-2" v-for="month in monthsGroupped">
         <div class="d-flex flex-col">
           <h3 class="text-bold text-2xl p-5 font-mono">
@@ -53,10 +53,68 @@
         </div>
       </div>
     </RawPopup>
-  </Transition>
+<!--  </Transition>-->
 </template>
 
-<script src="./script.js"></script>
+<script setup>
+
+import  {usePlanningCalculator} from "@/mixins/PlanningCalculator";
+import { popupVisibility } from "@/mixins/Popup";
+import { useStore } from "vuex";
+import RawPopup from "../popup/RawPopup.vue";
+import Details from "../item-type/details/Details.vue";
+import {computed, defineEmits, ref, watch} from "vue";
+import {useFilters} from "@/filters";
+
+const $filters  = useFilters()
+
+const props = defineProps({
+  planningMonths: {
+    required: true,
+    type: Array,
+  },
+})
+
+const {
+  spentOnDebitMonth,
+  spentOnCreditMonth,
+    out,
+    in: inExpent,
+    monthBalance
+} = usePlanningCalculator()
+
+const $store = useStore()
+// const $filters =
+
+const monthsDB = computed(() => {
+  return $store.getters["planning/monthGetter"];
+});
+
+const monthsGroupped = ref( props.planningMonths.map((month) => ({
+  ...month,
+  monthName: monthsDB.value.find((item) => item.id === month.idMonth)
+      ?.monthName,
+  balance: monthBalance(month),
+  In: inExpent(month),
+  Out: out(month),
+  spentOnDebit: spentOnDebitMonth(month),
+  spentOnCredit: spentOnCreditMonth(month),
+})))
+const handleMonthDetails = (month) => {
+  if (!month.typesSpent) {
+    return;
+  }
+  month.showItemDetails = !month.showItemDetails;
+}
+
+const emit = defineEmits(["isVisible"]);
+const { visible, disband } = popupVisibility(emit);
+
+const customDisband = () => {
+  monthsGroupped.value = []
+  disband()
+}
+</script>
 
 <style scoped lang="scss">
 .MonthDetails {

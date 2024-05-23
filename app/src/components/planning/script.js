@@ -195,6 +195,7 @@ export default {
       if (this.onEdit) return true;
       return key != 0;
     },
+    toggleSelection() {},
     makeToUpAdd(array, onMonth = true) {
       return array.reduce(
         (acc, current, index) => {

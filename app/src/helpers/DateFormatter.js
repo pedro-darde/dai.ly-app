@@ -1,5 +1,5 @@
 import { format, addMinutes } from "date-fns";
-import { DATE_TIME_INPUT_FORMAT } from "@/constants/Formats";
+import {DATE_INPUT_FORMAT, DATE_TIME_INPUT_FORMAT} from "@/constants/Formats";
 
 export const toHtmlDateTimeFormat = (
   date,

@@ -8,7 +8,7 @@
       >
         <ul
           role="list"
-          class="flex items-center justify-between divide-y divide-gray-200 dark:divide-gray-700"
+          class="flex items-center justify-between divide-y divide-gray-200 dark:divide-gray-700 gap-2"
         >
           <li
             class="py-3 sm:py-4 bg-yellow-100 border rounded-lg shadow-md mb-2"
@@ -23,4 +23,18 @@
   </div>
 </template>
 
-<script src="./script.js"></script>
+<script setup>
+
+import { mapGetters, useStore } from "vuex";
+import NavbarComponent from "@/components/nav/Navbar.vue";
+import Header from "@/components/header/Header.vue";
+import Note from "../note/Note.vue";
+import { onMounted, ref, defineProps} from "vue";
+
+const $store = useStore()
+const notes = ref([])
+onMounted( () => {
+  notes.value = $store.getters["note/allNotesGetter"];
+});
+
+</script>

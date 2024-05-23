@@ -20,7 +20,7 @@
         :options="tasks"
         label="Tasks"
         v-model="note.tasks"
-        :multiple="true"
+        multiple
       ></Select>
       <div class="flex justify-end mt-2">
         <a
@@ -36,4 +36,80 @@
   </div>
 </template>
 
-<script src="./script.js"></script>
+<script setup>
+import Ok from "../icons/ok.vue";
+import { useStore } from "vuex";
+import Select from "../select/Select.vue";
+import Wsiwyg from "../wsiwyg/Wsiwyg.vue";
+import { computed, onMounted, watch } from "vue";
+import { ref } from "vue";
+const emit = defineEmits(['saved'])
+    const props = defineProps({
+      onEdit: {
+        type: Boolean,
+        default: false,
+      },
+      currentNote: {
+        type: Object,
+        required: false,
+      },
+      onView: {
+        type: Boolean,
+        default: false,
+      },
+    })
+    const $store = useStore();
+    
+    const note = ref({
+      description: "",
+      fixed: false,
+      tasks: [],
+    })
+
+    async  function saveNote() {
+      const action = props.onEdit ? "note/editNote" : "note/saveNote";
+      await $store.dispatch(action, {
+        ...note.value,
+        ...tasksToInsertAndToRemove(),
+      });
+      await $store.dispatch("note/getLatestNotes");
+      if (!props.onEdit) {
+        const currentNote = $store.getters["note/noteGetter"];
+        note.value = { ...currentNote };
+        return;
+      }
+      emit("saved");
+    }
+    function tasksToInsertAndToRemove() {
+      if (!props.onEdit) return null;
+      const toInsert = note.value.tasks?.filter(
+        (task) => !props.currentNote?.tasks?.includes(task)
+      );
+      const toRemove = props.currentNote?.tasks?.filter(
+        (task) => !note.value.tasks?.includes(task)
+      );
+      return {
+        tasksToInsert: toInsert,
+        tasksToRemove: toRemove,
+      };
+    }
+    
+    const tasks = computed(() => {
+      return $store.getters["task/allTasksGetter"];
+    })
+
+  watch(note, (value) => {
+    if (!props.onEdit) {
+      $store.dispatch("note/setCurrentNote", value);
+    }
+  }, { deep: true})
+
+onMounted(() => {
+  if (!props.onEdit) {
+    const currentNote = $store.getters["note/noteGetter"];
+    note.value= { ...currentNote };
+    return;
+  }
+  note.value = { ...props.currentNote };
+})
+</script>

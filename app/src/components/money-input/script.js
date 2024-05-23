@@ -1,10 +1,10 @@
 import { useCurrencyInput } from 'vue-currency-input'
 import quickid from '@/helpers/quickid'
-import { watch } from 'vue'
+import { watch, defineEmits } from 'vue'
 export default {
     name: 'CurrencyInput',
     props: {
-        value: Number, // Vue 2: value
+        modelValue: Number, // Vue 2: value
         options: Object,
         label: {
             type: String,
@@ -36,8 +36,8 @@ export default {
             default: () => ({}),
         },
     },
-    setup(props) {
-        const { inputRef, setValue, formattedValue } = useCurrencyInput({
+    setup(props, { emit}) {
+        const { inputRef, setValue, formattedValue, numberValue } = useCurrencyInput({
             "locale": "pt-BR",
             "currency": "BRL",
             "currencyDisplay": "hidden",
@@ -50,12 +50,25 @@ export default {
             "accountingSign": false
         })
 
+        console.log("estou no setup")
+
+
         watch(
-            () => +props.value, 
+            () => +props.modelValue, 
             (value) => {
+                console.log("recebi valor da model")
               setValue(value)
             }
           )
+
+        watch(
+            numberValue,
+            (value) => {
+                console.log("o valor esta mudando")
+                emit('update:modelValue', value)
+                emit('input', value)
+            }
+        )
 
         return { inputRef, formattedValue }
     }

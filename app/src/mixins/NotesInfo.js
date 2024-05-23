@@ -1,10 +1,13 @@
-import swalMixin from "@/mixins/SwalMixin";
+import { useSwal } from "@/mixins/SwalMixin";
 
-export default {
-    mixins: [swalMixin],
-    methods: {
-        async showNotesInfo(notes) {
-            await this.showInfo("<ul>" + notes.map(note => `<li>${note.description}</li>`).join("") + "</ul>", "Notas")
-        }
+
+export function useNoteInfo() {
+    const { showInfo } = useSwal()
+    const showNotesInfo = async (notes) => { 
+        await showInfo("<ul>" + notes.map(note => `<li>${note.description}</li>`).join("") + "</ul>", "Notas")
+    }
+
+    return {
+        showNotesInfo
     }
 }

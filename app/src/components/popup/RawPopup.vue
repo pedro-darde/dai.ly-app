@@ -17,59 +17,63 @@
   </div>
 </template>
 
-<script>
+<script setup>
+
 import quickid from "../../helpers/quickid";
+import {computed, nextTick, ref} from "vue";
 
-export default {
-  props: {
-    sizes: {
-      type: Array,
-      required: false,
-    },
-    width: {
-      type: String,
-      default: "fit-content",
-    },
-    widthSmall: {
-      type: String,
-      default: "100%",
-    },
-    sizes: {
-      type: String,
-      required: false,
-    },
+const emit = defineEmits(['disband'])
+const props = defineProps({
+  sizes: {
+    type: Array,
+    required: false,
   },
-  emits: ["disband"],
-  mounted() {},
-  destroyed() {},
-  data() {
-    this.$nextTick(() => this.onResize(this.$refs.dialog));
+  width: {
+    type: String,
+    default: "fit-content",
+  },
+  widthSmall: {
+    type: String,
+    default: "100%",
+  },
+  sizes: {
+    type: String,
+    required: false,
+  },
+  noDisband: {
+    type: Boolean,
+    default: false
+  }
+})
 
-    return {
-      uid: quickid(),
-      overflow: false,
-    };
-  },
-  computed: {
-    style() {
-      return { "--popup-width": this.width, "--popup-small": this.widthSmall };
-    },
-    classes() {
-      return `relative ${this.sizes || "by-width"}`;
-    },
-  },
-  methods: {
-    click(event) {
-      if (this.noDisband) return;
-      if (event.target.dataset.uid !== this.uid) return;
-      this.$emit("disband");
-    },
-    onResize($el) {
-      if (!$el) return;
-      this.overflow = $el.offsetHeight * 0.95 > window.innerHeight;
-    },
-  },
-};
+const overflow = ref(false)
+const uid = ref(quickid())
+const dialog = ref(null)
+const onResize = ($el) => {
+  if (!$el) return;
+  overflow.value = $el.offsetHeight * 0.95 > window.innerHeight;
+}
+
+const click = (event) => {
+  if (props.noDisband) return;
+  if (event.target.dataset.uid !== uid.value) return;
+  emit("disband");
+}
+
+
+nextTick(() => {
+  onResize(dialog)
+})
+
+const style = computed(() => {
+  return { "--popup-width": props.width, "--popup-small": props.widthSmall };
+})
+
+const classes = computed(() => {
+  return `relative ${props.sizes || "by-width"}`;
+})
+
+
 </script>
 
 <style scoped lang="scss">
