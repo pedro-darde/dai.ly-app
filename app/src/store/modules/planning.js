@@ -9,44 +9,11 @@ import { organizeSpents } from "../helpers/planning";
 const DEFAULT_PLANNING = {
   id: null,
   year: new Date().getFullYear(),
-  title: "",
+  title: "Planning of " + (new Date()).getFullYear(),
   expectedAmount: 0,
   startAt: new Date(),
   planningEnd: null,
-  planningMonths: [
-    {
-      id: quickid(),
-      idMonth: new Date().getMonth(),
-      items: [
-        {
-          id: quickid(),
-          value: 0,
-          operation: "out",
-          date: new Date(),
-          paymentMethod: "debit",
-          description: "",
-          idType: null,
-          idCard: null,
-          idPlanningMonth: null,
-          hidden: false,
-        },
-      ],
-      goals: {
-        id: quickid(),
-        idPlanningMonth: null,
-        moneyToSave: 0,
-        creditLimit: 0,
-      },
-      budgets: [
-        {
-          id: quickid(),
-          type: null,
-          planningMonth: null,
-          amount: 0,
-        },
-      ],
-    },
-  ],
+  planningMonths: [],
   existingYears: [],
 };
 const state = {

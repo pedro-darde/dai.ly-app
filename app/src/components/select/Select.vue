@@ -11,7 +11,7 @@
   
     <MultiSelect
       :id="id"
-      class="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2 disabled:cursor-not-allowed disabled:bg-slate-100"
+       class="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2 disabled:cursor-not-allowed disabled:bg-slate-100"
       :placeholder="placeholder"
       :required="required"
       :disabled="disabled"
@@ -109,4 +109,7 @@ const mode = computed(() => {
 })
 
 </script>
+<style scoped>
+
+</style>
 <style src="@vueform/multiselect/themes/default.css"></style>

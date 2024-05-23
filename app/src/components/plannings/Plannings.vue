@@ -57,15 +57,16 @@
         
         <Planning  v-if="!loading" :year="year" />
       </div>
+      <CreateEditItemType
+          v-if="popupItemTypeVisible"
+          @isVisible="handleItemType()"
+      />
       <!-- <BankCard
         v-model="popupBankCardVisible"
         @isVisible="handleCC()"
         @save="saveCC"
       />
-      <CreateEditItemType
-        v-model="popupItemTypeVisible"
-        @isVisible="handleItemType()"
-      />
+
       <CreateInstallments
         v-if="year"
         v-model="popupInstallmentsVisible"
@@ -91,6 +92,7 @@ import { ccService } from "@/services/CCService";
 import { Toast } from "@/lib/sweetalert";
 import { mapGetters, useStore } from "vuex";
 import {onMounted, ref, toRefs, watch} from "vue";
+import MonthsDetails from "@/components/month-details/MonthsDetails.vue";
 const $store = useStore()
 
 const { togglePopup: toggleBankCard, toggled: popupBankCardVisible } = usePopup("bankCard");
