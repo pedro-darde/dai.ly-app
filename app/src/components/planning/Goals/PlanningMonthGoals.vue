@@ -4,45 +4,24 @@
       <div class="flex flex-col items-center">
         <div>
           <h1 class="text-xl font-bold">Budget types</h1>
-          <div
-            class="grid md:grid-cols-3 md:gap-3 items-end"
-            v-for="budget in budgets"
-          >
-            <Treeselect
-              :disabled="budget.isOnDB"
-              label="Type"
-              v-model="budget.type"
-              :options="itemTypes"
-              :append-to-body="true"
-            />
-            <MoneyInput v-model="budget.amount" label="Amount"  @change="change" :model-value="budget.amount"/>
+          <div class="grid md:grid-cols-3 md:gap-3 items-end" v-for="budget in budgets">
+            <Treeselect :disabled="budget.isOnDB" label="Type" v-model="budget.type" :options="itemTypes"
+              :append-to-body="true" />
+            <MoneyInput v-model="budget.amount" label="Amount" @change="change" :model-value="budget.amount" />
             <div class="flex flex-row gap-2 items-center">
-              <button
-                type="button"
-                @click="addBudget"
-                title="Add budget"
-                class="text-lg"
-                v-if="isLastBudget(budget.id)"
-              >
+              <button type="button" @click="addBudget" title="Add budget" class="text-lg"
+                v-if="isLastBudget(budget.id)">
                 <plus />
               </button>
-              <button
-                type="button"
-                @click="removeBudget(budget.id)"
-                title="Remove budget"
-                class="text-lg text-red-500"
-              >
+              <button type="button" @click="removeBudget(budget.id)" title="Remove budget" class="text-lg text-red-500">
                 <remove />
               </button>
             </div>
           </div>
         </div>
         <div class="flex flex-row justify-end items-end mt-5 w-full">
-          <button
-            @click="save"
-            class="p-3 bg-green-500 rounded-md text-white font-bold hover:bg-green-300"
-            type="button"
-          >
+          <button @click="save" class="p-3 bg-green-500 rounded-md text-white font-bold hover:bg-green-300"
+            type="button">
             Save
           </button>
         </div>
@@ -57,17 +36,17 @@ import MoneyInput from "../../money-input/MoneyInput.vue";
 import Treeselect from "../../treeselect/Treeselect.vue";
 import plus from "../../icons/plus.vue";
 import remove from "../../icons/remove.vue";
-import SwalMixin, { useSwal } from "@/mixins/SwalMixin";
+import { useSwal } from "@/mixins/SwalMixin";
 import quickid from "@/helpers/quickid";
 import { goalsService } from "@/services/GoalsService";
-import { ref, computed , defineProps } from "vue";
+import { ref, computed, defineProps } from "vue";
 import { useStore } from "vuex";
 const $store = useStore();
 const change = (e) => {
-console.log("mudou o valor")
+  console.log("mudou o valor")
 }
 const valueTeste = ref(0)
-const props = 
+const props =
   defineProps({
     idPlanningMonth: {
       type: String,
@@ -87,14 +66,14 @@ const budgets = ref(
   currentBudgets.value.length
     ? JSON.parse(JSON.stringify(currentBudgets.value))
     : [
-        {
-          planningMonth: props.idPlanningMonth,
-          type: null,
-          amount: 0,
-          id: quickid(),
-          isOnDB: false,
-        },
-      ]
+      {
+        planningMonth: props.idPlanningMonth,
+        type: null,
+        amount: 0,
+        id: quickid(),
+        isOnDB: false,
+      },
+    ]
 );
 
 const itemTypes = computed(() => $store.state.planning.itemTypes);

@@ -1,75 +1,35 @@
 <template>
-  <div
-    class="bg-gray-100 container w-full p-5 rounded border-l-8 flex flex-col items-start"
-  >
+  <div class="bg-gray-100 container w-full p-5 rounded border-l-8 flex flex-col items-start">
     <form class="m-2 w-full" @submit.prevent="save">
-      <div
-        class="flex flex-row items-center mb-2 text-center justify-between w-full"
-      >
+      <div class="flex flex-row items-center mb-2 text-center justify-between w-full">
         <div class="flex flex-row items-center">
           <a class="text-green-700 mr-1 text">
             <money />
           </a>
-          <h2 class="text-3xl font-bold">Create planning of {{ year }}</h2>
+          <h2 class="text-3xl font-bold">Planning of {{ year }}</h2>
         </div>
-        <button
-          type="submit"
-          class="px-3 py-2 text-sm font-medium text-center text-white bg-green-400 rounded-lg hover:bg-green-700 focus:ring-4 focus:outline-none focus:ring-green-300"
-        >
+        <button type="submit"
+          class="px-3 py-2 text-sm font-medium text-center text-white bg-green-400 rounded-lg hover:bg-green-700 focus:ring-4 focus:outline-none focus:ring-green-300">
           Save
         </button>
       </div>
       <div class="max-h-[650px] overflow-auto">
-        <div
-          class="bg-neutral-300 rounded border-l-8 border-white p-3 mb-5 text-left"
-        >
-           <PlanningPreview :planning="planning" />
-        </div>
+
         <div class="flex flex-row gap-3 w-100 mb-2 justify-center items-end">
 
-          <Input
-              class="grow"
-            label="Planning Title"
-            type="text"
-            v-model="planning.title"
-            :required="true"
-          />
-          <MoneyInput
-              class="grow"
-            label="Expected Amount"
-            v-model="planning.expectedAmount"
-            :required="true"
-            :model-value="planning.expectedAmount"
-          />
-          <Input
-              class="grow"
-            label="Start At"
-            type="date"
-            v-model="planning.startAt"
-            :required="true"
-          />
-          <Input
-              class="grow"
-            label="End At"
-            type="date"
-            v-model="planning.endAt"
-            :required="false"
-          />
-            <button
-                @click="createEditItem"
-                type="button"
-                class="grow px-3 py-2 text-sm font-medium text-center text-white bg-green-400 rounded-lg hover:bg-green-700 focus:ring-4 focus:outline-none focus:ring-blue-300 flex items-center justify-center">
-              Create Moviment &nbsp; <plus />
-            </button>
-        </div>
-        <div class="grid md:grid-cols-4 md:gap-3 mb-2">
-          <button
-            type="button"
-            class="px-3 py-2 text-sm font-medium text-center text-white bg-blue-400 rounded-lg hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300"
-            @click="handleColapse()"
-          >
-            {{ collapseOrShowAllMonthsText }}
+          <Input class="grow" label="Planning Title" type="text" v-model="planning.title" :required="true" />
+          <MoneyInput class="grow" label="Expected Amount" v-model="planning.expectedAmount" :required="true"
+            :model-value="planning.expectedAmount" />
+          <Input class="grow" label="Start At" type="date" v-model="planning.startAt" :required="true" />
+          <Input class="grow" label="End At" type="date" v-model="planning.endAt" :required="false" />
+          <button @click="createEditItem" type="button"
+            class="grow px-3 py-2 text-sm font-medium text-center text-white bg-green-400 rounded-lg hover:bg-green-700 focus:ring-4 focus:outline-none focus:ring-blue-300 flex items-center justify-center">
+            Create Moviment &nbsp;
+            <plus />
           </button>
+        </div>
+        <div class="bg-neutral-300 rounded border-l-8 border-white p-3 mb-5 text-left">
+          <PlanningPreview :planning="planning" />
         </div>
         <div class="flex flex-row items-center ml-4 mb-2 gap-2">
           <a class="text-black-700 mr-1">
@@ -78,180 +38,226 @@
           <h3 class="text-2xl font-bold">Moviments</h3>
 
         </div>
-<!--        <div-->
-<!--          class="flex flex-col bg-gray-300 rounded border-l-8 border-gray-500 p-5 mb-5"-->
-<!--          v-for="(month, key) in planning.planningMonths"-->
-<!--          :key="key"-->
-<!--        >-->
-<!--          <div class="grid md:grid-cols-4 md:gap-3 mb-2 items-end ml-4">-->
-<!--            <Select-->
-<!--              label="Month"-->
-<!--              type="text"-->
-<!--              v-model="month.idMonth"-->
-<!--              optionValue="id"-->
-<!--              optionText="monthName"-->
-<!--              :options="getMonthOptions(month)"-->
-<!--              :required="true"-->
-<!--            />-->
-<!--            <MoneyInput label="Credit status" v-model="month.creditStatus" :model-value="month.creditStatus" />-->
+        <div class="grid md:grid-cols-3 md:gap-3">
+          <Select label="Month" type="text" optionValue="id" optionText="monthName" :options="months" class="col-span-2"
+            v-model="monthMoviments" :required="true" />
+          <button type="button" @click="toggleBudgets"> Month Planejament </button>
+          <PlanningMonthGoals :idPlanningMonth="month.id" :currentGoals="currentMonthGoals"
+            :currentBudgets="currentMonthBudgets" v-if="popupBudgets" @isVisible="toggleBudgets" />
+        </div>
+        <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 rounded mt-5">
+          <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400 ">
+            <tr>
+              <th scope="col" class="px-6 py-3">Value</th>
+              <th scope="col" class="px-6 py-3">Description</th>
+              <th scope="col" class="px-6 py-3">Type</th>
+              <th scope="col" class="px-6 py-3">Operation</th>
+              <th scope="col" class="px-6 py-3">Payment Method</th>
+              <th scope="col" class="px-6 py-3">Card</th>
+              <th scope="col" class="px-6 py-3">Date</th>
+              <th colspan="2" class="px-6 py-3"> Actions </th>
+            </tr>
+          </thead>
+          <tbody class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+            <tr v-for="month in monthItems" :key="month.id">
+              <td class="px-6 py-4">
+                {{ month.value }}
+              </td>
+              <td class="px-6 py-4">
+                {{ month.description }}
+              </td>
+              <td class="px-6 py-4">
+                {{ month.idType }}
+              </td>
+              <td class="px-6 py-4">
+                {{ month.operation }}
+              </td>
+              <td class="px-6 py-4">
+                {{ month.paymentMethod }}
+              </td>
+              <td class="px-6 py-4">
+                {{ month.idCard }}
+              </td>
+              <td class="px-6 py-4">
+                {{ month.date }}
+              </td>
+              <td coslpan="2">
 
-<!--            <div class="flex flex-row gap-2 items-center">-->
-<!--              <button-->
-<!--                type="button"-->
-<!--                class="text-blue-400 ml-2 font-mono hover:font-bold"-->
-<!--                @click="month.toggledGoals = !month.toggledGoals"-->
-<!--                v-if="!!planning.id"-->
-<!--              >-->
-<!--                Add goals-->
-<!--              </button>-->
-<!--              <button-->
-<!--                type="button"-->
-<!--                @click="addMonth(month)"-->
-<!--                title="Adicionar Mês"-->
-<!--                class="text-lg"-->
-<!--                v-if="isLastMonth(month.id)"-->
-<!--              >-->
-<!--                <plus />-->
-<!--              </button>-->
-<!--              <button-->
-<!--                v-if="canRemove()"-->
-<!--                type="button"-->
-<!--                @click="removeMonth(month.id)"-->
-<!--                title="Remove Mês"-->
-<!--                class="text-lg text-red-500"-->
-<!--              >-->
-<!--                <remove />-->
-<!--              </button>-->
-<!--              <button-->
-<!--                type="button"-->
-<!--                class="text-lg"-->
-<!--                @click="month.hidden = !month.hidden"-->
-<!--              >-->
-<!--                <button-->
-<!--                  type="button"-->
-<!--                  class="transition ease-in duration-100"-->
-<!--                  :class="{ '-rotate-180': !month.hidden }"-->
-<!--                >-->
-<!--                  <ArrowDown />-->
-<!--                </button>-->
-<!--              </button>-->
-<!--            </div>-->
-<!--          </div>-->
-<!--          <PlanningMonthGoals-->
-<!--            :idPlanningMonth="month.id"-->
-<!--            :currentGoals="month.goals"-->
-<!--            :currentBudgets="month.budgets"-->
-<!--            v-if="month.toggledGoals && !!planning.id"-->
-<!--            @isVisible="handlePopup(month)"-->
-<!--          />-->
 
-<!--          <div class="flex flex-col items-start ml-8" v-if="!month.hidden">-->
+              </td>
+            </tr>
+          </tbody>
 
-<!--            <div class="flex flex-row">-->
-<!--              <a class="text-black-700 mr-1">-->
-<!--                <char />-->
-<!--              </a>-->
-<!--              <h3 class="text-lg font-bold">Moviments</h3>-->
+        </table>
+        <!--        <div-->
+        <!--          class="flex flex-col bg-gray-300 rounded border-l-8 border-gray-500 p-5 mb-5"-->
+        <!--          v-for="(month, key) in planning.planningMonths"-->
+        <!--          :key="key"-->
+        <!--        >-->
+        <!--          <div class="grid md:grid-cols-4 md:gap-3 mb-2 items-end ml-4">-->
+        <!--            <Select-->
+        <!--              label="Month"-->
+        <!--              type="text"-->
+        <!--              v-model="month.idMonth"-->
+        <!--              optionValue="id"-->
+        <!--              optionText="monthName"-->
+        <!--              :options="getMonthOptions(month)"-->
+        <!--              :required="true"-->
+        <!--            />-->
+        <!--            <MoneyInput label="Credit status" v-model="month.creditStatus" :model-value="month.creditStatus" />-->
 
-<!--            </div>-->
-<!--          </div>-->
+        <!--            <div class="flex flex-row gap-2 items-center">-->
+        <!--              <button-->
+        <!--                type="button"-->
+        <!--                class="text-blue-400 ml-2 font-mono hover:font-bold"-->
+        <!--                @click="month.toggledGoals = !month.toggledGoals"-->
+        <!--                v-if="!!planning.id"-->
+        <!--              >-->
+        <!--                Add goals-->
+        <!--              </button>-->
+        <!--              <button-->
+        <!--                type="button"-->
+        <!--                @click="addMonth(month)"-->
+        <!--                title="Adicionar Mês"-->
+        <!--                class="text-lg"-->
+        <!--                v-if="isLastMonth(month.id)"-->
+        <!--              >-->
+        <!--                <plus />-->
+        <!--              </button>-->
+        <!--              <button-->
+        <!--                v-if="canRemove()"-->
+        <!--                type="button"-->
+        <!--                @click="removeMonth(month.id)"-->
+        <!--                title="Remove Mês"-->
+        <!--                class="text-lg text-red-500"-->
+        <!--              >-->
+        <!--                <remove />-->
+        <!--              </button>-->
+        <!--              <button-->
+        <!--                type="button"-->
+        <!--                class="text-lg"-->
+        <!--                @click="month.hidden = !month.hidden"-->
+        <!--              >-->
+        <!--                <button-->
+        <!--                  type="button"-->
+        <!--                  class="transition ease-in duration-100"-->
+        <!--                  :class="{ '-rotate-180': !month.hidden }"-->
+        <!--                >-->
+        <!--                  <ArrowDown />-->
+        <!--                </button>-->
+        <!--              </button>-->
+        <!--            </div>-->
+        <!--          </div>-->
+        <!--          <PlanningMonthGoals-->
+        <!--            :idPlanningMonth="month.id"-->
+        <!--            :currentGoals="month.goals"-->
+        <!--            :currentBudgets="month.budgets"-->
+        <!--            v-if="month.toggledGoals && !!planning.id"-->
+        <!--            @isVisible="handlePopup(month)"-->
+        <!--          />-->
 
-<!--          <TransitionGroup mode="out-in" class="max-h-96 overflow-auto">-->
-<!--            <div-->
-<!--              class="flex flex-col bg-gray-700 rounded border-l-8 border-white p-5 mb-5 text-white ml-8"-->
-<!--              v-for="(item, key) in month.items"-->
-<!--              :key="key"-->
-<!--            >-->
-<!--              <div-->
-<!--                v-if="!item.hidden && !month.hidden"-->
-<!--                :class="[-->
-<!--                  'grid  md:gap-3 mb-2 items-end',-->
-<!--                  item.operation == 'out' ? 'md:grid-cols-8' : 'md:grid-cols-7',-->
-<!--                ]"-->
-<!--              >-->
-<!--                <MoneyInput-->
-<!--                  label="Value"-->
-<!--                  v-model="item.value"-->
-<!--                  :required="true"-->
-<!--                  :model-value="item.value"-->
-<!--                />-->
-<!--                <Input-->
-<!--                  label="Description"-->
-<!--                  type="text"-->
-<!--                  v-model="item.description"-->
-<!--                  :required="true"-->
-<!--                />-->
-<!--                <Treeselect-->
-<!--                  placeholder="Type"-->
-<!--                  v-model="item.idType"-->
-<!--                  :required="true"-->
-<!--                  :options="itemTypes"-->
-<!--                  label="Type"-->
-<!--                />-->
-<!--                <Select-->
-<!--                  label="Operation"-->
-<!--                  type="text"-->
-<!--                  v-model="item.operation"-->
-<!--                  optionValue="value"-->
-<!--                  optionText="name"-->
-<!--                  :options="operations"-->
-<!--                  :required="true"-->
-<!--                />-->
-<!--                <Select-->
-<!--                  v-model="item.paymentMethod"-->
-<!--                  label="Payment Method"-->
-<!--                  optionText="name"-->
-<!--                  optionValue="value"-->
-<!--                  :options="paymentMethods"-->
-<!--                  v-if="item.operation == 'out'"-->
-<!--                  :required="item.operation == 'out'"-->
-<!--                />-->
-<!--                <Select-->
-<!--                  v-model="item.idCard"-->
-<!--                  label="Card"-->
-<!--                  optionText="cardName"-->
-<!--                  optionValue="id"-->
-<!--                  :options="cards"-->
-<!--                  :required="false"-->
-<!--                />-->
-<!--                <Input-->
-<!--                  label="Date"-->
-<!--                  type="date"-->
-<!--                  v-model="item.date"-->
-<!--                  :required="true"-->
-<!--                />-->
+        <!--          <div class="flex flex-col items-start ml-8" v-if="!month.hidden">-->
 
-<!--                <div class="flex flex-row">-->
-<!--                  <button-->
-<!--                    v-if="isLastItem(month, item.id)"-->
-<!--                    type="button"-->
-<!--                    @click="addItem(month)"-->
-<!--                    title="Adicionar Mês"-->
-<!--                    class="text-lg"-->
-<!--                  >-->
-<!--                    <plus />-->
-<!--                  </button>-->
-<!--                  <button-->
-<!--                    v-if="canRemove()"-->
-<!--                    type="button"-->
-<!--                    @click="removeItem(month, item.id)"-->
-<!--                    title="Remove Item"-->
-<!--                    class="text-lg text-red-500"-->
-<!--                  >-->
-<!--                    <remove />-->
-<!--                  </button>-->
-<!--                </div>-->
-<!--              </div>-->
-<!--            </div>-->
-<!--          </TransitionGroup>-->
-<!--        </div>-->
+        <!--            <div class="flex flex-row">-->
+        <!--              <a class="text-black-700 mr-1">-->
+        <!--                <char />-->
+        <!--              </a>-->
+        <!--              <h3 class="text-lg font-bold">Moviments</h3>-->
+
+        <!--            </div>-->
+        <!--          </div>-->
+
+        <!--          <TransitionGroup mode="out-in" class="max-h-96 overflow-auto">-->
+        <!--            <div-->
+        <!--              class="flex flex-col bg-gray-700 rounded border-l-8 border-white p-5 mb-5 text-white ml-8"-->
+        <!--              v-for="(item, key) in month.items"-->
+        <!--              :key="key"-->
+        <!--            >-->
+        <!--              <div-->
+        <!--                v-if="!item.hidden && !month.hidden"-->
+        <!--                :class="[-->
+        <!--                  'grid  md:gap-3 mb-2 items-end',-->
+        <!--                  item.operation == 'out' ? 'md:grid-cols-8' : 'md:grid-cols-7',-->
+        <!--                ]"-->
+        <!--              >-->
+        <!--                <MoneyInput-->
+        <!--                  label="Value"-->
+        <!--                  v-model="item.value"-->
+        <!--                  :required="true"-->
+        <!--                  :model-value="item.value"-->
+        <!--                />-->
+        <!--                <Input-->
+        <!--                  label="Description"-->
+        <!--                  type="text"-->
+        <!--                  v-model="item.description"-->
+        <!--                  :required="true"-->
+        <!--                />-->
+        <!--                <Treeselect-->
+        <!--                  placeholder="Type"-->
+        <!--                  v-model="item.idType"-->
+        <!--                  :required="true"-->
+        <!--                  :options="itemTypes"-->
+        <!--                  label="Type"-->
+        <!--                />-->
+        <!--                <Select-->
+        <!--                  label="Operation"-->
+        <!--                  type="text"-->
+        <!--                  v-model="item.operation"-->
+        <!--                  optionValue="value"-->
+        <!--                  optionText="name"-->
+        <!--                  :options="operations"-->
+        <!--                  :required="true"-->
+        <!--                />-->
+        <!--                <Select-->
+        <!--                  v-model="item.paymentMethod"-->
+        <!--                  label="Payment Method"-->
+        <!--                  optionText="name"-->
+        <!--                  optionValue="value"-->
+        <!--                  :options="paymentMethods"-->
+        <!--                  v-if="item.operation == 'out'"-->
+        <!--                  :required="item.operation == 'out'"-->
+        <!--                />-->
+        <!--                <Select-->
+        <!--                  v-model="item.idCard"-->
+        <!--                  label="Card"-->
+        <!--                  optionText="cardName"-->
+        <!--                  optionValue="id"-->
+        <!--                  :options="cards"-->
+        <!--                  :required="false"-->
+        <!--                />-->
+        <!--                <Input-->
+        <!--                  label="Date"-->
+        <!--                  type="date"-->
+        <!--                  v-model="item.date"-->
+        <!--                  :required="true"-->
+        <!--                />-->
+
+        <!--                <div class="flex flex-row">-->
+        <!--                  <button-->
+        <!--                    v-if="isLastItem(month, item.id)"-->
+        <!--                    type="button"-->
+        <!--                    @click="addItem(month)"-->
+        <!--                    title="Adicionar Mês"-->
+        <!--                    class="text-lg"-->
+        <!--                  >-->
+        <!--                    <plus />-->
+        <!--                  </button>-->
+        <!--                  <button-->
+        <!--                    v-if="canRemove()"-->
+        <!--                    type="button"-->
+        <!--                    @click="removeItem(month, item.id)"-->
+        <!--                    title="Remove Item"-->
+        <!--                    class="text-lg text-red-500"-->
+        <!--                  >-->
+        <!--                    <remove />-->
+        <!--                  </button>-->
+        <!--                </div>-->
+        <!--              </div>-->
+        <!--            </div>-->
+        <!--          </TransitionGroup>-->
+        <!--        </div>-->
       </div>
-      <CreateEditMoviment :planning="planning"
-                          v-if="popupMoviments"
-                          @isVisible="togglePopup"
-                          @addMonth="addItem"
-
-      />
+      <CreateEditMoviment :planning="planning" v-if="popupMoviments" @isVisible="togglePopup" @addMonth="addItem" />
     </form>
 
   </div>
@@ -263,24 +269,19 @@ import money from "../icons/money.vue";
 import calendar from "../icons/calendar.vue";
 import Input from "../input/Input.vue";
 import MoneyInput from "../money-input/MoneyInput.vue";
-import { toHtmlDateTimeFormat } from "@/helpers/DateFormatter";
 import quickid from "@/helpers/quickid";
 import plus from "../icons/plus.vue";
 import Select from "../select/Select.vue";
-import char from "../icons/char.vue";
-import remove from "../icons/remove.vue";
-import ArrowDown from "../icons/arrow-down.vue";
-import Treeselect from "../treeselect/Treeselect.vue";
 import PlanningMonthGoals from "../planning/Goals/PlanningMonthGoals.vue";
 import { usePlanningCalculator } from "@/mixins/PlanningCalculator"
-import { ref, computed, onUnmounted, watchEffect, watch } from "vue";
+import { ref, computed, onUnmounted, watch, onMounted } from "vue";
 import { useStore } from "vuex";
-import tree from 'vue3-treeselect'
-import {useSwal} from "@/mixins/SwalMixin";
+import { useSwal } from "@/mixins/SwalMixin";
 import PlanningPreview from "@/components/planning-preview/PlanningPreview.vue";
-import {usePopup} from "@/mixins/Popup";
+import { usePopup } from "@/mixins/Popup";
 import CreateEditMoviment from "@/components/planning/Moviments/CreateEditMoviment.vue";
 const $store = useStore()
+const monthMoviments = ref((new Date()).getMonth() + 1)
 const operations = [
   {
     name: "In (+)",
@@ -296,8 +297,9 @@ const monthsToRemove = ref([])
 const itemsToRemove = ref([])
 
 const { togglePopup, toggled: popupMoviments } = usePopup("addMoviment");
+const { togglePopup: toggleBudgets, toggled: popupBudgets } = usePopup("budgets")
 
-const {  toastError } = useSwal()
+const { toastError } = useSwal()
 const {
   spentOnDebitMonth,
   spentOnCreditMonth,
@@ -320,22 +322,32 @@ const cards = computed(() => {
 })
 
 const planning = computed({
-    set(value) {
-      $store.dispatch("planning/applyCurrentPlanning", value);
-    },
-    get() {
-
-      return $store.state.planning.planning;
-    },
+  set(value) {
+    $store.dispatch("planning/applyCurrentPlanning", value);
+  },
+  get() {
+    return $store.state.planning.planning;
+  },
 })
 
-const onEdit = computed(() => {
-    return (
-      planning.value.hasOwnProperty("id") &&
-      isIdFromDB(planning.value ?? { id: null })
-    );
+const monthItems = computed(() => {
+  return planning.value.planningMonths.filter(
+    (month) => month.idMonth === monthMoviments.value
+  ).map((month) => month.items).flat();
 });
 
+const onEdit = computed(() => {
+  return (
+    planning.value.hasOwnProperty("id") &&
+    isIdFromDB(planning.value ?? { id: null })
+  );
+});
+
+onMounted(() => {
+  // tem que chamar a store pra pegar o planning
+  console.log('montou, porra')
+  $store.dispatch("planning/changePlanningYear", year);
+})
 
 onUnmounted(() => {
   $store.dispatch("planning/applyDefaultPlanning");
@@ -346,7 +358,7 @@ watch(planning, (value) => {
 })
 
 // const { visible, disband } = usePopup();
-const { in: inExpent , out } = usePlanningCalculator()
+const { in: inExpent, out } = usePlanningCalculator()
 
 const { year } = defineProps({
   year: {
@@ -356,6 +368,7 @@ const { year } = defineProps({
 })
 
 const currentMonthGoals = ref([]);
+const currentMonthBudgets = ref([]);
 const currentMonthItems = ref([]);
 
 const addMonth = (month) => {
@@ -422,29 +435,29 @@ const collapseOrShowAllMonthsText = computed(() => {
 const addItem = (month) => {
   const itemDateParsed = new Date(month.date + 'T00:00')
   const newMoviment = {
-    ... month,
-    idPlanningMonth:  months.value[itemDateParsed.getMonth()].id
+    ...month,
+    idPlanningMonth: months.value[itemDateParsed.getMonth()].id
   }
   planning.value.planningMonths.push({
-      hidden: false,
+    hidden: false,
+    id: quickid(),
+    idMonth: months.value[itemDateParsed.getMonth()].id,
+    items: [
+      newMoviment
+    ],
+    goals: {
       id: quickid(),
-      idMonth:  months.value[itemDateParsed.getMonth()].id,
-      items: [
-        newMoviment
-      ],
-      goals: {
+      idPlanningMonth: null,
+      moneyToSave: 0,
+      creditLimit: 0,
+    },
+    budgets: [
+      {
         id: quickid(),
-        idPlanningMonth: null,
-        moneyToSave: 0,
-        creditLimit: 0,
-      },
-      budgets: [
-        {
-          id: quickid(),
-          type: null,
-          planningMonth: null,
-          amount: 0,
-        }]
+        type: null,
+        planningMonth: null,
+        amount: 0,
+      }]
   });
   save();
 };
@@ -525,13 +538,6 @@ const isIdFromDB = ({ id }) => {
   return !!id && !isNaN(+id);
 };
 
-const canRemove = (key) => {
-  if (onEdit.value) return true;
-  return key != 0;
-};
-
-const toggleSelection = () => {};
-
 const makeToUpAdd = (array, onMonth = true) => {
   return array.reduce(
     (acc, current, index) => {
@@ -573,9 +579,7 @@ const onInputSearch = ($event, month, field = "description") => {
   });
 };
 
-const handlePopup = month => {
-  month.toggledGoals = false
-}
+
 
 const createEditItem = () => {
   togglePopup(!popupMoviments.value);
