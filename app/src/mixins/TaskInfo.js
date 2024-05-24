@@ -1,7 +1,5 @@
 import { useSwal } from "@/mixins/SwalMixin";
 
-
-
 export function useTaskInfo() {
     const { showInfo } = useSwal();
 

@@ -54,7 +54,7 @@ const emitChange = (event) => {
     <input
       :type="type"
       :id="id"
-      class="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 disabled:cursor-not-allowed disabled:bg-slate-100"
+      class="bg-white h-[59px] border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 disabled:cursor-not-allowed disabled:bg-slate-100"
       :placeholder="placeholder"
       :required="required"
       v-bind="extraProps"

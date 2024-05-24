@@ -1,3 +1,9 @@
+/**
+ * 
+ * @param {String} text 
+ * @param {Number} maxLength 
+ * @returns 
+ */
 export default function cutText(text, maxLength = 100) {
   if (text.length > maxLength) {
     return text.substr(0, maxLength).concat("...");

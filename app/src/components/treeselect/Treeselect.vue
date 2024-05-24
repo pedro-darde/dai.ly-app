@@ -160,7 +160,7 @@ import quickid from "@/helpers/quickid";
     <button type="button"
             v-if="!onChildren"
             id="button-dropdown"
-            :class="['rounded-md bg-slate-200 text-bold text-black font-bold p-2 flex justify-between items-center', dropDownVisible ? 'border-2 border-blue-500' : '']"
+            :class="['h-[59px] rounded-md bg-slate-200 text-bold text-black font-bold p-2 flex justify-between items-center', dropDownVisible ? 'border-2 border-blue-500' : '']"
             @click="handleClickDropdownButton"
     >
       {{ dropDownText }}
