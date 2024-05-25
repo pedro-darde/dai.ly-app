@@ -27,6 +27,5 @@ nav a.router-link-exact-active {
 }
 </style>
 
-<script>
-export default {};
+<script setup>
 </script>
