@@ -101,6 +101,13 @@ const actions = {
       commit("PLANNING_CREATED", { icon, message });
     }
   },
+  async removeItem({ commit }, { year, idItem }) {
+    try {
+      await planningService.removeItem(year, idItem);
+    } catch (e) {
+      console.error(e);
+    }
+  },
   saveMonths({ commit }, months) {},
   async getMonths({ commit }) {
     try {
@@ -113,6 +120,9 @@ const actions = {
   async getItemTypes({ commit }) {
     try {
       const types = await itemTypeService.getTypes();
+
+      // const toTreeSelectStyle = types.map()
+
       commit("SET_TYPES", types);
     } catch (e) {
       console.error(e);

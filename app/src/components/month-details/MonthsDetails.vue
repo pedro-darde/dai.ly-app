@@ -1,7 +1,9 @@
 <template>
-<!--  <Transition name="fade">-->
     <RawPopup v-if="visible" @disband="customDisband">
-      <div class="mb-5 p-2" v-for="month in monthsGroupped">
+      <div v-if="!monthsGroupped.length">
+          <h3 class="text-center text-2xl"> No months created </h3>
+      </div>
+      <div v-else class="mb-5 p-2" v-for="month in monthsGroupped">
         <div class="d-flex flex-col">
           <h3 class="text-bold text-2xl p-5 font-mono">
             {{ month.monthName }} Stats
@@ -53,7 +55,6 @@
         </div>
       </div>
     </RawPopup>
-<!--  </Transition>-->
 </template>
 
 <script setup>

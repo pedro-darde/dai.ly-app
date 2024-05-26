@@ -4,9 +4,9 @@
       <div class="flex flex-col">
         <form @submit.prevent="save">
           <div class="flex flex-row justify-start mt-5">
-            <p class="font-bold text-2xl">Create new Type</p>
+            <p class="font-bold text-2xl">Create new type</p>
           </div>
-          <div class="flex flex-col border-8 p-3">
+          <div class="flex flex-col  p-3">
             <div class="flex flex-row gap-5 justify-around items-center w-full">
               <Input
                   label="Description"

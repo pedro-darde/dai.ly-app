@@ -94,7 +94,7 @@ const classes = computed(() => {
   top: 0;
   width: 100vw;
   min-height: 100vh;
-  z-index: 10;
+  z-index: 20;
   overflow: auto;
 
   background: transparent;

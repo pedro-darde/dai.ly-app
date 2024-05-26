@@ -23,6 +23,11 @@ export class PlanningService extends BaseService {
     );
     console.log(res);
   }
+
+  async removeItem(year, idItem)  { 
+    const res = await axiosPlugin.delete(`/planning/${year}/item/${idItem}`);
+    console.log(res);
+  }
 }
 
 export const planningService = new PlanningService("planning");

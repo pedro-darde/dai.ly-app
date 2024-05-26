@@ -3,14 +3,13 @@ import Select from "@/components/select/Select.vue";
 import MoneyInput from "../../money-input/MoneyInput.vue";
 import { computed, ref } from "vue";
 import { toHtmlDateTimeFormat } from "@/helpers/DateFormatter";
-import Treeselect from "@/components/treeselect/Treeselect.vue";
 import Input from "@/components/input/Input.vue";
 import { useStore } from "vuex";
 import RawPopup from "@/components/popup/RawPopup.vue";
 import { popupVisibility } from "@/mixins/Popup";
 import DividerComponent from "@/components/divider/DividerComponent.vue";
 import quickid from "@/helpers/quickid";
-
+import TreeSelect from 'primevue/treeselect';
 defineProps({
   planning: {
     type: Object,
@@ -48,8 +47,8 @@ const operations = [
   },
 ];
 
-const emitAddMonth = () => {
-  emit('addMonth', item.value)
+const emitAddMonth = (saveAndNew = false) => {
+  emit('addMonth', item.value, saveAndNew)
 }
 
 const cards = computed(() => {
@@ -75,7 +74,7 @@ const { visible, disband } = popupVisibility();
         <div class="grid md:grid-cols-4 md:gap-3 mb-2 items-end ml-4 mt-4 justify-center">
           <MoneyInput label="Value" v-model="item.value" :required="true" :model-value="item.value" />
           <Input label="Description" type="text" v-model="item.description" :required="true" />
-          <Treeselect placeholder="Type" v-model="item.idType" :required="true" :options="itemTypes" label="Type" />
+          <TreeSelect v-model="item.idType" :options="itemTypes" placeholder="Select Item" class="md:w-20rem w-full"  selectionMode="multiple" />
           <Select label="Operation" type="text" v-model="item.operation" optionValue="value" optionText="name"
             :options="operations" :required="true" />
           <Select v-model="item.paymentMethod" label="Payment Method" optionText="name" optionValue="value"
@@ -83,11 +82,16 @@ const { visible, disband } = popupVisibility();
           <Select v-model="item.idCard" label="Card" optionText="cardName" optionValue="id" :options="cards"
             :required="false" />
           <Input label="Date" type="date" v-model="item.date" :required="true" />
-
-          <button type="submit"
-            class="px-3 py-2 text-sm text-center bg-green-400 rounded-lg hover:bg-green-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-bold text-black">
-            Save
-          </button>
+        </div>
+        <div class="flex flex-row gap-2 justify-end">
+            <button type="submit"
+              class="px-3 py-2 text-sm text-center bg-green-400 rounded-lg hover:bg-green-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-bold text-black">
+              Save
+            </button>
+            <button type="button" @click="emitAddMonth(true)"
+              class="px-3 py-2 text-sm text-center bg-blue-400 rounded-lg hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-bold text-black">
+              Save and new
+            </button>
         </div>
       </form>
 

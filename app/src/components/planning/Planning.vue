@@ -41,12 +41,14 @@
         <div class="grid md:grid-cols-3 md:gap-3">
           <Select label="Month" type="text" optionValue="id" optionText="monthName" :options="months" class="col-span-2"
             v-model="monthMoviments" :required="true" />
-          <button type="button" @click="toggleBudgets"> Month Planejament </button>
-          <PlanningMonthGoals :idPlanningMonth="month.id" :currentGoals="currentMonthGoals"
+          <button type="button" @click="openBudgets" class="px-3 py-2   text-center text-white font-bold text-xl  bg-blue-400 rounded-lg hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300">
+             Month budgets 
+            </button>
+          <PlanningMonthGoals :idPlanningMonth="monthMoviments"
             :currentBudgets="currentMonthBudgets" v-if="popupBudgets" @isVisible="toggleBudgets" />
         </div>
         <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 rounded mt-5">
-          <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400 ">
+          <thead class="text-xs text-gray-700 uppercase bg-gray-400 dark:bg-gray-700 dark:text-gray-400 ">
             <tr>
               <th scope="col" class="px-6 py-3">Value</th>
               <th scope="col" class="px-6 py-3">Description</th>
@@ -58,16 +60,16 @@
               <th colspan="2" class="px-6 py-3"> Actions </th>
             </tr>
           </thead>
-          <tbody class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+          <tbody class="bg-gray-200 border-b dark:bg-gray-800 dark:border-gray-700 dark:text-white font-bold">
             <tr v-for="month in monthItems" :key="month.id">
               <td class="px-6 py-4">
-                {{ month.value }}
+                {{ $filters.toMonetary(month.value) }}
               </td>
               <td class="px-6 py-4">
                 {{ month.description }}
               </td>
               <td class="px-6 py-4">
-                {{ month.idType }}
+                {{ itemTypes.find(item => item.id === month.idType)?.description }}
               </td>
               <td class="px-6 py-4">
                 {{ month.operation }}
@@ -82,180 +84,17 @@
                 {{ month.date }}
               </td>
               <td coslpan="2">
-
-
+                  <div class="flex flex-row gap-2">
+                    <font-awesome-icon icon="pencil"  size="xl" style="cursor: pointer" />
+                    <a @click="removeItem(month.id)">
+                      <font-awesome-icon icon="trash"  size="xl" color="red"   /> 
+                    </a>
+                  </div>
               </td>
             </tr>
           </tbody>
-
         </table>
-        <!--        <div-->
-        <!--          class="flex flex-col bg-gray-300 rounded border-l-8 border-gray-500 p-5 mb-5"-->
-        <!--          v-for="(month, key) in planning.planningMonths"-->
-        <!--          :key="key"-->
-        <!--        >-->
-        <!--          <div class="grid md:grid-cols-4 md:gap-3 mb-2 items-end ml-4">-->
-        <!--            <Select-->
-        <!--              label="Month"-->
-        <!--              type="text"-->
-        <!--              v-model="month.idMonth"-->
-        <!--              optionValue="id"-->
-        <!--              optionText="monthName"-->
-        <!--              :options="getMonthOptions(month)"-->
-        <!--              :required="true"-->
-        <!--            />-->
-        <!--            <MoneyInput label="Credit status" v-model="month.creditStatus" :model-value="month.creditStatus" />-->
-
-        <!--            <div class="flex flex-row gap-2 items-center">-->
-        <!--              <button-->
-        <!--                type="button"-->
-        <!--                class="text-blue-400 ml-2 font-mono hover:font-bold"-->
-        <!--                @click="month.toggledGoals = !month.toggledGoals"-->
-        <!--                v-if="!!planning.id"-->
-        <!--              >-->
-        <!--                Add goals-->
-        <!--              </button>-->
-        <!--              <button-->
-        <!--                type="button"-->
-        <!--                @click="addMonth(month)"-->
-        <!--                title="Adicionar Mês"-->
-        <!--                class="text-lg"-->
-        <!--                v-if="isLastMonth(month.id)"-->
-        <!--              >-->
-        <!--                <plus />-->
-        <!--              </button>-->
-        <!--              <button-->
-        <!--                v-if="canRemove()"-->
-        <!--                type="button"-->
-        <!--                @click="removeMonth(month.id)"-->
-        <!--                title="Remove Mês"-->
-        <!--                class="text-lg text-red-500"-->
-        <!--              >-->
-        <!--                <remove />-->
-        <!--              </button>-->
-        <!--              <button-->
-        <!--                type="button"-->
-        <!--                class="text-lg"-->
-        <!--                @click="month.hidden = !month.hidden"-->
-        <!--              >-->
-        <!--                <button-->
-        <!--                  type="button"-->
-        <!--                  class="transition ease-in duration-100"-->
-        <!--                  :class="{ '-rotate-180': !month.hidden }"-->
-        <!--                >-->
-        <!--                  <ArrowDown />-->
-        <!--                </button>-->
-        <!--              </button>-->
-        <!--            </div>-->
-        <!--          </div>-->
-        <!--          <PlanningMonthGoals-->
-        <!--            :idPlanningMonth="month.id"-->
-        <!--            :currentGoals="month.goals"-->
-        <!--            :currentBudgets="month.budgets"-->
-        <!--            v-if="month.toggledGoals && !!planning.id"-->
-        <!--            @isVisible="handlePopup(month)"-->
-        <!--          />-->
-
-        <!--          <div class="flex flex-col items-start ml-8" v-if="!month.hidden">-->
-
-        <!--            <div class="flex flex-row">-->
-        <!--              <a class="text-black-700 mr-1">-->
-        <!--                <char />-->
-        <!--              </a>-->
-        <!--              <h3 class="text-lg font-bold">Moviments</h3>-->
-
-        <!--            </div>-->
-        <!--          </div>-->
-
-        <!--          <TransitionGroup mode="out-in" class="max-h-96 overflow-auto">-->
-        <!--            <div-->
-        <!--              class="flex flex-col bg-gray-700 rounded border-l-8 border-white p-5 mb-5 text-white ml-8"-->
-        <!--              v-for="(item, key) in month.items"-->
-        <!--              :key="key"-->
-        <!--            >-->
-        <!--              <div-->
-        <!--                v-if="!item.hidden && !month.hidden"-->
-        <!--                :class="[-->
-        <!--                  'grid  md:gap-3 mb-2 items-end',-->
-        <!--                  item.operation == 'out' ? 'md:grid-cols-8' : 'md:grid-cols-7',-->
-        <!--                ]"-->
-        <!--              >-->
-        <!--                <MoneyInput-->
-        <!--                  label="Value"-->
-        <!--                  v-model="item.value"-->
-        <!--                  :required="true"-->
-        <!--                  :model-value="item.value"-->
-        <!--                />-->
-        <!--                <Input-->
-        <!--                  label="Description"-->
-        <!--                  type="text"-->
-        <!--                  v-model="item.description"-->
-        <!--                  :required="true"-->
-        <!--                />-->
-        <!--                <Treeselect-->
-        <!--                  placeholder="Type"-->
-        <!--                  v-model="item.idType"-->
-        <!--                  :required="true"-->
-        <!--                  :options="itemTypes"-->
-        <!--                  label="Type"-->
-        <!--                />-->
-        <!--                <Select-->
-        <!--                  label="Operation"-->
-        <!--                  type="text"-->
-        <!--                  v-model="item.operation"-->
-        <!--                  optionValue="value"-->
-        <!--                  optionText="name"-->
-        <!--                  :options="operations"-->
-        <!--                  :required="true"-->
-        <!--                />-->
-        <!--                <Select-->
-        <!--                  v-model="item.paymentMethod"-->
-        <!--                  label="Payment Method"-->
-        <!--                  optionText="name"-->
-        <!--                  optionValue="value"-->
-        <!--                  :options="paymentMethods"-->
-        <!--                  v-if="item.operation == 'out'"-->
-        <!--                  :required="item.operation == 'out'"-->
-        <!--                />-->
-        <!--                <Select-->
-        <!--                  v-model="item.idCard"-->
-        <!--                  label="Card"-->
-        <!--                  optionText="cardName"-->
-        <!--                  optionValue="id"-->
-        <!--                  :options="cards"-->
-        <!--                  :required="false"-->
-        <!--                />-->
-        <!--                <Input-->
-        <!--                  label="Date"-->
-        <!--                  type="date"-->
-        <!--                  v-model="item.date"-->
-        <!--                  :required="true"-->
-        <!--                />-->
-
-        <!--                <div class="flex flex-row">-->
-        <!--                  <button-->
-        <!--                    v-if="isLastItem(month, item.id)"-->
-        <!--                    type="button"-->
-        <!--                    @click="addItem(month)"-->
-        <!--                    title="Adicionar Mês"-->
-        <!--                    class="text-lg"-->
-        <!--                  >-->
-        <!--                    <plus />-->
-        <!--                  </button>-->
-        <!--                  <button-->
-        <!--                    v-if="canRemove()"-->
-        <!--                    type="button"-->
-        <!--                    @click="removeItem(month, item.id)"-->
-        <!--                    title="Remove Item"-->
-        <!--                    class="text-lg text-red-500"-->
-        <!--                  >-->
-        <!--                    <remove />-->
-        <!--                  </button>-->
-        <!--                </div>-->
-        <!--              </div>-->
-        <!--            </div>-->
-        <!--          </TransitionGroup>-->
-        <!--        </div>-->
+     
       </div>
       <CreateEditMoviment :planning="planning" v-if="popupMoviments" @isVisible="togglePopup" @addMonth="addItem" />
     </form>
@@ -280,18 +119,9 @@ import { useSwal } from "@/mixins/SwalMixin";
 import PlanningPreview from "@/components/planning-preview/PlanningPreview.vue";
 import { usePopup } from "@/mixins/Popup";
 import CreateEditMoviment from "@/components/planning/Moviments/CreateEditMoviment.vue";
+import { useFilters } from "@/filters";
 const $store = useStore()
 const monthMoviments = ref((new Date()).getMonth() + 1)
-const operations = [
-  {
-    name: "In (+)",
-    value: "in",
-  },
-  {
-    name: "Out (-)",
-    value: "out",
-  },
-];
 
 const monthsToRemove = ref([])
 const itemsToRemove = ref([])
@@ -299,19 +129,24 @@ const itemsToRemove = ref([])
 const { togglePopup, toggled: popupMoviments } = usePopup("addMoviment");
 const { togglePopup: toggleBudgets, toggled: popupBudgets } = usePopup("budgets")
 
-const { toastError } = useSwal()
+const { showConfirm, toastSuccess } = useSwal()
 const {
   spentOnDebitMonth,
   spentOnCreditMonth,
 } = usePlanningCalculator()
-const paymentMethods = [
-  { name: "Debit", value: "debit" },
-  { name: "Credit", value: "credit" },
-];
 
 const itemTypes = computed(() => {
   return $store.getters["planning/itemTypesGetter"];
 })
+
+const openBudgets = () => {
+  const currentMonth = planning.value.planningMonths.find(
+    (month) => month.idMonth === monthMoviments.value
+  );
+
+  currentMonthBudgets.value = currentMonth?.budgets ?? []
+  toggleBudgets()
+}
 
 const months = computed(() => {
   return $store.getters["planning/monthGetter"];
@@ -344,8 +179,6 @@ const onEdit = computed(() => {
 });
 
 onMounted(() => {
-  // tem que chamar a store pra pegar o planning
-  console.log('montou, porra')
   $store.dispatch("planning/changePlanningYear", year);
 })
 
@@ -359,6 +192,7 @@ watch(planning, (value) => {
 
 // const { visible, disband } = usePopup();
 const { in: inExpent, out } = usePlanningCalculator()
+const $filters = useFilters()
 
 const { year } = defineProps({
   year: {
@@ -367,139 +201,35 @@ const { year } = defineProps({
   }
 })
 
-const currentMonthGoals = ref([]);
 const currentMonthBudgets = ref([]);
-const currentMonthItems = ref([]);
 
-const addMonth = (month) => {
-  console.log(month)
-  // planning.value.planningMonths.push({
-  //   hidden: false,
-  //   id: quickid(),
-  //   idMonth: month.idMonth + 1,
-  //   items: [
-  //     {
-  //       idPlanningMonth: month.id,
-  //       id: quickid(),
-  //       value: 0,
-  //       operation: "out",
-  //       date: toHtmlDateTimeFormat(new Date()),
-  //       paymentMethod: "credit",
-  //     },
-  //   ],
-  //   goals: {
-  //     id: quickid(),
-  //     idPlanningMonth: null,
-  //     moneyToSave: 0,
-  //     creditLimit: 0,
-  //   },
-  //   budgets: [
-  //     {
-  //       id: quickid(),
-  //       type: null,
-  //       planningMonth: null,
-  //       amount: 0,
-  //     },
-  //   ],
-  // });
-};
-
-const removeMonth = (id) => {
-  if (planning.value.planningMonths?.length === 1) {
-    toastError("Keep at least one month to the planning");
-    return;
-  }
-
-  if (onEdit.value) {
-    const month = planning.value.planningMonths.find((item) => item.id === id);
-    if (isIdFromDB(month)) {
-      monthsToRemove.value.push(id);
-      itemsToRemove.value.push([
-        ...month.items.filter(isIdFromDB).map(({ id }) => id),
-      ]);
-    }
-  }
-  planning.value.planningMonths = planning.value.planningMonths.filter(
-    (item) => item.id !== id
-  );
-};
-
-const monthColapsed = ref(false)
-
-const collapseOrShowAllMonthsText = computed(() => {
-  return monthColapsed.value
-    ? "Show all months"
-    : "Collapse all months";
-});
-
-const addItem = (month) => {
+const addItem = async (month, saveAndNew)  => {
   const itemDateParsed = new Date(month.date + 'T00:00')
   const newMoviment = {
     ...month,
     idPlanningMonth: months.value[itemDateParsed.getMonth()].id
   }
-  planning.value.planningMonths.push({
-    hidden: false,
-    id: quickid(),
-    idMonth: months.value[itemDateParsed.getMonth()].id,
-    items: [
-      newMoviment
-    ],
-    goals: {
-      id: quickid(),
-      idPlanningMonth: null,
-      moneyToSave: 0,
-      creditLimit: 0,
-    },
-    budgets: [
-      {
-        id: quickid(),
-        type: null,
-        planningMonth: null,
-        amount: 0,
-      }]
-  });
-  save();
-};
-
-const handleColapse = () => {
-  monthColapsed.value = !monthColapsed.value;
-  planning.value.planningMonths.forEach((month) => {
-    month.hidden = monthColapsed.value;
-  });
-}
-
-const removeItem = (month, idItem) => {
-  if (month.items?.length === 1) {
-    toastError("Keep at least one item to your month.");
-    return;
-  }
-
-  const item = month.items.find((item) => item.id === idItem);
-
-  if (onEdit.value && isIdFromDB(item)) {
-    itemsToRemove.value.push(item.id);
-  }
-  month.items = month.items.filter((item) => item.id !== idItem);
-};
-
-const isLastMonth = (id) => {
-  const index = planning.value.planningMonths.findIndex(
-    (item) => item.id === id
+  const currentMonth = planning.value.planningMonths.find(
+    (month) => month.idMonth === monthMoviments.value
   );
-  return index === planning.value.planningMonths.length - 1;
-};
+  currentMonth.items.push(newMoviment);
+  togglePopup();
+  await save();
 
-const isLastItem = (month, id) => {
-  const index = month.items.findIndex((item) => item.id === id);
-  return index === month.items.length - 1;
+  if (saveAndNew) {
+    togglePopup();
+  }
 };
-
-const getMonthOptions = (month) => {
-  const idsMonth = months.value
-    .filter((item) => item.id !== month.id)
-    .map((month) => month.idMonth);
-  return months.value.filter((item) => !idsMonth.includes(item.id));
+const removeItem = async  (idItem) => {
+  const question = await showConfirm("Are you sure ?", 'This action is irreversible');
+  if (question.isConfirmed) {
+    await $store.dispatch("planning/removeItem", {
+      idItem,
+      year
+    });
+    await $store.dispatch("planning/changePlanningYear", year);
+    toastSuccess("Item removed successfully")
+  }
 };
 
 const save = async () => {
@@ -518,6 +248,8 @@ const save = async () => {
       spentOnCredit: spentOnCreditMonth(month),
     })),
   };
+
+  debugger
 
   let action = "createPlanning";
   console.log(onEdit)
@@ -541,12 +273,14 @@ const isIdFromDB = ({ id }) => {
 const makeToUpAdd = (array, onMonth = true) => {
   return array.reduce(
     (acc, current, index) => {
+      console.log(current.id)
       const isOnDb = !isNaN(+current.id);
       let copy = { ...current };
       if (copy.typesSpent) {
         delete [copy.typesSpent];
       }
       if (onMonth) {
+        debugger
         Object.assign(copy, {
           totalIn: inExpent(copy),
           totalOut: out(copy),
@@ -556,30 +290,13 @@ const makeToUpAdd = (array, onMonth = true) => {
         });
       }
       const key = isOnDb ? "toUpdate" : "toAdd";
+      console.log(key)
       acc[key].push(copy);
       return acc;
     },
     { toAdd: [], toUpdate: [] }
   );
 };
-
-const onInputSearch = ($event, month, field = "description") => {
-  if (!$event) {
-    month.items.forEach((item) => {
-      item.hidden = false;
-    });
-    return;
-  }
-  month.items.forEach((item) => {
-    if (typeof item[field] === "string") {
-      item.hidden = !item[field]?.match($event);
-    } else {
-      item.hidden = item[field] !== $event;
-    }
-  });
-};
-
-
 
 const createEditItem = () => {
   togglePopup(!popupMoviments.value);

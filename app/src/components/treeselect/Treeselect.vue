@@ -136,8 +136,7 @@ const onNodeClick = (node) => {
   }
 };
 
-import Tree from "vue3-tree";
-import "vue3-tree/dist/style.css";
+import Treeselect from 'vue3-treeselect'
 import quickid from "@/helpers/quickid";
 
 </script>
@@ -168,21 +167,7 @@ import quickid from "@/helpers/quickid";
       <p v-else class="font-bold text-xl"> &uarr; </p>
     </button>
     <div v-if="dropDownVisible" class="z-10 absolute bg-white divide-y divide-gray-100 rounded-lg w-44 dark:bg-white-200 shadow-lg" ref="modalDropDown">-
-    <Tree
-        :nodes="optionsRefs"
-        :search-text="searchText"
-        :use-checkbox="true"
-        :use-icon="false"
-        show-child-count
-        @nodeExpanded="onNodeExpanded"
-        @update:nodes="onUpdate"
-        @nodeClick="onNodeClick"
-        :undeletable="true"
-    >
-      <template v-slot:childCount>
-        <p  class="font-bold text-xl">&darr; </p>
-      </template>
-    </Tree>
+  <treeselect v-model="model" :multiple="true" :options="options" />
     </div>
 
 

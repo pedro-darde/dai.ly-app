@@ -6,6 +6,13 @@ import store from "./store";
 import "./assets/tailwind.css";
 import LottieAnimation from "lottie-web-vue";
 import filters from "./filters";
+import { library } from "@fortawesome/fontawesome-svg-core";
+import { faPencil,  faTrash } from "@fortawesome/free-solid-svg-icons";
+
+import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
+library.add(faPencil, faTrash);
+
+
 
 const app = createApp({
   ...App,
@@ -15,6 +22,7 @@ app.config.globalProperties.$filters = filters;
 app.use(router);
 app.use(store);
 app.component("lottie-animation", LottieAnimation);
+app.component("font-awesome-icon", FontAwesomeIcon)
 app.use(VueMask);
 app.config.productionTip = false;
 app.directive("trim", {
