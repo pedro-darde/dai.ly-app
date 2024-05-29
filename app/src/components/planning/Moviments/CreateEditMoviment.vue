@@ -10,6 +10,7 @@ import { popupVisibility } from "@/mixins/Popup";
 import DividerComponent from "@/components/divider/DividerComponent.vue";
 import quickid from "@/helpers/quickid";
 import TreeSelect from 'primevue/treeselect';
+import FloatLabel from 'primevue/floatlabel'
 defineProps({
   planning: {
     type: Object,
@@ -62,6 +63,7 @@ const paymentMethods = [
 
 const { visible, disband } = popupVisibility();
 
+
 </script>
 
 <template>
@@ -74,7 +76,10 @@ const { visible, disband } = popupVisibility();
         <div class="grid md:grid-cols-4 md:gap-3 mb-2 items-end ml-4 mt-4 justify-center">
           <MoneyInput label="Value" v-model="item.value" :required="true" :model-value="item.value" />
           <Input label="Description" type="text" v-model="item.description" :required="true" />
-          <TreeSelect v-model="item.idType" :options="itemTypes" placeholder="Select Item" class="md:w-20rem w-full"  selectionMode="multiple" />
+          <FloatLabel class="w-full md:w-20rem">
+              <TreeSelect v-model:model-value="item.idType" :options="itemTypes" placeholder="Select Item" class="md:w-20rem w-full"   selectionMode="single" :pt="true"  />
+              <label>Type</label>
+          </FloatLabel>
           <Select label="Operation" type="text" v-model="item.operation" optionValue="value" optionText="name"
             :options="operations" :required="true" />
           <Select v-model="item.paymentMethod" label="Payment Method" optionText="name" optionValue="value"

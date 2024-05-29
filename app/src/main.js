@@ -8,11 +8,12 @@ import LottieAnimation from "lottie-web-vue";
 import filters from "./filters";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { faPencil,  faTrash } from "@fortawesome/free-solid-svg-icons";
-
+import Primevue from 'primevue/config';
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
+import 'primevue/resources/themes/tailwind-light/theme.css';
+import "primeicons/primeicons.css";
+import Checkbox from 'primevue/checkbox';
 library.add(faPencil, faTrash);
-
-
 
 const app = createApp({
   ...App,
@@ -34,5 +35,7 @@ app.directive("trim", {
     el.innerHTML = spllitedInfo.slice(0, maxLength).join(" ").concat("...");
   },
 });
+app.use(Primevue);
+app.component('Checkbox', Checkbox);
 
 app.mount("#app");

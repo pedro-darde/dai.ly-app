@@ -35,13 +35,6 @@
             </div>
           </div>
         </form>
-
-        <!-- <div class="flex flex-row justify-start mt-5 w-full">
-          <p class="font-bold text-2xl">Tree of Types</p>
-        </div> -->
-        <!-- <div class="flex flex-row justify-center">
-          <nested-draggable :items="itemTypes"></nested-draggable>
-        </div> -->
       </div>
     </div>
   </RawPopup>
