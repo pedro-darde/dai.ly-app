@@ -8,10 +8,9 @@
       >
         <ul
           role="list"
-          class="flex items-center justify-between divide-y divide-gray-200 dark:divide-gray-700 gap-2"
+          class="flex items-center justify-between divide-y divide-gray-200 gap-2"
         >
           <li
-            class="py-3 sm:py-4 bg-yellow-100 border rounded-lg shadow-md mb-2"
             v-for="note in notes"
             :key="note.id"
           >

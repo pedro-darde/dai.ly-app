@@ -47,6 +47,25 @@
   </div>
 </template>
 
-<script src="./script.js"></script>
+<script setup>
+import { computed, onMounted } from "vue"
+import { useStore } from "vuex";
+import Header from "../header/Header.vue";
+import NavbarComponent from "../nav/Navbar.vue";
+import WriteTask from "../write-task/WriteTask.vue";
+import Task from "../task/Task.vue";
+const $store = useStore();
+onMounted(async () => {
+await Promise.all([
+      $store.dispatch("task/setCurrentTask"),
+      $store.dispatch("task/getActiveTasks"),
+      $store.dispatch("note/allNotes")
+    ])
+});
+
+const tasks = computed(() => {
+  return  $store.getters["task/activeTasksGetter"]
+})
+</script>
 
 <style scoped></style>

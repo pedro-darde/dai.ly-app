@@ -9,7 +9,7 @@ import { organizeSpents } from "../helpers/planning";
 const DEFAULT_PLANNING = {
   id: null,
   year: new Date().getFullYear(),
-  title: "Planning of " + (new Date()).getFullYear(),
+  title: "Planning of " + new Date().getFullYear(),
   expectedAmount: 0,
   startAt: new Date(),
   planningEnd: null,
@@ -20,6 +20,7 @@ const state = {
   planning: DEFAULT_PLANNING,
   months: [],
   itemTypes: [],
+  plainItemTypes: [],
   cards: [],
   existingYears: [],
 };
@@ -38,10 +39,35 @@ const actions = {
       commit("PLANNING_CREATED", { message, icon });
     }
   },
+  async createMoviment({ commit }, payload) {
+    let message = "Moviment Created";
+    let icon = "success";
+    try {
+      await planningService.createItem(payload);
+    } catch (e) {
+      console.log(e);
+      icon = "error";
+      message = e.response?.data?.message ?? "Internal Server Error";
+    } finally {
+      commit("MOVIMENT_CREATED", { message, icon });
+    }
+  },
+  async updateMoviment({ commit }, payload) {
+    let message = "Moviment Edited";
+    let icon = "success";
+    try {
+      await planningService.updateItem(payload);
+    } catch (e) {
+      console.log(e);
+      icon = "error";
+      message = e.response?.data?.message ?? "Internal Server Error";
+    } finally {
+      commit("MOVIMENT_CREATED", { message, icon });
+    }
+  },
   async changePlanningYear({ commit, state }, year) {
     try {
       let planning = (await planningService.get(year)) || DEFAULT_PLANNING;
-      console.log(planning);
       planning.startAt = toHtmlDateTimeFormat(
         planning.startAt,
         DATE_INPUT_FORMAT
@@ -64,7 +90,10 @@ const actions = {
         month.toggledGoals = false;
 
         if (month.budgets?.length) {
-          month.budgets.forEach((budget) => { budget.isOnDB = true; budget.id = quickid()});
+          month.budgets.forEach((budget) => {
+            budget.isOnDB = true;
+            budget.id = quickid();
+          });
         }
 
         if (month.goals) {
@@ -89,6 +118,9 @@ const actions = {
   applyCurrentPlanning({ commit }, planning) {
     commit("SET_PLANNING", planning);
   },
+  setItemTypes({ commit }, types) {
+    commit("SET_PLAIN_TYPES", types);
+  },
   async editPlanning({ commit }, payload) {
     let message = "Planning Edited Succesfully";
     let icon = "success";
@@ -108,6 +140,18 @@ const actions = {
       console.error(e);
     }
   },
+  async saveItemTypes({ commit }, items) {
+    let message = "Items updated with success";
+    let icon = "success";
+    try {
+      await itemTypeService.saveMany(items);
+    } catch (e) {
+      message = e.response?.data?.message ?? "Internal Server Error";
+      icon = "error";
+    } finally {
+      commit("ITEMS_UPDATED", { icon, message });
+    }
+  },
   saveMonths({ commit }, months) {},
   async getMonths({ commit }) {
     try {
@@ -123,7 +167,15 @@ const actions = {
 
       // const toTreeSelectStyle = types.map()
 
-      commit("SET_TYPES", types);
+      const plain = types.plain.map((type) => ({
+        ...type,
+        parent: {
+          [type.id_parent]: true,
+        },
+      }));
+
+      commit("SET_TYPES", types.treeSelect);
+      commit("SET_PLAIN_TYPES", plain);
     } catch (e) {
       console.error(e);
     }
@@ -155,8 +207,23 @@ const mutations = {
       text: message,
     });
   },
+  ITEMS_UPDATED(_, { icon, message }) {
+    Toast.fire({
+      icon,
+      text: message,
+    });
+  },
+  MOVIMENT_CREATED(_, { icon, message }) {
+    Toast.fire({
+      icon,
+      text: message,
+    });
+  },
   SET_TYPES(state, value) {
     state.itemTypes = value;
+  },
+  SET_PLAIN_TYPES(state, value) {
+    state.plainItemTypes = value;
   },
   SET_CARDS(state, value) {
     state.cards = value;
@@ -178,6 +245,9 @@ const getters = {
   },
   cardsGetter(state) {
     return state.cards;
+  },
+  plainItemTypesGetter(state) {
+    return state.plainItemTypes;
   },
 };
 

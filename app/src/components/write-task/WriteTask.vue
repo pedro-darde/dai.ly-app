@@ -57,6 +57,8 @@ watch(task, (value) => {
           label="Expected Time (days)"
         />
         <Select 
+          :option-value="'id'"
+         :option-text="'name'"
           v-model="task.status" 
           :options="status" 
           label="Status"></Select>

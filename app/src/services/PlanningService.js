@@ -3,10 +3,8 @@ import { BaseService } from "./BaseService";
 
 export class PlanningService extends BaseService {
   async get(year) {
-    return this.__cached(`planning_${year}`, async () => {
-      const res = await axiosPlugin.get(`/planning/${year}`);
-      return res?.data;
-    });
+    const res = await axiosPlugin.get(`/planning/${year}`);
+    return res?.data;
   }
 
   async getMonths() {
@@ -24,8 +22,21 @@ export class PlanningService extends BaseService {
     console.log(res);
   }
 
-  async removeItem(year, idItem)  { 
+  async removeItem(year, idItem) {
     const res = await axiosPlugin.delete(`/planning/${year}/item/${idItem}`);
+    console.log(res);
+  }
+  async createItem(payload) {
+    const res = await axiosPlugin.post(
+      `/planning/${payload.year}/item`,
+      payload
+    );
+    console.log(res);
+  }
+  async updateItem({ year, item }) {
+    const res = await axiosPlugin.put(`/planning/${year}/item/${item.id}`, {
+      item,
+    });
     console.log(res);
   }
 }

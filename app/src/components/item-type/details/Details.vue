@@ -1,7 +1,9 @@
 <template>
   <div class="container mt-2 p-2">
     <h2 class="font-bold text-center mb-2">Spents by Type</h2>
-    <BodyDetails :items="items" :details="details" />
+    <div>
+      <BodyDetails :items="items" :details="details" />
+    </div>
     <div class="flex flex-col items-end">
       <div class="flex flex-row items-center">
         <span class="font-bold text-right px-6 py-3 text-base"> Total In </span>
@@ -26,19 +28,11 @@
 </template>
 
 <script setup>
-import  {useSwal} from "@/mixins/SwalMixin";
 import BodyDetails from "./BodyDetails.vue";
-import {computed} from "vue";
-import {useFilters} from "@/filters";
+import { computed } from "vue";
+import { useFilters } from "@/filters";
 
-
-const {
-  toMonetary,
-} = useFilters()
-const {
-  showConfirm,
-
-} = useSwal();
+const { toMonetary } = useFilters();
 
 const props = defineProps({
   details: {
@@ -48,14 +42,17 @@ const props = defineProps({
   items: {
     type: Array,
   },
-})
+});
 
 function getTotalForNestedChildren(children, inOrOut) {
   let total = 0;
   for (const child of children) {
+    console.log(child.spents);
     total += child?.spents
-        .filter((item) => item.operation === inOrOut)
-        .reduce((acc, { value }) => (acc += value), 0);
+      .filter(
+        (item) => item.operation === inOrOut && item.payment_method !== "credit"
+      )
+      .reduce((acc, { value }) => (acc += value), 0);
     if (child.children) {
       total += getTotalForNestedChildren(child.children, inOrOut);
     }
@@ -74,17 +71,6 @@ const totalOut = computed(() => {
 const balance = computed(() => {
   return totalIn.value - totalOut.value;
 });
-
-const shouldShowItems = (detail) => {
-  return detail.toggledItems;
-};
-
-const shouldShowDetail = (detail) => {
-  return detail?.spents.length > 0;
-};
-const getSpentsValue = (spents) => {
-  return spents.reduce((acc, { value }) => (acc += value), 0);
-};
 </script>
 
 <style scoped lang="scss">

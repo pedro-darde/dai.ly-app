@@ -17,5 +17,13 @@
   </header>
 </template>
 
-<script src="./script.js"></script>
+<script setup>
+defineProps({
+  headerTitle: String,
+  about: {
+    type: String,
+    default: "Put a description to your header",
+  },
+});
+</script>
 <style scoped></style>
