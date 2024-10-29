@@ -69,14 +69,14 @@
     <tfoot
       class="bg-gray-200 border-b dark:bg-gray-800 dark:border-gray-700 dark:text-white text-bold"
     >
-      <tr rowspan="2">
-        <td colspan="8" class="px-6 py-4">In: {{ totalIn({}, monthItems) }}</td>
+      <tr >
+        <td colspan="8" class="px-4 py-2">In: {{ totalIn({}, monthItems) }}</td>
       </tr>
-      <tr rowspan="2">
-        <td colspan="8" class="px-6 py-4">Out: {{ out({}, monthItems) }}</td>
+      <tr >
+        <td colspan="8" class="px-4 py-2">Out: {{ out({}, monthItems) }}</td>
       </tr>
-      <tr rowspan="2">
-        <td colspan="8" class="px-6 py-4">In:</td>
+      <tr >
+        <td colspan="8" class="px-4 py-2">In:</td>
       </tr>
     </tfoot>
   </table>
@@ -98,7 +98,7 @@ const props = defineProps({
 });
 
 const itemTypes = computed(() => {
-  return $store.getters["planning/itemTypesGetter"];
+  return $store.getters["planning/plainItemTypesGetter"];
 });
 
 const editMoviment = (moviment) => {
@@ -106,7 +106,6 @@ const editMoviment = (moviment) => {
 };
 
 /**
- *
  * @param id {number}
  */
 const removeItem = (id) => {
@@ -115,18 +114,7 @@ const removeItem = (id) => {
 
 const getTypeDescription = (idType) => {
   let findedItem = itemTypes.value.find((item) => item.id === idType);
-
-  if (!findedItem) {
-    findedItem = itemTypesChildren.value.find((child) => child.id === idType);
-  }
-
   return findedItem?.description || "Not found";
 };
 
-const itemTypesChildren = computed(() => {
-  return itemTypes.value
-    .filter((item) => item.children)
-    .map((item) => item.children)
-    .flat();
-});
 </script>

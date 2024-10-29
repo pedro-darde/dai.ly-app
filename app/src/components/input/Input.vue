@@ -41,10 +41,15 @@ const props = defineProps({
   },
 });
 
+const model = defineModel()
+
 const emitChange = (event) => {
   emit("update:modelValue", event.target.value);
   emit("input", event.target.value);
+  model.value = event.target.value
 };
+
+
 </script>
 <template>
   <div>

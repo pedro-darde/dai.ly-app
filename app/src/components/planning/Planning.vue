@@ -335,6 +335,7 @@ const removeItem = async (idItem) => {
 };
 
 const save = async () => {
+  let action = ''
   let payload = {
     id: planning.value.id,
     title: planning.value.title,

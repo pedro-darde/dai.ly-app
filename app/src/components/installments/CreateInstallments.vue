@@ -74,6 +74,7 @@
         <div
           class="grid md:grid-cols-2 md:gap-3"
           v-for="installment of installments"
+          :key="installment.date"
         >
           <Input
             label="Description"
@@ -117,6 +118,8 @@ import * as yup from "yup";
 
 const $store = useStore();
 
+// const recurrenc
+
 const { errors, handleSubmit, defineField } = useForm({
   validationSchema: yup.object({
     description: yup.string().required(),
@@ -139,7 +142,7 @@ const paymentMethod = ref("debit");
 const installments = ref([]);
 const numberOfInstallments = ref(null);
 const type = ref(null);
-const [description, descriptionAttrs] = defineField("description");
+const description = ref('')
 const installmentOptions = range(2, 24);
 const valueInstallment = ref(0);
 const startDate = ref(null);
@@ -175,7 +178,7 @@ function getItemDescription(installmentNumber, month) {
       .concat(
         months.value.find((item) => item.monthAsNumber === month)?.monthName
       );
-  return `Installment ${installmentNumber} of ${this.description}`;
+  return `Installment ${installmentNumber} of ${description.value}`;
 }
 
 function generateInstallmentsMonths(installmentValue) {
@@ -207,7 +210,8 @@ function generateInstallmentsMonths(installmentValue) {
 }
 
 function generateInstallments() {
-  if (description.value) {
+
+  if (!description.value) {
     alert("Description is required");
     return;
   }
